@@ -1,0 +1,851 @@
+
+HP-UX htlprd B.11.31 U ia64 (ta)
+
+login: root
+Password:
+Last successful login:       Thu Mar 28 17:57:42 IST 2019 ::ffff:192.168.10.7
+Last authentication failure: Thu Mar 28 10:17:48 IST 2019 ::ffff:192.168.10.7
+Please wait...checking for disk quotas
+(c)Copyright 1983-2006 Hewlett-Packard Development Company, L.P.
+(c)Copyright 1979, 1980, 1983, 1985-1993 The Regents of the Univ. of California
+(c)Copyright 1980, 1984, 1986 Novell, Inc.
+(c)Copyright 1986-2000 Sun Microsystems, Inc.
+(c)Copyright 1985, 1986, 1988 Massachusetts Institute of Technology
+(c)Copyright 1989-1993  The Open Software Foundation, Inc.
+(c)Copyright 1990 Motorola, Inc.
+(c)Copyright 1990, 1991, 1992 Cornell University
+(c)Copyright 1989-1991 The University of Maryland
+(c)Copyright 1988 Carnegie Mellon University
+(c)Copyright 1991-2006 Mentat Inc.
+(c)Copyright 1996 Morning Star Technologies, Inc.
+(c)Copyright 1996 Progressive Systems, Inc.
+
+Confidential computer software. Valid license from HP required for
+possession, use or copying.  Consistent with FAR 12.211 and 12.212,
+Commercial Computer Software, Computer Software Documentation, and
+Technical Data for Commercial Items are licensed to the U.S. Government
+under vendor's standard commercial license.
+
+You have mail.
+
+Value of TERM has been set to "xterm".
+WARNING:  YOU ARE SUPERUSER !!
+
+htlprd:/>bdf
+Filesystem          kbytes    used   avail %used Mounted on
+/dev/vg00/lvol3    10485760  471480 9936104    5% /
+/dev/vg00/lvol1    1835008  375232 1448440   21% /stand
+/dev/vg00/lvol8    20971520 1749088 19072872    8% /var
+/dev/vg00/lvol7    10485760 5114752 5329120   49% /usr
+/dev/vgusrsap/trans
+                   31457280 16795672 14547112   54% /usr/sap/trans
+/dev/vgusrsap/usrsap
+                   10485760 10443216   42240  100% /usr/sap/PHL
+/dev/vg00/lvol6    10485760 5610496 4837648   54% /tmp
+/dev/vgusrsap/sapmnt
+                   10223616 5630712 4557104   55% /sapmnt/PHL
+/dev/vg00/sapdump  104857600 47345844 53917305   47% /sapdump
+/dev/vgoracle/stage
+                   10485760 8146112 2321384   78% /oracle/stage
+/dev/vgoracle/client
+                   2097152  239408 1843240   11% /oracle/client
+/dev/vgoracle/PHL  10485760   21872 10382496    0% /oracle/PHL
+/dev/vgoracle/saptrace
+                   5242880 2367344 2855808   45% /oracle/PHL/saptrace
+/dev/vgoracle/sapreorg
+                   5242880   57720 5144656    1% /oracle/PHL/sapreorg
+/dev/vgdata5/data5 104595456 81990112 22428744   79% /oracle/PHL/sapdata5
+/dev/vgdata4/data4 104595456 72274408 32068544   69% /oracle/PHL/sapdata4
+/dev/vgdata3/data3 104595456 51270080 52908784   49% /oracle/PHL/sapdata3
+/dev/vgdata2/data2 104595456 92230144 12268712   88% /oracle/PHL/sapdata2
+/dev/vgdata1/data1 104595456 54258904 49943304   52% /oracle/PHL/sapdata1
+/dev/vgoracle/sapbackup
+                   2097152   19024 2062024    1% /oracle/PHL/sapbackup
+/dev/vglog/origlogB
+                   4980736  448235 4249226   10% /oracle/PHL/origlogB
+/dev/vglog/origlogA
+                   5242880  448299 4494926    9% /oracle/PHL/origlogA
+/dev/vgoraarch/oraarch
+                   52166656 1670932 47339875    3% /oracle/PHL/oraarch
+/dev/vglog/mirrlogB
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogB
+/dev/vglog/mirrlogA
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogA
+/dev/vgoracle/112_64
+                   10485760 7811984 2653376   75% /oracle/PHL/112_64
+/dev/vg00/lvol5    20971520 5540632 15310424   27% /opt
+/dev/vg00/lvol4    5242880   33448 5168832    1% /home
+/dev/vgbkp/backupsap
+                   314310656   76552 311779288    0% /backupsap
+htlprd:/>idisk -w -G /dev/
+htlprd:/>vgdisplay -v vgbkp
+--- Volume groups ---
+VG Name                     /dev/vgbkp
+VG Write Access             read/write
+VG Status                   available
+Max LV                      255
+Cur LV                      1
+Open LV                     1
+Max PV                      255
+Cur PV                      1
+Act PV                      1
+Max PE per PV               1199
+VGDA                        2
+PE Size (Mbytes)            256
+Total PE                    1199
+Alloc PE                    1199
+Free PE                     0
+Total PVG                   0
+Total Spare PVs             0
+Total Spare PVs in use      0
+VG Version                  1.0
+VG Max Size                 78270720m
+VG Max Extents              305745
+
+   --- Logical volumes ---
+   LV Name                     /dev/vgbkp/backupsap
+   LV Status                   available/syncd
+   LV Size (Mbytes)            306944
+   Current LE                  1199
+   Allocated PE                1199
+   Used PV                     1
+
+
+   --- Physical volumes ---
+   PV Name                     /dev/disk/disk53
+   PV Status                   available
+   Total PE                    1199
+   Free PE                     0
+   Autoswitch                  On
+   Proactive Polling           On
+
+
+htlprd:/>pidisk -w -G /dev/
+htlprd:/>idisk -w -G /dev/rdisk/disk53
+idisk: Primary EFI GPT header invalid.
+htlprd:/>idisk -w -G /dev/rdisk/disk53
+idisk: Primary EFI GPT header invalid.
+htlprd:/>
+htlprd:/>
+htlprd:/>
+htlprd:/>
+htlprd:/>
+htlprd:/>
+htlprd:/>
+htlprd:/>
+htlprd:/>
+htlprd:/>
+htlprd:/>bdf
+Filesystem          kbytes    used   avail %used Mounted on
+/dev/vg00/lvol3    10485760  471480 9936104    5% /
+/dev/vg00/lvol1    1835008  375232 1448440   21% /stand
+/dev/vg00/lvol8    20971520 1748792 19073160    8% /var
+/dev/vg00/lvol7    10485760 5113760 5330104   49% /usr
+/dev/vgusrsap/trans
+                   31457280 16795672 14547112   54% /usr/sap/trans
+/dev/vgusrsap/usrsap
+                   10485760 10443880   41576  100% /usr/sap/PHL
+/dev/vg00/lvol6    10485760 5610496 4837648   54% /tmp
+/dev/vgusrsap/sapmnt
+                   10223616 5630760 4557056   55% /sapmnt/PHL
+/dev/vg00/sapdump  104857600 47345844 53917305   47% /sapdump
+/dev/vgoracle/stage
+                   10485760 8146112 2321384   78% /oracle/stage
+/dev/vgoracle/client
+                   2097152  239408 1843240   11% /oracle/client
+/dev/vgoracle/PHL  10485760   21872 10382496    0% /oracle/PHL
+/dev/vgoracle/saptrace
+                   5242880 2367432 2855720   45% /oracle/PHL/saptrace
+/dev/vgoracle/sapreorg
+                   5242880   57720 5144656    1% /oracle/PHL/sapreorg
+/dev/vgdata5/data5 104595456 81990112 22428744   79% /oracle/PHL/sapdata5
+/dev/vgdata4/data4 104595456 72274408 32068544   69% /oracle/PHL/sapdata4
+/dev/vgdata3/data3 104595456 51270080 52908784   49% /oracle/PHL/sapdata3
+/dev/vgdata2/data2 104595456 92230144 12268712   88% /oracle/PHL/sapdata2
+/dev/vgdata1/data1 104595456 54258904 49943304   52% /oracle/PHL/sapdata1
+/dev/vgoracle/sapbackup
+                   2097152   19024 2062024    1% /oracle/PHL/sapbackup
+/dev/vglog/origlogB
+                   4980736  448235 4249226   10% /oracle/PHL/origlogB
+/dev/vglog/origlogA
+                   5242880  448299 4494926    9% /oracle/PHL/origlogA
+/dev/vgoraarch/oraarch
+                   52166656 1670932 47339875    3% /oracle/PHL/oraarch
+/dev/vglog/mirrlogB
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogB
+/dev/vglog/mirrlogA
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogA
+/dev/vgoracle/112_64
+                   10485760 7811984 2653376   75% /oracle/PHL/112_64
+/dev/vg00/lvol5    20971520 5540632 15310424   27% /opt
+/dev/vg00/lvol4    5242880   33448 5168832    1% /home
+/dev/vgbkp/backupsap
+                   314310656   76552 311779288    0% /backupsap
+htlprd:/>umount /backupsap
+htlprd:/>lvremove
+htlprd:/>lvremove /dev/vgbkp/backupsap
+The logical volume "/dev/vgbkp/backupsap" is not empty;
+do you really want to delete the logical volume (y/n) : y
+Logical volume "/dev/vgbkp/backupsap" has been successfully removed.
+Volume Group configuration for /dev/vgbkp has been saved in /etc/lvmconf/vgbkp.conf
+htlprd:/>vgremove vgbkp
+Volume group "vgbkp" has been successfully removed.
+htlprd:/>ioscan -fnC disk
+Class     I  H/W Path     Driver S/W State   H/W Type     Description
+=====================================================================
+disk      4  0/2/0/0/0/0.1.21.0.0.0.1  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c8t0d1   /dev/rdsk/c8t0d1
+disk      9  0/2/0/0/0/0.1.21.0.0.0.2  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c8t0d2   /dev/rdsk/c8t0d2
+disk     17  0/2/0/0/0/0.1.21.0.0.0.3  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c8t0d3   /dev/rdsk/c8t0d3
+disk     21  0/2/0/0/0/0.1.21.0.0.0.4  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c8t0d4   /dev/rdsk/c8t0d4
+disk     26  0/2/0/0/0/0.1.21.0.0.0.5  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c8t0d5   /dev/rdsk/c8t0d5
+disk     30  0/2/0/0/0/0.1.21.0.0.0.6  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c8t0d6   /dev/rdsk/c8t0d6
+disk     34  0/2/0/0/0/0.1.21.0.0.0.7  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c8t0d7   /dev/rdsk/c8t0d7
+disk     39  0/2/0/0/0/0.1.21.0.0.1.0  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c8t1d0   /dev/rdsk/c8t1d0
+disk     47  0/2/0/0/0/0.1.21.0.0.1.1  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c8t1d1   /dev/rdsk/c8t1d1
+disk     50  0/2/0/0/0/0.1.21.0.0.1.2  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c8t1d2   /dev/rdsk/c8t1d2
+disk      5  0/2/0/0/0/0.1.23.0.0.0.1  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c10t0d1   /dev/rdsk/c10t0d1
+disk     10  0/2/0/0/0/0.1.23.0.0.0.2  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c10t0d2   /dev/rdsk/c10t0d2
+disk     14  0/2/0/0/0/0.1.23.0.0.0.3  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c10t0d3   /dev/rdsk/c10t0d3
+disk     19  0/2/0/0/0/0.1.23.0.0.0.4  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c10t0d4   /dev/rdsk/c10t0d4
+disk     28  0/2/0/0/0/0.1.23.0.0.0.5  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c10t0d5   /dev/rdsk/c10t0d5
+disk     29  0/2/0/0/0/0.1.23.0.0.0.6  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c10t0d6   /dev/rdsk/c10t0d6
+disk     37  0/2/0/0/0/0.1.23.0.0.0.7  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c10t0d7   /dev/rdsk/c10t0d7
+disk     41  0/2/0/0/0/0.1.23.0.0.1.0  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c10t1d0   /dev/rdsk/c10t1d0
+disk     46  0/2/0/0/0/0.1.23.0.0.1.1  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c10t1d1   /dev/rdsk/c10t1d1
+disk     52  0/2/0/0/0/0.1.23.0.0.1.2  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c10t1d2   /dev/rdsk/c10t1d2
+disk      0  0/3/0/0/0/0.0.0           sdisk   CLAIMED     DEVICE       HP      LOGICAL VOLUME
+                         /dev/dsk/c0t0d0     /dev/rdsk/c0t0d0
+                         /dev/dsk/c0t0d0s1   /dev/rdsk/c0t0d0s1
+                         /dev/dsk/c0t0d0s2   /dev/rdsk/c0t0d0s2
+                         /dev/dsk/c0t0d0s3   /dev/rdsk/c0t0d0s3
+disk      6  0/5/0/0/0/0.1.21.0.0.0.1  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c3t0d1   /dev/rdsk/c3t0d1
+disk     12  0/5/0/0/0/0.1.21.0.0.0.2  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c3t0d2   /dev/rdsk/c3t0d2
+disk     18  0/5/0/0/0/0.1.21.0.0.0.3  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c3t0d3   /dev/rdsk/c3t0d3
+disk     20  0/5/0/0/0/0.1.21.0.0.0.4  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c3t0d4   /dev/rdsk/c3t0d4
+disk     25  0/5/0/0/0/0.1.21.0.0.0.5  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c3t0d5   /dev/rdsk/c3t0d5
+disk     31  0/5/0/0/0/0.1.21.0.0.0.6  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c3t0d6   /dev/rdsk/c3t0d6
+disk     38  0/5/0/0/0/0.1.21.0.0.0.7  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c3t0d7   /dev/rdsk/c3t0d7
+disk     43  0/5/0/0/0/0.1.21.0.0.1.0  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c3t1d0   /dev/rdsk/c3t1d0
+disk     44  0/5/0/0/0/0.1.21.0.0.1.1  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c3t1d1   /dev/rdsk/c3t1d1
+disk     49  0/5/0/0/0/0.1.21.0.0.1.2  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c3t1d2   /dev/rdsk/c3t1d2
+disk      7  0/5/0/0/0/0.1.23.0.0.0.1  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c5t0d1   /dev/rdsk/c5t0d1
+disk     11  0/5/0/0/0/0.1.23.0.0.0.2  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c5t0d2   /dev/rdsk/c5t0d2
+disk     15  0/5/0/0/0/0.1.23.0.0.0.3  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c5t0d3   /dev/rdsk/c5t0d3
+disk     23  0/5/0/0/0/0.1.23.0.0.0.4  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c5t0d4   /dev/rdsk/c5t0d4
+disk     24  0/5/0/0/0/0.1.23.0.0.0.5  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c5t0d5   /dev/rdsk/c5t0d5
+disk     33  0/5/0/0/0/0.1.23.0.0.0.6  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c5t0d6   /dev/rdsk/c5t0d6
+disk     36  0/5/0/0/0/0.1.23.0.0.0.7  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c5t0d7   /dev/rdsk/c5t0d7
+disk     42  0/5/0/0/0/0.1.23.0.0.1.0  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c5t1d0   /dev/rdsk/c5t1d0
+disk     48  0/5/0/0/0/0.1.23.0.0.1.1  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c5t1d1   /dev/rdsk/c5t1d1
+disk     51  0/5/0/0/0/0.1.23.0.0.1.2  sdisk   CLAIMED     DEVICE       HP      HSV300
+                         /dev/dsk/c5t1d2   /dev/rdsk/c5t1d2
+disk      2  255/1/0.0.0  sdisk   CLAIMED     DEVICE       TEAC    DVD-ROM DW-224EV
+                         /dev/dsk/c1t0d0   /dev/rdsk/c1t0d0
+htlprd:/>ioscan -NfnC disk
+Class     I  H/W Path  Driver S/W State   H/W Type     Description
+===================================================================
+disk      1  64000/0xfa00/0x1   esdisk   CLAIMED     DEVICE       HP      LOGICAL VOLUME
+                      /dev/disk/disk1      /dev/rdisk/disk1
+                      /dev/disk/disk1_p1   /dev/rdisk/disk1_p1
+                      /dev/disk/disk1_p2   /dev/rdisk/disk1_p2
+                      /dev/disk/disk1_p3   /dev/rdisk/disk1_p3
+disk      3  64000/0xfa00/0x2   esdisk   CLAIMED     DEVICE       TEAC    DVD-ROM DW-224EV
+                      /dev/disk/disk3   /dev/rdisk/disk3
+disk      8  64000/0xfa00/0xc   esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk8   /dev/rdisk/disk8
+disk     13  64000/0xfa00/0xd   esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk13   /dev/rdisk/disk13
+disk     16  64000/0xfa00/0xe   esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk16   /dev/rdisk/disk16
+disk     22  64000/0xfa00/0xf   esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk22   /dev/rdisk/disk22
+disk     27  64000/0xfa00/0x10  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk27   /dev/rdisk/disk27
+disk     32  64000/0xfa00/0x11  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk32   /dev/rdisk/disk32
+disk     35  64000/0xfa00/0x12  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk35   /dev/rdisk/disk35
+disk     40  64000/0xfa00/0x13  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk40   /dev/rdisk/disk40
+disk     45  64000/0xfa00/0x14  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk45   /dev/rdisk/disk45
+disk     53  64000/0xfa00/0x15  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk53   /dev/rdisk/disk53
+htlprd:/>pvcreate -f /dev/rdisk/disk53
+Physical volume "/dev/rdisk/disk53" has been successfully created.
+htlprd:/>vgcreate -s 128 vgbkp /dev/disk/disk53
+Increased the number of physical extents per physical volume to 3119.
+Volume group "/dev/vgbkp" has been successfully created.
+Volume Group configuration for /dev/vgbkp has been saved in /etc/lvmconf/vgbkp.conf
+htlprd:/>lvcreate -l 3119 -n backupsap vgbkp
+Logical volume "/dev/vgbkp/backupsap" has been successfully created with
+character device "/dev/vgbkp/rbackupsap".
+Logical volume "/dev/vgbkp/backupsap" has been successfully extended.
+Volume Group configuration for /dev/vgbkp has been saved in /etc/lvmconf/vgbkp.conf
+htlprd:/>mkfs -F vxfs /dev/vgbkp/rbackupsap
+    version 7 layout
+    408813568 sectors, 408813568 blocks of size 1024, log size 65536 blocks
+    largefiles supported
+htlprd:/>mount -a
+mount: /dev/vg00/sapdump is already mounted on /sapdump
+mount: /dev/vgusrsap/sapmnt is already mounted on /sapmnt/PHL
+mount: /dev/vgoracle/PHL is already mounted on /oracle/PHL
+mount: /dev/vgdata5/data5 is already mounted on /oracle/PHL/sapdata5
+mount: /dev/vgdata4/data4 is already mounted on /oracle/PHL/sapdata4
+mount: /dev/vgdata3/data3 is already mounted on /oracle/PHL/sapdata3
+mount: /dev/vgdata2/data2 is already mounted on /oracle/PHL/sapdata2
+mount: /dev/vgdata1/data1 is already mounted on /oracle/PHL/sapdata1
+mount: /dev/vglog/origlogB is already mounted on /oracle/PHL/origlogB
+mount: /dev/vglog/origlogA is already mounted on /oracle/PHL/origlogA
+mount: /dev/vglog/mirrlogB is already mounted on /oracle/PHL/mirrlogB
+mount: /dev/vglog/mirrlogA is already mounted on /oracle/PHL/mirrlogA
+mount: /dev/vgoraarch/oraarch is already mounted on /oracle/PHL/oraarch
+mount: /dev/vgoracle/sapbackup is already mounted on /oracle/PHL/sapbackup
+mount: /dev/vgoracle/saptrace is already mounted on /oracle/PHL/saptrace
+mount: /dev/vgoracle/sapreorg is already mounted on /oracle/PHL/sapreorg
+mount: /dev/vgoracle/112_64 is already mounted on /oracle/PHL/112_64
+mount: /dev/vgoracle/stage is already mounted on /oracle/stage
+mount: /dev/vgoracle/client is already mounted on /oracle/client
+mount: /dev/vg00/lvol8 is already mounted on /var
+mount: /dev/vg00/lvol7 is already mounted on /usr
+mount: /dev/vgusrsap/usrsap is already mounted on /usr/sap/PHL
+mount: /dev/vgusrsap/trans is already mounted on /usr/sap/trans
+mount: /dev/vg00/lvol6 is already mounted on /tmp
+mount: /dev/vg00/lvol5 is already mounted on /opt
+mount: /dev/vg00/lvol4 is already mounted on /home
+mount: /dev/vg00/lvol1 is already mounted on /stand
+htlprd:/>bdf
+Filesystem          kbytes    used   avail %used Mounted on
+/dev/vg00/lvol3    10485760  471432 9936152    5% /
+/dev/vg00/lvol1    1835008  375232 1448440   21% /stand
+/dev/vg00/lvol8    20971520 1748776 19073184    8% /var
+/dev/vg00/lvol7    10485760 5113792 5330072   49% /usr
+/dev/vgusrsap/trans
+                   31457280 16795672 14547112   54% /usr/sap/trans
+/dev/vgusrsap/usrsap
+                   10485760 10443920   41536  100% /usr/sap/PHL
+/dev/vg00/lvol6    10485760 5610496 4837648   54% /tmp
+/dev/vgusrsap/sapmnt
+                   10223616 5630800 4557008   55% /sapmnt/PHL
+/dev/vg00/sapdump  104857600 47345844 53917305   47% /sapdump
+/dev/vgoracle/stage
+                   10485760 8146112 2321384   78% /oracle/stage
+/dev/vgoracle/client
+                   2097152  239408 1843240   11% /oracle/client
+/dev/vgoracle/PHL  10485760   21872 10382496    0% /oracle/PHL
+/dev/vgoracle/saptrace
+                   5242880 2367456 2855696   45% /oracle/PHL/saptrace
+/dev/vgoracle/sapreorg
+                   5242880   57720 5144656    1% /oracle/PHL/sapreorg
+/dev/vgdata5/data5 104595456 81990112 22428744   79% /oracle/PHL/sapdata5
+/dev/vgdata4/data4 104595456 72274408 32068544   69% /oracle/PHL/sapdata4
+/dev/vgdata3/data3 104595456 51270080 52908784   49% /oracle/PHL/sapdata3
+/dev/vgdata2/data2 104595456 92230144 12268712   88% /oracle/PHL/sapdata2
+/dev/vgdata1/data1 104595456 54258904 49943304   52% /oracle/PHL/sapdata1
+/dev/vgoracle/sapbackup
+                   2097152   19024 2062024    1% /oracle/PHL/sapbackup
+/dev/vglog/origlogB
+                   4980736  448235 4249226   10% /oracle/PHL/origlogB
+/dev/vglog/origlogA
+                   5242880  448299 4494926    9% /oracle/PHL/origlogA
+/dev/vgoraarch/oraarch
+                   52166656 1670932 47339875    3% /oracle/PHL/oraarch
+/dev/vglog/mirrlogB
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogB
+/dev/vglog/mirrlogA
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogA
+/dev/vgoracle/112_64
+                   10485760 7811984 2653376   75% /oracle/PHL/112_64
+/dev/vg00/lvol5    20971520 5540632 15310424   27% /opt
+/dev/vg00/lvol4    5242880   33448 5168832    1% /home
+/dev/vgbkp/backupsap
+                   408813568  166845 383106310    0% /backupsap
+htlprd:/>smh
+DISPLAY variable is not set. Starting the Text User Interface. Please wait...
+             HP-UX System Management Homepage (Text User Interface)
+               SMH->Disks and File Systems->File Systems->Details
+--------------------------------------------------------------------------------
+Properties
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<------------------------------------------------------------------- > SCROLL \/
+x-Exit smh   l-Logical Volume   p-Upgrade VxFS
+ESC-Back     m-Modify           Ctrl o-Other Actions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+htlprd:/>bdf
+Filesystem          kbytes    used   avail %used Mounted on
+/dev/vg00/lvol3    10485760  471432 9936152    5% /
+/dev/vg00/lvol1    1835008  375232 1448440   21% /stand
+/dev/vg00/lvol8    20971520 1749944 19072024    8% /var
+/dev/vg00/lvol7    10485760 5113856 5330008   49% /usr
+/dev/vgusrsap/trans
+                   31457280 16795672 14547112   54% /usr/sap/trans
+/dev/vgusrsap/usrsap
+                   10485760 10443920   41536  100% /usr/sap/PHL
+/dev/vg00/lvol6    10485760 5610496 4837648   54% /tmp
+/dev/vgusrsap/sapmnt
+                   10223616 5630832 4556976   55% /sapmnt/PHL
+/dev/vg00/sapdump  104857600 47345844 53917305   47% /sapdump
+/dev/vgoracle/stage
+                   10485760 8146112 2321384   78% /oracle/stage
+/dev/vgoracle/client
+                   2097152  239408 1843240   11% /oracle/client
+/dev/vgoracle/PHL  10485760   21872 10382496    0% /oracle/PHL
+/dev/vgoracle/saptrace
+                   5242880 2367472 2855680   45% /oracle/PHL/saptrace
+/dev/vgoracle/sapreorg
+                   5242880   57720 5144656    1% /oracle/PHL/sapreorg
+/dev/vgdata5/data5 104595456 81990112 22428744   79% /oracle/PHL/sapdata5
+/dev/vgdata4/data4 104595456 72274408 32068544   69% /oracle/PHL/sapdata4
+/dev/vgdata3/data3 104595456 51270080 52908784   49% /oracle/PHL/sapdata3
+/dev/vgdata2/data2 104595456 92230144 12268712   88% /oracle/PHL/sapdata2
+/dev/vgdata1/data1 104595456 54258904 49943304   52% /oracle/PHL/sapdata1
+/dev/vgoracle/sapbackup
+                   2097152   19024 2062024    1% /oracle/PHL/sapbackup
+/dev/vglog/origlogB
+                   4980736  448235 4249226   10% /oracle/PHL/origlogB
+/dev/vglog/origlogA
+                   5242880  448299 4494926    9% /oracle/PHL/origlogA
+/dev/vgoraarch/oraarch
+                   52166656 1670932 47339875    3% /oracle/PHL/oraarch
+/dev/vglog/mirrlogB
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogB
+/dev/vglog/mirrlogA
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogA
+/dev/vgoracle/112_64
+                   10485760 7811984 2653376   75% /oracle/PHL/112_64
+/dev/vg00/lvol5    20971520 5540632 15310424   27% /opt
+/dev/vg00/lvol4    5242880   33448 5168832    1% /home
+bdf: /backupsap: I/O error
+htlprd:/>vgexport vgbkp
+vgexport: Volume group "vgbkp" is still active.
+vgexport: Couldn't export volume group "vgbkp".
+htlprd:/>vgchange -a n vgbkp
+vgchange: Couldn't deactivate volume group "vgbkp":
+Device busy
+htlprd:/>umount -f /backupsap
+usage: umount [-V] [-v] { special | directory }
+       umount [-F FStype] [-v] -a
+umount: return error 1.
+htlprd:/>ioscan -NfnC disk
+Class     I  H/W Path  Driver S/W State   H/W Type     Description
+===================================================================
+disk      1  64000/0xfa00/0x1   esdisk   CLAIMED     DEVICE       HP      LOGICAL VOLUME
+                      /dev/disk/disk1      /dev/rdisk/disk1
+                      /dev/disk/disk1_p1   /dev/rdisk/disk1_p1
+                      /dev/disk/disk1_p2   /dev/rdisk/disk1_p2
+                      /dev/disk/disk1_p3   /dev/rdisk/disk1_p3
+disk      3  64000/0xfa00/0x2   esdisk   CLAIMED     DEVICE       TEAC    DVD-ROM DW-224EV
+                      /dev/disk/disk3   /dev/rdisk/disk3
+disk      8  64000/0xfa00/0xc   esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk8   /dev/rdisk/disk8
+disk     13  64000/0xfa00/0xd   esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk13   /dev/rdisk/disk13
+disk     16  64000/0xfa00/0xe   esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk16   /dev/rdisk/disk16
+disk     22  64000/0xfa00/0xf   esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk22   /dev/rdisk/disk22
+disk     27  64000/0xfa00/0x10  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk27   /dev/rdisk/disk27
+disk     32  64000/0xfa00/0x11  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk32   /dev/rdisk/disk32
+disk     35  64000/0xfa00/0x12  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk35   /dev/rdisk/disk35
+disk     40  64000/0xfa00/0x13  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk40   /dev/rdisk/disk40
+disk     45  64000/0xfa00/0x14  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk45   /dev/rdisk/disk45
+disk     53  64000/0xfa00/0x15  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk53   /dev/rdisk/disk53
+htlprd:/>ioscan -NfnC disk
+Class     I  H/W Path  Driver S/W State   H/W Type     Description
+===================================================================
+disk      1  64000/0xfa00/0x1   esdisk   CLAIMED     DEVICE       HP      LOGICAL VOLUME
+                      /dev/disk/disk1      /dev/rdisk/disk1
+                      /dev/disk/disk1_p1   /dev/rdisk/disk1_p1
+                      /dev/disk/disk1_p2   /dev/rdisk/disk1_p2
+                      /dev/disk/disk1_p3   /dev/rdisk/disk1_p3
+disk      3  64000/0xfa00/0x2   esdisk   CLAIMED     DEVICE       TEAC    DVD-ROM DW-224EV
+                      /dev/disk/disk3   /dev/rdisk/disk3
+disk      8  64000/0xfa00/0xc   esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk8   /dev/rdisk/disk8
+disk     13  64000/0xfa00/0xd   esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk13   /dev/rdisk/disk13
+disk     16  64000/0xfa00/0xe   esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk16   /dev/rdisk/disk16
+disk     22  64000/0xfa00/0xf   esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk22   /dev/rdisk/disk22
+disk     27  64000/0xfa00/0x10  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk27   /dev/rdisk/disk27
+disk     32  64000/0xfa00/0x11  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk32   /dev/rdisk/disk32
+disk     35  64000/0xfa00/0x12  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk35   /dev/rdisk/disk35
+disk     40  64000/0xfa00/0x13  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk40   /dev/rdisk/disk40
+disk     45  64000/0xfa00/0x14  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk45   /dev/rdisk/disk45
+disk     53  64000/0xfa00/0x15  esdisk   CLAIMED     DEVICE       HP      HSV300
+                      /dev/disk/disk53   /dev/rdisk/disk53
+htlprd:/>bdf
+Filesystem          kbytes    used   avail %used Mounted on
+/dev/vg00/lvol3    10485760  471432 9936152    5% /
+/dev/vg00/lvol1    1835008  375232 1448440   21% /stand
+/dev/vg00/lvol8    20971520 1750768 19071192    8% /var
+/dev/vg00/lvol7    10485760 5113856 5330008   49% /usr
+/dev/vgusrsap/trans
+                   31457280 16795672 14547112   54% /usr/sap/trans
+/dev/vgusrsap/usrsap
+                   10485760 10443904   41552  100% /usr/sap/PHL
+/dev/vg00/lvol6    10485760 5610496 4837648   54% /tmp
+/dev/vgusrsap/sapmnt
+                   10223616 5630840 4556968   55% /sapmnt/PHL
+/dev/vg00/sapdump  104857600 47345844 53917305   47% /sapdump
+/dev/vgoracle/stage
+                   10485760 8146112 2321384   78% /oracle/stage
+/dev/vgoracle/client
+                   2097152  239408 1843240   11% /oracle/client
+/dev/vgoracle/PHL  10485760   21872 10382496    0% /oracle/PHL
+/dev/vgoracle/saptrace
+                   5242880 2367504 2855648   45% /oracle/PHL/saptrace
+/dev/vgoracle/sapreorg
+                   5242880   57720 5144656    1% /oracle/PHL/sapreorg
+/dev/vgdata5/data5 104595456 81990112 22428744   79% /oracle/PHL/sapdata5
+/dev/vgdata4/data4 104595456 72274408 32068544   69% /oracle/PHL/sapdata4
+/dev/vgdata3/data3 104595456 51270080 52908784   49% /oracle/PHL/sapdata3
+/dev/vgdata2/data2 104595456 92230144 12268712   88% /oracle/PHL/sapdata2
+/dev/vgdata1/data1 104595456 54258904 49943304   52% /oracle/PHL/sapdata1
+/dev/vgoracle/sapbackup
+                   2097152   19024 2062024    1% /oracle/PHL/sapbackup
+/dev/vglog/origlogB
+                   4980736  448235 4249226   10% /oracle/PHL/origlogB
+/dev/vglog/origlogA
+                   5242880  448299 4494926    9% /oracle/PHL/origlogA
+/dev/vgoraarch/oraarch
+                   52166656 1670932 47339875    3% /oracle/PHL/oraarch
+/dev/vglog/mirrlogB
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogB
+/dev/vglog/mirrlogA
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogA
+/dev/vgoracle/112_64
+                   10485760 7811984 2653376   75% /oracle/PHL/112_64
+/dev/vg00/lvol5    20971520 5540632 15310424   27% /opt
+/dev/vg00/lvol4    5242880   33448 5168832    1% /home
+bdf: /backupsap: I/O error
+htlprd:/>umount /backupsap
+htlprd:/>bdf
+Filesystem          kbytes    used   avail %used Mounted on
+/dev/vg00/lvol3    10485760  471432 9936152    5% /
+/dev/vg00/lvol1    1835008  375232 1448440   21% /stand
+/dev/vg00/lvol8    20971520 1750344 19071624    8% /var
+/dev/vg00/lvol7    10485760 5113856 5330008   49% /usr
+/dev/vgusrsap/trans
+                   31457280 16795672 14547112   54% /usr/sap/trans
+/dev/vgusrsap/usrsap
+                   10485760 10443904   41552  100% /usr/sap/PHL
+/dev/vg00/lvol6    10485760 5610496 4837648   54% /tmp
+/dev/vgusrsap/sapmnt
+                   10223616 5630840 4556968   55% /sapmnt/PHL
+/dev/vg00/sapdump  104857600 47345844 53917305   47% /sapdump
+/dev/vgoracle/stage
+                   10485760 8146112 2321384   78% /oracle/stage
+/dev/vgoracle/client
+                   2097152  239408 1843240   11% /oracle/client
+/dev/vgoracle/PHL  10485760   21872 10382496    0% /oracle/PHL
+/dev/vgoracle/saptrace
+                   5242880 2367504 2855648   45% /oracle/PHL/saptrace
+/dev/vgoracle/sapreorg
+                   5242880   57720 5144656    1% /oracle/PHL/sapreorg
+/dev/vgdata5/data5 104595456 81990112 22428744   79% /oracle/PHL/sapdata5
+/dev/vgdata4/data4 104595456 72274408 32068544   69% /oracle/PHL/sapdata4
+/dev/vgdata3/data3 104595456 51270080 52908784   49% /oracle/PHL/sapdata3
+/dev/vgdata2/data2 104595456 92230144 12268712   88% /oracle/PHL/sapdata2
+/dev/vgdata1/data1 104595456 54258904 49943304   52% /oracle/PHL/sapdata1
+/dev/vgoracle/sapbackup
+                   2097152   19024 2062024    1% /oracle/PHL/sapbackup
+/dev/vglog/origlogB
+                   4980736  448235 4249226   10% /oracle/PHL/origlogB
+/dev/vglog/origlogA
+                   5242880  448299 4494926    9% /oracle/PHL/origlogA
+/dev/vgoraarch/oraarch
+                   52166656 1670932 47339875    3% /oracle/PHL/oraarch
+/dev/vglog/mirrlogB
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogB
+/dev/vglog/mirrlogA
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogA
+/dev/vgoracle/112_64
+                   10485760 7811984 2653376   75% /oracle/PHL/112_64
+/dev/vg00/lvol5    20971520 5540632 15310424   27% /opt
+/dev/vg00/lvol4    5242880   33448 5168832    1% /home
+htlprd:/>vgexport vgbkp
+vgexport: Volume group "vgbkp" is still active.
+vgexport: Couldn't export volume group "vgbkp".
+htlprd:/>vgchange -a n vgbkp
+Volume group "vgbkp" has been successfully changed.
+htlprd:/>vgexport vgbkp
+vgexport: Volume group "vgbkp" has been successfully removed.
+htlprd:/>pvcreate /dev/rdisk/disk53
+pvcreate: The physical volume already belongs to a volume group
+htlprd:/>pvcreate -f /dev/rdisk/disk53
+Physical volume "/dev/rdisk/disk53" has been successfully created.
+htlprd:/>vgcreate -s 128 vgbkp /dev/disk/disk53
+Increased the number of physical extents per physical volume to 2799.
+Volume group "/dev/vgbkp" has been successfully created.
+Volume Group configuration for /dev/vgbkp has been saved in /etc/lvmconf/vgbkp.conf
+htlprd:/>lvcreate -l 2799 -n backupsap vgbkp
+Logical volume "/dev/vgbkp/backupsap" has been successfully created with
+character device "/dev/vgbkp/rbackupsap".
+Logical volume "/dev/vgbkp/backupsap" has been successfully extended.
+Volume Group configuration for /dev/vgbkp has been saved in /etc/lvmconf/vgbkp.conf
+htlprd:/>mkfs -F vxfs /dev/vgbkp/rbackupsap
+    version 7 layout
+    366870528 sectors, 366870528 blocks of size 1024, log size 65536 blocks
+    largefiles supported
+htlprd:/>mount -a
+mount: /dev/vg00/sapdump is already mounted on /sapdump
+mount: /dev/vgusrsap/sapmnt is already mounted on /sapmnt/PHL
+mount: /dev/vgoracle/PHL is already mounted on /oracle/PHL
+mount: /dev/vgdata5/data5 is already mounted on /oracle/PHL/sapdata5
+mount: /dev/vgdata4/data4 is already mounted on /oracle/PHL/sapdata4
+mount: /dev/vgdata3/data3 is already mounted on /oracle/PHL/sapdata3
+mount: /dev/vgdata2/data2 is already mounted on /oracle/PHL/sapdata2
+mount: /dev/vgdata1/data1 is already mounted on /oracle/PHL/sapdata1
+mount: /dev/vglog/origlogB is already mounted on /oracle/PHL/origlogB
+mount: /dev/vglog/origlogA is already mounted on /oracle/PHL/origlogA
+mount: /dev/vglog/mirrlogB is already mounted on /oracle/PHL/mirrlogB
+mount: /dev/vglog/mirrlogA is already mounted on /oracle/PHL/mirrlogA
+mount: /dev/vgoraarch/oraarch is already mounted on /oracle/PHL/oraarch
+mount: /dev/vgoracle/sapbackup is already mounted on /oracle/PHL/sapbackup
+mount: /dev/vgoracle/saptrace is already mounted on /oracle/PHL/saptrace
+mount: /dev/vgoracle/sapreorg is already mounted on /oracle/PHL/sapreorg
+mount: /dev/vgoracle/112_64 is already mounted on /oracle/PHL/112_64
+mount: /dev/vgoracle/stage is already mounted on /oracle/stage
+mount: /dev/vgoracle/client is already mounted on /oracle/client
+mount: /dev/vg00/lvol8 is already mounted on /var
+mount: /dev/vg00/lvol7 is already mounted on /usr
+mount: /dev/vgusrsap/usrsap is already mounted on /usr/sap/PHL
+mount: /dev/vgusrsap/trans is already mounted on /usr/sap/trans
+mount: /dev/vg00/lvol6 is already mounted on /tmp
+mount: /dev/vg00/lvol5 is already mounted on /opt
+mount: /dev/vg00/lvol4 is already mounted on /home
+mount: /dev/vg00/lvol1 is already mounted on /stand
+htlprd:/>bdf
+Filesystem          kbytes    used   avail %used Mounted on
+/dev/vg00/lvol3    10485760  471472 9936112    5% /
+/dev/vg00/lvol1    1835008  375232 1448440   21% /stand
+/dev/vg00/lvol8    20971520 1750048 19071920    8% /var
+/dev/vg00/lvol7    10485760 5113856 5330008   49% /usr
+/dev/vgusrsap/trans
+                   31457280 16795672 14547112   54% /usr/sap/trans
+/dev/vgusrsap/usrsap
+                   10485760 10443904   41552  100% /usr/sap/PHL
+/dev/vg00/lvol6    10485760 5610496 4837648   54% /tmp
+/dev/vgusrsap/sapmnt
+                   10223616 5630864 4556944   55% /sapmnt/PHL
+/dev/vg00/sapdump  104857600 47345844 53917305   47% /sapdump
+/dev/vgoracle/stage
+                   10485760 8146112 2321384   78% /oracle/stage
+/dev/vgoracle/client
+                   2097152  239408 1843240   11% /oracle/client
+/dev/vgoracle/PHL  10485760   21872 10382496    0% /oracle/PHL
+/dev/vgoracle/saptrace
+                   5242880 2367504 2855648   45% /oracle/PHL/saptrace
+/dev/vgoracle/sapreorg
+                   5242880   57720 5144656    1% /oracle/PHL/sapreorg
+/dev/vgdata5/data5 104595456 81990112 22428744   79% /oracle/PHL/sapdata5
+/dev/vgdata4/data4 104595456 72274408 32068544   69% /oracle/PHL/sapdata4
+/dev/vgdata3/data3 104595456 51270080 52908784   49% /oracle/PHL/sapdata3
+/dev/vgdata2/data2 104595456 92230144 12268712   88% /oracle/PHL/sapdata2
+/dev/vgdata1/data1 104595456 54258904 49943304   52% /oracle/PHL/sapdata1
+/dev/vgoracle/sapbackup
+                   2097152   19024 2062024    1% /oracle/PHL/sapbackup
+/dev/vglog/origlogB
+                   4980736  448235 4249226   10% /oracle/PHL/origlogB
+/dev/vglog/origlogA
+                   5242880  448299 4494926    9% /oracle/PHL/origlogA
+/dev/vgoraarch/oraarch
+                   52166656 1670932 47339875    3% /oracle/PHL/oraarch
+/dev/vglog/mirrlogB
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogB
+/dev/vglog/mirrlogA
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogA
+/dev/vgoracle/112_64
+                   10485760 7811984 2653376   75% /oracle/PHL/112_64
+/dev/vg00/lvol5    20971520 5540632 15310424   27% /opt
+/dev/vg00/lvol4    5242880   33448 5168832    1% /home
+/dev/vgbkp/backupsap
+                   366870528  156564 343794349    0% /backupsap
+htlprd:/>smh
+DISPLAY variable is not set. Starting the Text User Interface. Please wait...
+             HP-UX System Management Homepage (Text User Interface)
+                   SMH->Disks and File Systems->File Systems
+--------------------------------------------------------------------------------
+MountDirectory Type             Size         %Full     Mounted        Config
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<------------------------------------------------------------------- > SCROLL \/
+x-Exit smh     ESC-Back    v-Add VxFS   n-Add NFS
+ENTER-Select   h-Add HFS   c-Add CDFS   Ctrl o-Other Actions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+htlprd:/>
+htlprd:/>
+htlprd:/>bdf
+Filesystem          kbytes    used   avail %used Mounted on
+/dev/vg00/lvol3    10485760  471440 9936144    5% /
+/dev/vg00/lvol1    1835008  375232 1448440   21% /stand
+/dev/vg00/lvol8    20971520 1750168 19071808    8% /var
+/dev/vg00/lvol7    10485760 5113856 5330008   49% /usr
+/dev/vgusrsap/trans
+                   31457280 16795672 14547112   54% /usr/sap/trans
+/dev/vgusrsap/usrsap
+                   10485760 10443904   41552  100% /usr/sap/PHL
+/dev/vg00/lvol6    10485760 5610496 4837648   54% /tmp
+/dev/vgusrsap/sapmnt
+                   10223616 5630864 4556944   55% /sapmnt/PHL
+/dev/vg00/sapdump  104857600 47345844 53917305   47% /sapdump
+/dev/vgoracle/stage
+                   10485760 8146112 2321384   78% /oracle/stage
+/dev/vgoracle/client
+                   2097152  239408 1843240   11% /oracle/client
+/dev/vgoracle/PHL  10485760   21872 10382496    0% /oracle/PHL
+/dev/vgoracle/saptrace
+                   5242880 2367504 2855648   45% /oracle/PHL/saptrace
+/dev/vgoracle/sapreorg
+                   5242880   57720 5144656    1% /oracle/PHL/sapreorg
+/dev/vgdata5/data5 104595456 81990112 22428744   79% /oracle/PHL/sapdata5
+/dev/vgdata4/data4 104595456 72274408 32068544   69% /oracle/PHL/sapdata4
+/dev/vgdata3/data3 104595456 51270080 52908784   49% /oracle/PHL/sapdata3
+/dev/vgdata2/data2 104595456 92230144 12268712   88% /oracle/PHL/sapdata2
+/dev/vgdata1/data1 104595456 54258904 49943304   52% /oracle/PHL/sapdata1
+/dev/vgoracle/sapbackup
+                   2097152   19024 2062024    1% /oracle/PHL/sapbackup
+/dev/vglog/origlogB
+                   4980736  448235 4249226   10% /oracle/PHL/origlogB
+/dev/vglog/origlogA
+                   5242880  448299 4494926    9% /oracle/PHL/origlogA
+/dev/vgoraarch/oraarch
+                   52166656 1670932 47339875    3% /oracle/PHL/oraarch
+/dev/vglog/mirrlogB
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogB
+/dev/vglog/mirrlogA
+                   5242880  428379 4513602    9% /oracle/PHL/mirrlogA
+/dev/vgoracle/112_64
+                   10485760 7811984 2653376   75% /oracle/PHL/112_64
+/dev/vg00/lvol5    20971520 5540632 15310424   27% /opt
+/dev/vg00/lvol4    5242880   33448 5168832    1% /home
+/dev/vgbkp/backupsap
+                   366870528  156564 343794349    0% /backupsap
+htlprd:/>

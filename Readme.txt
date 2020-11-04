@@ -1,0 +1,1 @@
+Copy your MySQL dump, files and folder into this folder.

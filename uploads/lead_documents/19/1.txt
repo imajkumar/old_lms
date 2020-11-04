@@ -1,0 +1,17 @@
+Lead form 
+
+1- Name Removed in tagging while same name enter in box and  remove internal box - Location Box & Deler Name/ Contractor
+2- Lead tille edit till which location ?????
+3- Final Selection and Below - Project Manger 
+4- Aligment & selection & Below  - technical 
+5- Add & save 
+7- Lead carry forward 
+
+Item Requirment 
+
+Remove dulicate in all selection fileds ( Category Wattage etc) 
+Active in active 
+
+ 
+
+ 

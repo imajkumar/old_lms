@@ -1,0 +1,282 @@
+Wattage Name,Group Name
+1000W,Conventional Control Gear
+1000W,Conventional Flood Light
+1000W,Conventional-Magnetic Ballast
+100W,Conventional Industrial Light
+100W,Led Bay Light
+100W,Led Flood Light-Hw
+100W,Led Smart Street Light
+100W,Led Street Light-Hw
+10W,Conventional-Electronic Ballast
+10W,Led Batten
+10W,Led Bollard
+10W,Led Bulkhead
+10W,Led Channel
+10W,Led Downlighter
+10W,Led Street Light-Hw
+10W,Led Tube
+110W,Led Bay Light
+110W,Led Flood Light-Hw
+110W,Led Street Light-Hw
+11W,Led Lamp
+120W,Led Bay Light
+120W,Led Flood Light-Hw
+120W,Led Flood Light-Lw
+120W,Led Smart Street Light
+120W,Led Street Light-Hw
+120W,Led Street Light-Lw
+125W,Conventional Control Gear
+125W,Conventional-Hpmv Lamp
+125W,Conventional-Magnetic Ballast
+12W,Led Aviation Light
+12W,Led Downlighter
+12W,Led Solar Street Light
+12W,Led Street Light-Hw
+130W,Led Street Light-Hw
+135W,Led Flood Light-Hw
+135W,Led Street Light-Hw
+13W,Led Tube
+140W,Led Street Light-Hw
+14W,Conventional-T5 Lamp
+14W,T5 Lamp
+150W,Conventional Flood Light
+150W,Conventional Industrial Light
+150W,Conventional Street Light
+150W,Conventional-Hpsv Lamp
+150W,Conventional-Magnetic Ballast
+150W,Conventional-Mh Lamp
+150W,Led Bay Light
+150W,Led Flood Light-Hw
+150W,Led Flood Light-Lw
+150W,Led Smart Street Light
+150W,Led Street Light-Hw
+15W,Led Bollard
+15W,Led Bulkhead
+15W,Led Downlighter
+15W,Led Panel 1X1
+15W,Led Post Top
+15W,Led Solar Street Light
+15W,Led Street Light-Hw
+15W,Led Tube
+160W,Led Flood Light-Hw
+160W,Led Flood Light-Lw
+16W,Led Downlighter
+170W,Led Smart Street Light
+170W,Led Street Light-Hw
+180W,Led Flood Light-Hw
+180W,Led Street Light-Hw
+18W,Conventional-Electronic Ballast
+18W,Conventional-Magnetic Ballast
+18W,Led Batten
+18W,Led Channel
+18W,Led Downlighter
+18W,Led Lamp
+18W,Led Panel 1X1
+18W,Led Solar
+18W,Led Street Light-Hw
+18W,Led Tube
+200W,Led Bay Light
+200W,Led Flood Light-Hw
+200W,Led Flood Light-Lw
+200W,Led Smart Street Light
+200W,Led Street Light-Hw
+20W,Led Batten
+20W,Led Downlighter
+20W,Led Lamp
+20W,Led Linear Light
+20W,Led Street Light-Hw
+20W,Led Track Light
+20W,Led Tube
+210W,Led Street Light-Hw
+220W,Led Flood Light-Hw
+225W,Conventional Flood Light
+22W,Led Batten
+22W,Led Downlighter
+22W,Led Panel 1X1
+22W,Led Panel 1X4
+22W,Led Tube
+240W,Conventional Flood Light
+240W,Led Bay Light
+240W,Led Flood Light-Hw
+240W,Led Smart Flood Light-Hw
+240W,Led Street Light-Hw
+24W,Conventional Street Light
+24W,Conventional-Electronic Ballast
+24W,Conventional-T5 Lamp
+24W,Led Batten
+24W,Led Bay Light
+24W,Led Downlighter
+24W,Led Panel 1X1
+24W,Led Panel 2X2
+24W,Led Solar
+24W,Led Street Light-Hw
+24W,Led Tube
+24W,T5 Lamp
+250W,Conventional Control Gear
+250W,Conventional Flood Light
+250W,Conventional Industrial Light
+250W,Conventional Street Light
+250W,Conventional-Hpmv Lamp
+250W,Conventional-Hpsv Lamp
+250W,Conventional-Magnetic Ballast
+250W,Conventional-Mh Lamp
+250W,Led Bay Light
+250W,Led Flood Light-Hw
+250W,Led Flood Light-Lw
+250W,Led Street Light-Hw
+25W,Led Downlighter
+25W,Led Linear Light
+25W,Led Panel 2X2
+25W,Led Post Top
+25W,Led Street Light-Hw
+26W,Led Street Light-Hw
+28W,Conventional Industrial Light
+28W,Conventional Street Light
+28W,Conventional-Electronic Ballast
+28W,Conventional-T5 Lamp
+28W,Led Panel 2X2
+28W,T5 Lamp
+2X14W,Conventional-Electronic Ballast
+2X18W,Conventional-Electronic Ballast
+2X18W,Led Batten
+2X18W,Led Channel
+2X240W,Conventional Flood Light
+2X24W,Conventional Street Light
+2X24W,Conventional-Electronic Ballast
+2X250W,Conventional Flood Light
+2X28W,Conventional Commercial Light
+2X28W,Conventional Industrial Light
+2X28W,Conventional-Electronic Ballast
+2X36W,Conventional Commercial Light
+2X36W,Conventional Industrial Light
+2X36W,Conventional-Electronic Ballast
+2X400W,Conventional Control Gear
+300W,Led Bay Light
+300W,Led Flood Light-Hw
+30W,Led Downlighter
+30W,Led Flood Light-Hw
+30W,Led Panel 1X1
+30W,Led Panel 1X4
+30W,Led Panel 2X2
+30W,Led Post Top
+30W,Led Solar
+30W,Led Street Light-Hw
+30W,Led Street Light-Lw
+30W,Led Track Light
+30W,Led Well Glass
+320W,Led Bay Light
+32W,Led Panel 1X4
+33W,Led Panel 1X4
+350W,Led Flood Light-Hw
+35W,Led Post Top
+35W,Led Street Light-Hw
+35W,Led Well Glass
+36W,Conventional Industrial Light
+36W,Conventional Street Light
+36W,Conventional-Electronic Ballast
+36W,Led Batten
+36W,Led Clean Room
+36W,Led Downlighter
+36W,Led Linear Light
+36W,Led Panel 1X4
+36W,Led Panel 2X2
+36W,Led Street Light-Hw
+36W,Led Trunk Light
+36W,Led Well Glass
+38W,Led Well Glass
+39W,Led Panel 2X2
+3W,Led Bush Light
+3W,Led Downlighter
+3X36W,Conventional Commercial Light
+400W,Conventional Control Gear
+400W,Conventional Flood Light
+400W,Conventional Industrial Light
+400W,Conventional-Hpmv Lamp
+400W,Conventional-Hpsv Lamp
+400W,Conventional-Magnetic Ballast
+400W,Conventional-Mh Lamp
+400W,Led Bay Light
+400W,Led Flood Light-Hw
+40W,Conventional Accessories
+40W,Conventional-Magnetic Ballast
+40W,Led Batten
+40W,Led Bay Light
+40W,Led Downlighter
+40W,Led Flood Light-Hw
+40W,Led Linear Light
+40W,Led Panel 1X4
+40W,Led Panel 2X2
+40W,Led Post Top
+40W,Led Solar
+40W,Led Street Light-Hw
+40W,Led Trunk Light
+40W,Led Well Glass
+42W,Led Batten
+42W,Led Panel 2X2
+42W,Led Well Glass
+45W,Led Flood Light-Hw
+45W,Led Post Top
+45W,Led Street Light-Hw
+45W,Led Well Glass
+48W,Led Panel 1X4
+48W,Led Panel 2X2
+48W,Led Street Light-Hw
+4X18W,Led Bay Light
+500W,Led Flood Light-Hw
+50W,Led Bay Light
+50W,Led Downlighter
+50W,Led Flood Light-Hw
+50W,Led Post Top
+50W,Led Street Light-Hw
+50W,Led Street Light-Lw
+5KW,Led Solar Street Light
+5W,Led Batten
+5W,Led Bulb
+5W,Led Exit Light
+60W,Led Bay Light
+60W,Led Canopy Light
+60W,Led Clean Room
+60W,Led Flood Light-Hw
+60W,Led Post Top
+60W,Led Street Light-Hw
+60W,Led Well Glass
+65W,Led Flood Light-Hw
+65W,Led Street Light-Hw
+6W,Led Aviation Light
+6W,Led Bush Light
+6W,Led Downlighter
+6W,Led Spike Light
+7.5W,Led Downlighter
+70-400W,Conventional Accessories
+70W,Conventional Industrial Light
+70W,Conventional Street Light
+70W,Conventional-Hpsv Lamp
+70W,Conventional-Magnetic Ballast
+70W,Conventional-Mh Lamp
+70W,Led Bay Light
+70W,Led Downlighter
+70W,Led Flood Light-Hw
+70W,Led Post Top
+70W,Led Well Glass
+72W,Led Street Light-Hw
+75W,Led Bay Light
+75W,Led Street Light-Hw
+7W,Led Bulb
+80W,Conventional-Hpmv Lamp
+80W,Conventional-Magnetic Ballast
+80W,Led Bay Light
+80W,Led Canopy Light
+80W,Led Clean Room
+80W,Led Flood Light-Hw
+80W,Led Street Light-Hw
+85W,Led Street Light-Hw
+8W,Led Batten
+8W,Led Downlighter
+90W,Led Bay Light
+90W,Led Flood Light-Hw
+90W,Led Post Top
+90W,Led Street Light-Hw
+9W,Led Bulb
+9W,Led Downlighter
+9W,Led Panel 1X1
+9W,Led Tube
