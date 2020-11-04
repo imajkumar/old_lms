@@ -49,9 +49,9 @@ class Clients_model extends CRM_Model
         return $this->db->get('tblcontacts')->row();
 
     }
-	
-	
-	
+
+
+
 	public function get_details($id = '', $where = array())
     {
         $this->db->select(implode(',', prefixed_table_fields_array('tblclients')) . ','.get_sql_select_client_company());
@@ -67,24 +67,24 @@ class Clients_model extends CRM_Model
             if (get_option('company_requires_vat_number_field') == 0) {
                 $client->vat = null;
             }
-			
+
 			$this->db->where(array('tblcontacts.userid'=> $id, 'tblcontacts.active' => '1'));
             $contact = $this->db->get('tblcontacts')->result_array();
-			
-			
-			
+
+
+
 			$data = array();
-		
+
 			$data[] = array('details'=>$client,'contact'=>$contact);
-			
+
             return $data;
         }
 
         $this->db->order_by('company', 'asc');
 		$result = $this->db->get('tblclients')->result_array();
-		
-		
-		
+
+
+
         return $data;
     }
 
@@ -154,11 +154,11 @@ class Clients_model extends CRM_Model
 
         $data = $this->check_zero_columns($data);
 
-        /* 
+        /*
 
         if ($contact_data['addedby'] > 1) {
             $data['addedfrom'] = $contact_data['addedby'];
-			
+
 			$this->db->where('staffid', $contact_data['addedby']);
 			$staff = $this->db->get('tblstaff')->row();
 			if ($staff) {
@@ -166,20 +166,20 @@ class Clients_model extends CRM_Model
 			} else {
 				$data['reportingto'] = 0;
 			}
-        }else{ 
+        }else{
 			$data['addedfrom'] = get_staff_user_id();
         } */
-		
-		
+
+
         $data['addedfrom'] = get_staff_user_id();
-		
+
 		$this->load->model('leads_model');
 		$reportingmanager = $this->leads_model->get_reporting_to(get_staff_user_id());
 		$reportingmanager = array_map('trim',explode(',',$reportingmanager));
 		$reportingmanager = array_unique($reportingmanager);
 		$reportingmanager = implode(', ', $reportingmanager);
 		$reportingmanager = trim($reportingmanager,",");
-		
+
 		$data['reportingto'] = $reportingmanager;
         $hook_data  = do_action('before_client_added', array('data'=>$data));
         $data = $hook_data['data'];
@@ -232,26 +232,26 @@ class Clients_model extends CRM_Model
 
             logActivity('New Customer Created [' . $log . ']', $isStaff);
 			logActivity($userid,'New Customer Created [Remark: ' . $data['remark'] . ']');
-			
+
 			$this->load->model('emails_model');
 			$merge_fields = array();
 			$merge_fields = array_merge($merge_fields, get_client_contact_merge_fields($userid, $contact_id, $password_before_hash));
-			
+
 			$staff_email = $this->staff_model->get_staff_email();
-			
+
 			$reporting_manager = $this->leads_model->get_reporting_to(get_staff_user_id());
 			$reporting_manager = array_map('trim',explode(',',$reporting_manager));
 			$reporting_manager = array_unique($reporting_manager);
 			$reporting_manager = implode(', ', $reporting_manager);
 			$reporting_manager = array_map('trim',explode(',',$reporting_manager));
 			$emailIDS = $this->leads_model->getEmailIDReportingTo('email', 'tblstaff', 'staffid', $reporting_manager);
-			
+
 			$cc = array();
 			foreach ($emailIDS as $emails) {
 				array_push($cc,$emails['email']);
 			}
 			$this->emails_model->send_email_template('new-client-registered-to-admin', $staff_email, $merge_fields,'',$cc);
-		
+
 
         }
 
@@ -301,10 +301,10 @@ class Clients_model extends CRM_Model
 		/* $data['datetime']  = date('Y-m-d H:s:i'); */
 		/* echo $id;
 	 	 print_r($this->input->post());
-				exit;  
+				exit;
 				 */
 		$remark = $data['remark'].': '.get_staff_full_name();
-		
+
 		$client_update = array(
                     'address' => $data['address'],
                     'state' => $data['state'],
@@ -325,14 +325,14 @@ class Clients_model extends CRM_Model
 		$data_remark = $this->db->get_where('tblclients', array('userid' => $id))->row()->remark;
 		$printArray = explode(":", $data_remark);
 		$remove_name = $printArray[0];
-		
+
 		if($remove_name != $data['remark']){
 			logActivity($id,'Remark Updated: ['.$data['remark'].']');
 		}
-		
+
 		$data_customer_ = $this->db->get_where('tblclients', array('userid' => $id))->row();
 		$log_change = '';
-		
+
 		if($data_customer_->company != $data['company']){
 			$log_change .= '-> Company updated from "'.$data_customer_->company. '" to ' .$data['company'].'<br>';
 		}
@@ -342,11 +342,11 @@ class Clients_model extends CRM_Model
 		if($data_customer_->phonenumber != $data['phonenumber']){
 			$log_change .= '-> Phonenumber updated from "'.$data_customer_->phonenumber. '" to '.$data['phonenumber'].'<br>';
 		}
-		
+
 		if($data_customer_->zip != $data['zip']){
 			$log_change .= '-> Pincode updated from "'.$data_customer_->zip. '" to '. $data['zip'].'<br>';
 		}
-		
+
 		if($data_customer_->valid_from != $data['valid_from']){
 			$log_change .= '-> Valid from Date updated from "'.$data_customer_->valid_from. '" to '. $data['valid_from'].'<br>';
 		}
@@ -370,45 +370,45 @@ class Clients_model extends CRM_Model
 			}else if($data['approve']==3){
 				$log_change .= '-> Customer Rejected'.'<br>';
 			}
-			
+
 		}
-		logActivity($id,'Customer Info Updated: <br>'.$log_change); 
+		logActivity($id,'Customer Info Updated: <br>'.$log_change);
 	    $this->db->where('userid', $id);
         $this->db->update('tblclients', $client_update);
 
 		if($data['approve']==1){
 				$subject = "Halonix LMS - Customer Approved";
 				$message = "<html>	<head>		<title>HTML email</title>	</head>	<body><h3>	Customer is approved by :" . get_staff_full_name()."</h3>";
-				
+
 				$message .= "<br><br>Customer : " . $data['company'];
 				$message .= "<br/><br>Reason : " . $data['remark'];
-				
+
 				$message .= "</body></html>";
-				
+
 				$staff_email = $this->staff_model->get_staff_email_byid($data['addedfrom']);
 				$reporting_manager = $this->leads_model->get_reporting_to($data['addedfrom']);
 				$reporting_manager = array_map('trim',explode(',',$reporting_manager));
 				$reporting_manager = array_unique($reporting_manager);
 				$reporting_manager = implode(', ', $reporting_manager);
 				$reporting_manager = array_map('trim',explode(',',$reporting_manager));
-				
+
 				$emailIDS = $this->leads_model->getEmailIDReportingTo('email', 'tblstaff', 'staffid', $reporting_manager);
 				$cc = array();
 				foreach ($emailIDS as $emails) {
 					array_push($cc,$emails['email']);
 				}
-				
+
 				$this->sent_smtp__email($staff_email, $subject, $message,$cc);
-				
+
 			}else if($data['approve']==2){
 				$subject = "Halonix LMS - Customer Resubmit";
 				$message = "<html>	<head>		<title>HTML email</title>	</head>	<body><h3>	Some details are missing/Wrong Please recheck and submit again.</h3>";
-				
+
 				$message .= "<br><br>Customer : " . $data['company'];
 				$message .= "<br/><br>Reason : " . $data['remark'];
-				
+
 				$message .= "</body></html>";
-				
+
 				$staff_email = $this->staff_model->get_staff_email_byid($data['addedfrom']);
 				$reporting_manager = $this->leads_model->get_reporting_to($data['addedfrom']);
 				$reporting_manager = array_map('trim',explode(',',$reporting_manager));
@@ -422,16 +422,16 @@ class Clients_model extends CRM_Model
 
 				}
 				$this->sent_smtp__email($staff_email, $subject, $message,$cc);
-				
+
 			}else if($data['approve']==3){
 				$subject = "Halonix LMS - Customer Rejected";
 				$message = "<html>	<head>		<title>HTML email</title>	</head>	<body><h3>	Customer is rejected by :" . get_staff_full_name()."</h3>";
-				
+
 				$message .= "<br><br>Customer : " . $data['company'];
 				$message .= "<br><br/>Reason : " . $data['remark'];
-				
+
 				$message .= "</body></html>";
-				
+
 				$staff_email = $this->staff_model->get_staff_email_byid($data['addedfrom']);
 				$reporting_manager = $this->leads_model->get_reporting_to($data['addedfrom']);
 				$reporting_manager = array_map('trim',explode(',',$reporting_manager));
@@ -439,43 +439,43 @@ class Clients_model extends CRM_Model
 				$reporting_manager = implode(', ', $reporting_manager);
 				$reporting_manager = array_map('trim',explode(',',$reporting_manager));
 				$emailIDS = $this->leads_model->getEmailIDReportingTo('email', 'tblstaff', 'staffid', $reporting_manager);
-				
+
 				$cc = array();
 				foreach ($emailIDS as $emails) {
 					array_push($cc,$emails['email']);
 
 				}
 				$this->sent_smtp__email($staff_email, $subject, $message,$cc);
-				
+
 			}else if($data['approve']==0){
 				$subject = "Halonix LMS - Customer Resubmited";
 				$message = "<html>	<head>		<title>HTML email</title>	</head>	<body><h3>Customer rechecked by :" . get_staff_full_name().",please approved.</h3>";
-				
+
 				$message .= "<br><br>Customer : " . $data['company'];
 				$message .= "<br><br/>Remark : " . $data['remark'];
-				
+
 				$message .= "</body></html>";
-				
+
 				$nsm_staff_email = $this->staff_model->get_nsm_email();
-				
+
 				$reporting_manager = $this->leads_model->get_reporting_to($data['addedfrom']);
 				$reporting_manager = array_map('trim',explode(',',$reporting_manager));
 				$reporting_manager = array_unique($reporting_manager);
 				$reporting_manager = implode(', ', $reporting_manager);
 				$reporting_manager = array_map('trim',explode(',',$reporting_manager));
 				$emailIDS = $this->leads_model->getEmailIDReportingTo('email', 'tblstaff', 'staffid', $reporting_manager);
-				
+
 				$cc = array();
 				foreach ($emailIDS as $emails) {
 					array_push($cc,$emails['email']);
 
 				}
 				$this->sent_smtp__email($nsm_staff_email, $subject, $message,$cc);
-				
+
 			}
-            
-			
-		
+
+
+
         if ($this->db->affected_rows() > 0) {
             $affectedRows++;
         }
@@ -490,7 +490,7 @@ class Clients_model extends CRM_Model
 
         if ($affectedRows > 0) {
             do_action('after_client_updated', $id);
-			
+
             return true;
         }
 
@@ -773,25 +773,25 @@ class Clients_model extends CRM_Model
                 $this->load->model('emails_model');
                 $merge_fields = array();
                 $merge_fields = array_merge($merge_fields, get_client_contact_merge_fields($data['userid'], $contact_id, $password_before_hash));
-				
+
 				$staff_email = $this->staff_model->get_staff_email();
-			
+
 				$reporting_manager = $this->leads_model->get_reporting_to(get_staff_user_id());
 				$reporting_manager = array_map('trim',explode(',',$reporting_manager));
 				$reporting_manager = array_unique($reporting_manager);
 				$reporting_manager = implode(', ', $reporting_manager);
 				$reporting_manager = array_map('trim',explode(',',$reporting_manager));
 				$emailIDS = $this->leads_model->getEmailIDReportingTo('email', 'tblstaff', 'staffid', $reporting_manager);
-				
+
 				$cc = array();
 				foreach ($emailIDS as $emails) {
-					array_push($cc,$emails['email']); 
+					array_push($cc,$emails['email']);
 				}
 				$this->emails_model->send_email_template('new-client-created', $staff_email, $merge_fields,'',$cc);
-		
-		
+
+
 			/* } */
-			
+
 
             if ($send_set_password_email) {
                 //$this->authentication_model->set_password_email($data['email'], 0);
@@ -1222,13 +1222,13 @@ class Clients_model extends CRM_Model
             'active' => $status,
         ));
         if ($this->db->affected_rows() > 0) {
-			
+
 			$this->db->where('id', $id);
 			$userid =  $this->db->get('tblcontacts')->row()->userid;
-			
+
 			$this->db->where('id', $id);
 			$firstname =  $this->db->get('tblcontacts')->row()->firstname;
-			
+
 			if($status=='1')
 			{
 				logActivity($userid, 'Contact Status Changed [Contact Name: ' . $firstname . ' - Changed as Active ]');
@@ -1237,13 +1237,13 @@ class Clients_model extends CRM_Model
 				logActivity($userid, 'Contact Status Changed [Contact Name: ' . $firstname . ' - Changed as Inactive ]');
 
 			}
-            
+
             return true;
         }
 
         return false;
     }
-	
+
 	public function change_contact_is_primary($id, $status)
     {
         $hook_data['id']     = $id;
@@ -1251,16 +1251,16 @@ class Clients_model extends CRM_Model
         $hook_data           = do_action('change_contact_is_primary', $hook_data);
         $status              = $hook_data['status'];
         $id                  = $hook_data['id'];
-        
+
 		$this->db->where('id', $id);
         $userid = $this->db->get('tblcontacts')->row()->userid;
-		
+
 		$this->db->where('userid', $userid);
         $this->db->update('tblcontacts', array(
             'is_primary' => '0',
         ));
-        
-		
+
+
 		$this->db->where('id', $id);
         $this->db->update('tblcontacts', array(
             'is_primary' => $status,
@@ -1269,10 +1269,10 @@ class Clients_model extends CRM_Model
         if ($this->db->affected_rows() > 0) {
             $this->db->where('id', $id);
 			$userid =  $this->db->get('tblcontacts')->row()->userid;
-			
+
 			$this->db->where('id', $id);
 			$firstname =  $this->db->get('tblcontacts')->row()->firstname;
-			
+
 			if($status=='1')
 			{
 				logActivity($userid, 'Contact Primary Changed [Contact Name: ' . $firstname . ' - Changed as Primary ]');
@@ -1281,22 +1281,22 @@ class Clients_model extends CRM_Model
 				logActivity($userid, 'Contact Primary Changed [Contact Name: ' . $firstname . ' - Changed as Secondary ]');
 
 			}
-           
+
             return true;
         }
 
         return false;
     }
 
-	public function GetRow($keyword) {        
+	public function GetRow($keyword) {
         $this->db->like("name", $keyword);
         return $this->db->get('tblcustomersgroups')->result_array();
     }
-	public function GetRowcompany($keyword) {        
+	public function GetRowcompany($keyword) {
         $this->db->like("company", $keyword);
         return $this->db->get('tblclients')->result_array();
     }
-	
+
     /**
      * @param  integer ID
      * @param  integer Status ID
@@ -1384,6 +1384,7 @@ class Clients_model extends CRM_Model
      */
     public function get_groups($id = '')
     {
+
         return $this->client_groups_model->get_groups($id);
     }
 
@@ -1524,36 +1525,36 @@ class Clients_model extends CRM_Model
 
         return $data;
     }
-	
-	
+
+
 	public function count_active_client($id = '')
     {
 		if(get_staff_role() == 0){
 			$query = $this->db->query('SELECT count(userid) AS num_of_record FROM tblclients WHERE active LIKE "%'.$id.'%"');
-		}			
+		}
 		else if(get_staff_role() > 8){
 			$query = $this->db->query('SELECT count(userid) AS num_of_record FROM tblclients WHERE active LIKE "%'.$id.'%"');
-		}			
+		}
 		else if (get_staff_role() == 1) {
 			$query = $this->db->query("SELECT count(userid) AS num_of_record FROM tblclients WHERE addedfrom='" . get_staff_user_id() . "' AND active = '".$id."'");
 		}
-		else if(get_staff_role() == 7 || get_staff_role() == 4) 
+		else if(get_staff_role() == 7 || get_staff_role() == 4)
 		{
 			$query = $this->db->query("SELECT count(userid) AS num_of_record FROM tblclients WHERE state IN('". get_staff_state_id() ."') AND active = '".$id."'");
-			
+
 		}
-		else if(get_staff_role() != 0 ||  get_staff_role() != 4 || get_staff_role() != 7 || get_staff_role() != 1)  
+		else if(get_staff_role() != 0 ||  get_staff_role() != 4 || get_staff_role() != 7 || get_staff_role() != 1)
 		{
 			$query = $this->db->query('SELECT count(userid) AS num_of_record FROM tblclients WHERE (CONCAT(",", tblclients.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblclients.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%"  OR tblclients.addedfrom IN('. get_staff_user_id() .')) AND active LIKE "%'.$id.'%"');
 		}
-		
+
        return $query->row();
-	  
+
 
     }
 	public function count_client($id)
     {
-		
+
 		if(get_staff_role() == 0){
 			$query = $this->db->query('SELECT count(userid) AS num_of_record FROM tblclients WHERE approve LIKE "%'.$id.'%"');
 		}
@@ -1563,91 +1564,91 @@ class Clients_model extends CRM_Model
 		else if (get_staff_role() == 1) {
 			$query = $this->db->query("SELECT count(userid) AS num_of_record FROM tblclients WHERE addedfrom='" . get_staff_user_id() . "' AND approve Like '%".$id."%'");
 		}
-		else if(get_staff_role() == 7 || get_staff_role() == 4 ) 
+		else if(get_staff_role() == 7 || get_staff_role() == 4 )
 		{
 			$query = $this->db->query("SELECT count(userid) AS num_of_record FROM tblclients WHERE state IN('". get_staff_state_id() ."') AND approve LIKE '%".$id."%'");
-			
+
 		}
-		else if(get_staff_role() != 0 ||  get_staff_role() != 4 || get_staff_role() != 7 || get_staff_role() != 1 || get_staff_role() <= 8) 
+		else if(get_staff_role() != 0 ||  get_staff_role() != 4 || get_staff_role() != 7 || get_staff_role() != 1 || get_staff_role() <= 8)
 			{
 				$query = $this->db->query('SELECT count(userid) AS num_of_record FROM tblclients WHERE ( CONCAT(",", tblclients.reportingto, ",") LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblclients.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%"  OR tblclients.addedfrom IN('. get_staff_user_id() .') ) AND approve LIKE "%'.$id.'%"');
-			
+
 			}
        return $query->row();
-	  
+
 
     }
-	
+
 	public function sent_smtp__email($to_email, $subject, $message,$cc='')
     {
-        
+
         // Simulate fake template to be parsed
         $template           = new StdClass();
         $template->message  = get_option('email_header') . ' ' . $message . get_option('email_footer');
         $template->fromname = get_option('companyname');
         $template->subject  = $subject;
-        
+
         $template = parse_email_template($template);
-        
+
         do_action('before_send_test_smtp_email');
-        
+
         $this->email->initialize();
-        
+
         $this->email->set_newline("\r\n");
-        
+
         $this->email->from(get_option('smtp_email'), $template->fromname);
-        
+
         $this->email->to($to_email);
-		
+
         $systemBCC = get_option('bcc_emails');
 		$this->email->bcc($systemBCC);
-		
+
 		 if(isset($cc)){
 			$cc = array_filter(array_unique($cc));
 			$cc = implode(', ', $cc);
 			$ccmail = "'".$cc."'";
             $this->email->cc($cc);
-			
+
         }
-		
+
         $this->email->subject($template->subject);
         $this->email->message($template->message);
         $this->email->send(true);
-        
-        
+
+
     }
-     
+
     public function sent_smtp_bcc_email($subject, $message)
     {
-        
+
         // Simulate fake template to be parsed
         $template           = new StdClass();
         $template->message  = get_option('email_header') . ' ' . $message . get_option('email_footer');
         $template->fromname = get_option('companyname');
         $template->subject  = $subject;
-        
+
         $template = parse_email_template($template);
-        
+
         do_action('before_send_test_smtp_email');
-        
+
         $this->email->initialize();
-        
+
         $this->email->set_newline("\r\n");
-        
+
         $this->email->from(get_option('smtp_email'), $template->fromname);
-        
+
         //$this->email->to($to_email);
-        
+
         $systemBCC = get_option('bcc_emails');
         $this->email->to($systemBCC);
-        
+
         $this->email->subject($template->subject);
         $this->email->message($template->message);
         $this->email->send(true);
-        
-        
+
+
     }
-	
+
 	public function no_of_cust_bymonth($month,$staffid)
 	{
 		$query = $this->db->query("SELECT userid FROM tblclients where addedfrom='".$staffid."' AND datetime LIKE '".$month."-%'");
@@ -1659,18 +1660,18 @@ class Clients_model extends CRM_Model
 		$query = $this->db->query("SELECT userid FROM tblclients where addedfrom='".$staffid."' AND datetime LIKE '".$date."%'");
 		return $query->num_rows();
 	}
-	
+
 	public function getlist_client_data($id = '')
     {
-		
+
         $this->db->select('*');
-        
+
 		$this->db->where('addedfrom', $id);
 		return $this->db->get('tblclients')->result_array();
-           
-        
+
+
     }
-	
-	
-	
+
+
+
 }

@@ -1,8 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-@ini_set('memory_limit', '256M');
-@ini_set('max_execution_time', 360);
+@ini_set('memory_limit', '512M');
+@ini_set('max_execution_time', 3600);
 
 class Utilities extends Admin_controller
 {

@@ -32,17 +32,277 @@ class Cron_model extends CRM_Model
 		$this->load->model('clients_model');
         $this->load->model('leads_model');
     }
+    public function run_cron_winloss_v1($manually = false){
+      $table_winloss = '';
+                      $table_winloss .='<table class="table border" border="1px" style="text-align:center;" >
+
+                          <tbody>';
+
+
+                $topRecord = '10';
+
+                $winloss = '7,6';
+
+                $report_months  = $this->input->post('report_months');
+
+                $from_date  = $this->input->post('report_from');
+                $to_date  = $this->input->post('report_to');
+
+                $regionid = 'all_region';
+                $sql =  'SELECT region FROM tblstaff WHERE staffid="'.get_staff_user_id().'"';
+                $region_staff = $this->db->query($sql)->row()->region;
+
+                if($this->input->post('from-region')=='pan_india'){
+                  $lead_details = $this->leads_model->winloss_month_zone($report_months,$from_date,$to_date,$regionid,$winloss,$topRecord);
+                }else{
+                  $lead_details = $this->leads_model->winloss_month_zone($report_months,$from_date,$to_date,$region_staff,$winloss,$topRecord);
+                }
+
+
+          $table_winloss .='<br>
+              <tr align="center" style="border: 1px solid #000 !important;">
+                <th colspan="7" bgcolor="#f58a4c">All Regions</th>
+              </tr>
+               <tr bgcolor="#f4b084"  style="border: 1px solid #000 !important;">
+                <td width="60px">Lead Id</td>
+                <td width="60px">Date</td>
+                <td width="100px">Remark</td>
+                <td width="">Client Name</td>
+                <td width="120px">Opportunity Value<br>(In Lac)</td>
+                <td width="120px">Order Value<br>(In Lac)</td>
+                <td width="">Competitor</td>
+                <td width="240px">Reason</td>
+                </tr>';
+
+
+
+                $opportunity_total = 0;
+                $ordervalue_total = 0;
+                foreach($lead_details as $res4)  {
+
+
+                                  $competition = '';
+
+                  if($res4['competition'] !='')
+                    $competition .= $res4['competition'];
+                  if($res4['competition1'] !='')
+                    $competition .= ', '.$res4['competition1'];
+                  if($res4['competition2'] !='')
+                    $competition .= ', '.$res4['competition2'];
+                  if($res4['competition3'] !='')
+                    $competition .= ', '.$res4['competition3'];
+                  if($res4['competition4'] !='')
+                    $competition .= ', '.$res4['competition4'];
+                  $opportunity_total = $opportunity_total + $res4['opportunity'];
+                  $ordervalue_total = $ordervalue_total + $res4['project_total_amount'];
+
+                if($res4["status"]==7){
+                  $table_winloss .='<tr bgcolor="#ffe699"  style="border: 1px solid #000 !important;">';
+                }else{
+                  $table_winloss .='<tr bgcolor="#c6e0b4"  style="border: 1px solid #000 !important;">';
+                }
+            $table_winloss .='<td><p>'.$res4["id"] .'</p></td>
+                    <td><p>'.$res4["dateassigned"] .'</p></td>
+
+                    <td><p>'.$this->leads_model->get_status_name($res4["status"]).'</p></td>
+                    <td><p>'.$this->leads_model->get_customer_name($res4["customer_name"]).'</p></td>
+                    <td><p>'.$res4["opportunity"].'</p></td>';
+                    if($res4["project_total_amount"] != ""){
+            $table_winloss .='<td><p>'.$res4["project_total_amount"] .'</p></td>';
+                    }else{
+            $table_winloss .='<td><p>'.$res4["project_total_amount"] .'</p></td>';
+                    }
+            $table_winloss .='<td><p>'. $competition .'</p></td>';
+
+            if($res4["status_closed_won"] !=""){
+
+            $table_winloss .='<td><p>'. $this->leads_model->get_status_won_loss($res4["status_closed_won"]).'</p></td>';
+            }else{
+              $table_winloss .='<td><p>No remark added</p></td>';
+            }
+            $table_winloss .='</tr>';
+                     $i++;
+
+                                }
+
+                 $table_winloss .='<tr bgcolor="#f4b084"  style="border: 1px solid #000 !important;">
+                    <td colspan="3"><p><strong>Total</strong></p></td>
+                    <td><p><strong>'.$opportunity_total.'</strong></p></td>
+                    <td><p><strong>'. $ordervalue_total.'</strong></p></td>
+                    <td colspan="2"><p></p></td>
+
+                    </tr>
+            </table>';
+
+
+
+      //echo $tbl_data;
+      $lastdate = date('d-F-Y', strtotime("-1 days"));
+      $subject = "Win/Loss Report - ".$lastdate;
+      $to = get_option('winloss_daily_reports_to');
+      $daily_status_reports_cc = get_option('winloss_daily_reports_cc');
+
+      $array = explode(',', $daily_status_reports_cc);
+      $commaCC = "".implode( " , ", $array). "";
+      $ccc = explode(',', $commaCC);;
+
+      $newcc=array();
+      foreach($ccc as $value){
+        //if(substr($value, strpos($value, "@") + 1) == 'halonix.co.in')
+        //{
+          $newcc[]=$value;
+        //}
+      }
+    //  $to='ajayit2020@gmail.com';
+
+      $this->sent_smtp__email($to, $subject, $table_winloss,$newcc);
+
+       //redirect(admin_url('settings?group=reportemail'));
+
+    }
+    public function run_cron_winloss($manually = false)
+    {
+
+      $table_winloss = '';
+                      $table_winloss .='<table class="table border" border="1px" style="text-align:center;" >
+
+                          <tbody>';
+
+
+                if($this->input->post('from-top') !=''){
+                  $topRecord = $this->input->post('from-top');
+                }else{
+                  $topRecord = '10';
+                }
+
+                if($this->input->post('from-stage') !=''){
+                  $winloss = $this->input->post('from-stage');
+                }else{
+                  $winloss = '7,6';
+                }
+                $report_months  = $this->input->post('report_months');
+                $from_date  = $this->input->post('report_from');
+                $to_date  = $this->input->post('report_to');
+
+                $regionid = $this->input->post('region_id');
+                $sql =  'SELECT region FROM tblstaff WHERE staffid="'.get_staff_user_id().'"';
+                $region_staff = $this->db->query($sql)->row()->region;
+
+                if($this->input->post('from-region')=='pan_india'){
+                  $lead_details = $this->leads_model->winloss_month_zone($report_months,$from_date,$to_date,$regionid,$winloss,$topRecord);
+                }else{
+                  $lead_details = $this->leads_model->winloss_month_zone($report_months,$from_date,$to_date,$region_staff,$winloss,$topRecord);
+                }
+
+
+          $table_winloss .='<br>
+              <tr align="center" style="border: 1px solid #000 !important;">
+                <th colspan="7" bgcolor="#f58a4c">All Regions</th>
+              </tr>
+               <tr bgcolor="#f4b084"  style="border: 1px solid #000 !important;">
+                <td width="60px">Lead Id</td>
+                <td width="100px">Remark</td>
+                <td width="">Client Name</td>
+                <td width="120px">Opportunity Value<br>(In Lac)</td>
+                <td width="120px">Order Value<br>(In Lac)</td>
+                <td width="">Competitor</td>
+                <td width="240px">Reason</td>
+                </tr>';
+
+
+
+                $opportunity_total = 0;
+                $ordervalue_total = 0;
+                foreach($lead_details as $res4)
+                              {
+                                  $competition = '';
+
+                  if($res4['competition'] !='')
+                    $competition .= $res4['competition'];
+                  if($res4['competition1'] !='')
+                    $competition .= ', '.$res4['competition1'];
+                  if($res4['competition2'] !='')
+                    $competition .= ', '.$res4['competition2'];
+                  if($res4['competition3'] !='')
+                    $competition .= ', '.$res4['competition3'];
+                  if($res4['competition4'] !='')
+                    $competition .= ', '.$res4['competition4'];
+                  $opportunity_total = $opportunity_total + $res4['opportunity'];
+                  $ordervalue_total = $ordervalue_total + $res4['project_total_amount'];
+
+                if($res4["status"]==7){
+                  $table_winloss .='<tr bgcolor="#ffe699"  style="border: 1px solid #000 !important;">';
+                }else{
+                  $table_winloss .='<tr bgcolor="#c6e0b4"  style="border: 1px solid #000 !important;">';
+                }
+            $table_winloss .='<td><p>'.$res4["id"] .'</p></td>
+                    <td><p>'.$this->leads_model->get_status_name($res4["status"]).'</p></td>
+                    <td><p>'.$this->leads_model->get_customer_name($res4["customer_name"]).'</p></td>
+                    <td><p>'.$res4["opportunity"].'</p></td>';
+                    if($res4["project_total_amount"] != ""){
+            $table_winloss .='<td><p>'.$res4["project_total_amount"] .'</p></td>';
+                    }else{
+            $table_winloss .='<td><p>'.$res4["project_total_amount"] .'</p></td>';
+                    }
+            $table_winloss .='<td><p>'. $competition .'</p></td>';
+
+            if($res4["status_closed_won"] !=""){
+
+            $table_winloss .='<td><p>'. $this->leads_model->get_status_won_loss($res4["status_closed_won"]).'</p></td>';
+            }else{
+              $table_winloss .='<td><p>No remark added</p></td>';
+            }
+            $table_winloss .='</tr>';
+                     $i++;
+
+                                }
+
+                 $table_winloss .='<tr bgcolor="#f4b084"  style="border: 1px solid #000 !important;">
+                    <td colspan="3"><p><strong>Total</strong></p></td>
+                    <td><p><strong>'.$opportunity_total.'</strong></p></td>
+                    <td><p><strong>'. $ordervalue_total.'</strong></p></td>
+                    <td colspan="2"><p></p></td>
+
+                    </tr>
+            </table>';
+
+
+
+      //echo $tbl_data;
+      $lastdate = date('d-F-Y', strtotime("-1 days"));
+      $subject = "Win/Loss Report - ".$lastdate;
+      $to = get_option('winloss_daily_reports_to');
+      $daily_status_reports_cc = get_option('winloss_daily_reports_cc');
+
+      $array = explode(',', $daily_status_reports_cc);
+      $commaCC = "".implode( " , ", $array). "";
+      $ccc = explode(',', $commaCC);;
+
+      $newcc=array();
+      foreach($ccc as $value){
+        //if(substr($value, strpos($value, "@") + 1) == 'halonix.co.in')
+        //{
+          $newcc[]=$value;
+        //}
+      }
+
+      $this->sent_smtp__email($to, $subject, $table_winloss,$newcc);
+
+       redirect(admin_url('settings?group=reportemail'));
+    }
 
     public function run($manually = false)
     {
         update_option('last_cron_run', time());
 
         if ($this->can_cron_run()) {
+			  @ini_set('memory_limit', '-1');
+
             if ($manually == true) {
                 $this->manually = true;
 
                 if (!extension_loaded('suhosin')) {
-                    @ini_set('memory_limit', '-1');
+                   // @ini_set('memory_limit', '-1');
                 }
 
                 logActivity('Cron Invoked Manually');
@@ -81,8 +341,8 @@ class Cron_model extends CRM_Model
             }
         }
     }
-	
-	//==================== Lead Stage Report ===========//	
+
+	//==================== Lead Stage Report ===========//
 	 public function run_stage($manually = false){
 		$from_month = date('Y').'-04-30';
 			$to_month = date('Y-m').'-15';
@@ -94,7 +354,7 @@ class Cron_model extends CRM_Model
 			$leadstage = $this->db->get('tblleadsstatus')->result_array();
 
 			$table_content_stage = "<table class='table border' border='1'>";
-			$table_content_stage .= '<tr bgcolor="#f47b34">	
+			$table_content_stage .= '<tr bgcolor="#f47b34">
 				<th style="text-align:center;width:150px;"  rowspan="2" colspan="2"><strong>Stages<br>/<br>Month</strong></th>
 				<th style="text-align:center;"  colspan="2"><strong>Total</strong></th>
 				<th style="text-align:center;"  colspan="2"><strong>Identified</strong></th>
@@ -105,7 +365,7 @@ class Cron_model extends CRM_Model
 				<th style="text-align:center;"  colspan="2"><strong>Closed Won</strong></th>
 				<th style="text-align:center;"  colspan="2"><strong>Closed Lost</strong></th>
 			  </tr>
-			  <tr bgcolor="#f47b34">											
+			  <tr bgcolor="#f47b34">
 				<th style="text-align:center;width:100px" ><strong>Lead(Nos.)</strong></th>
 				<th style="text-align:center;width:100px" ><strong>Lead Value(In Lakhs)</strong></th>
 				<th style="text-align:center;width:100px" ><strong>Lead(Nos.)</strong></th>
@@ -131,7 +391,7 @@ class Cron_model extends CRM_Model
 				$close_won_lead_total = 0;
 				$close_lost_lead_total = 0;
 				$total_no_lead_total = 0;
-			
+
 
 				$identified_lead_total_value = 0;
 				$qualified_lead_total_value = 0;
@@ -141,14 +401,14 @@ class Cron_model extends CRM_Model
 				$close_won_lead_total_value = 0;
 				$close_lost_lead_total_value = 0;
 				$total_no_lead_total_value = 0;
-				
+
 				$currmonth = date('m');
 				$rowspan = ($currmonth -4)+ 1;
 				for($m=$currmonth; $m>=4; $m--){
-				
+
 				$month = date('Y-m', mktime(0, 0, 0, $m, 1));
 
-				
+
 				$identified_lead_total = $identified_lead_total + $this->leads_model->no_of_leads_by_stage_month_staff($month,$leadstage[0]['id'],$staff_id,'');
 
 				$qualified_lead_total = $qualified_lead_total + $this->leads_model->no_of_leads_by_stage_month_staff($month,$leadstage[1]['id'],$staff_id,'');
@@ -181,10 +441,10 @@ class Cron_model extends CRM_Model
 
 				$total_no_lead_total_value = $total_no_lead_total_value + $this->leads_model->total_value_of_leads_by_stage_month_staff($month,$staff_id,'');
 
-				
+
 
 			}
-				$table_content_stage .= '<tr bgcolor="#c6e0b4">											
+				$table_content_stage .= '<tr bgcolor="#c6e0b4">
 
 				<th colspan="2" style="text-align:center;"><strong>Total</strong></th>
 				<th style="text-align:center;"><strong>'.$total_no_lead_total.'</strong></th>
@@ -219,17 +479,17 @@ class Cron_model extends CRM_Model
 
 				<th style="text-align:center;"><strong>'.$close_lost_lead_total_value.'</strong></th>
 
-				
+
 			  </tr>';
-				
-				
+
+
 				$currmonth = date('m');
 				$rowspan = ($currmonth -4)+ 1;
 				for($m=$currmonth; $m>=4; $m--){
-				
+
 				$month = date('Y-m', mktime(0, 0, 0, $m, 1));
 
-				
+
 				$identified_lead_total = $identified_lead_total + $this->leads_model->no_of_leads_by_stage_month_staff($month,$leadstage[0]['id'],$staff_id,'');
 
 				$qualified_lead_total = $qualified_lead_total + $this->leads_model->no_of_leads_by_stage_month_staff($month,$leadstage[1]['id'],$staff_id,'');
@@ -300,20 +560,20 @@ class Cron_model extends CRM_Model
 
 				 $table_content_stage .= "<td style='text-align:center;'>".$this->leads_model->value_of_leads_by_stage_month_staff($month,$leadstage[6]['id'],$staff_id,'')."</td>";
 
-				 
+
 				 $table_content_stage .= '</tr>';
 
 			}
 
-			
+
 			$table_content_stage .='
 					<tr align="center">
 					 <th colspan="18" style="padding-top:8px"></th>
-					 
+
 				  </tr>';
 			$regions = $this->db->get('tblregion')->result_array();
-			foreach ($regions as $region) {	
-			$table_content_stage .= '<tr bgcolor="#f47b34">	
+			foreach ($regions as $region) {
+			$table_content_stage .= '<tr bgcolor="#f47b34">
 				<th style="text-align:center;width:150px;"  rowspan="2" colspan="2"><strong>Stages<br>/<br>Month</strong></th>
 				<th style="text-align:center;"  colspan="2"><strong>Total</strong></th>
 				<th style="text-align:center;"  colspan="2"><strong>Identified</strong></th>
@@ -324,7 +584,7 @@ class Cron_model extends CRM_Model
 				<th style="text-align:center;"  colspan="2"><strong>Closed Won</strong></th>
 				<th style="text-align:center;"  colspan="2"><strong>Closed Lost</strong></th>
 			  </tr>
-			  <tr bgcolor="#f47b34">											
+			  <tr bgcolor="#f47b34">
 				<th style="text-align:center;width:100px" ><strong>Lead(Nos.)</strong></th>
 				<th style="text-align:center;width:100px" ><strong>Lead Value(In Lakhs)</strong></th>
 				<th style="text-align:center;width:100px" ><strong>Lead(Nos.)</strong></th>
@@ -350,7 +610,7 @@ class Cron_model extends CRM_Model
 				$close_won_lead_total = 0;
 				$close_lost_lead_total = 0;
 				$total_no_lead_total = 0;
-			
+
 
 				$identified_lead_total_value = 0;
 				$qualified_lead_total_value = 0;
@@ -360,13 +620,13 @@ class Cron_model extends CRM_Model
 				$close_won_lead_total_value = 0;
 				$close_lost_lead_total_value = 0;
 				$total_no_lead_total_value = 0;
-						
-			
+
+
 			for($m=$currmonth; $m>=4; $m--){
 
 				$month = date('Y-m', mktime(0, 0, 0, $m, 1));
 
-				
+
 				$identified_lead_total = $identified_lead_total + $this->leads_model->no_of_leads_by_stage_month_staff($month,$leadstage[0]['id'],$staff_id,$region["id"]);
 
 				$qualified_lead_total = $qualified_lead_total + $this->leads_model->no_of_leads_by_stage_month_staff($month,$leadstage[1]['id'],$staff_id,$region["id"]);
@@ -402,15 +662,15 @@ class Cron_model extends CRM_Model
 
 			}
 			if($region['region']=='North'){
-			$table_content_stage .='<tr bgcolor="#00ffff">';				
+			$table_content_stage .='<tr bgcolor="#00ffff">';
 							}else if($region['region']=='East'){
-			$table_content_stage .='<tr bgcolor="#ff6699">';					
+			$table_content_stage .='<tr bgcolor="#ff6699">';
 							}else if($region['region']=='South'){
-			$table_content_stage .='<tr bgcolor="#cc66ff">';					
+			$table_content_stage .='<tr bgcolor="#cc66ff">';
 							}else if($region['region']=='West'){
-			$table_content_stage .='<tr bgcolor="#66ffcc">';					
+			$table_content_stage .='<tr bgcolor="#66ffcc">';
 							}
-			
+
 			$table_content_stage .=	'<th colspan="2" style="text-align:center;"><strong>'.$region["region"].' Total</strong></th>
 				<th style="text-align:center;"><strong>'.$total_no_lead_total.'</strong></th>
 
@@ -444,10 +704,10 @@ class Cron_model extends CRM_Model
 
 				<th style="text-align:center;"><strong>'.$close_lost_lead_total_value.'</strong></th>
 
-				
+
 			  </tr>';
 
-				
+
 			for($m=$currmonth; $m>=4; $m--){
 
 				$month = date('Y-m', mktime(0, 0, 0, $m, 1));
@@ -489,7 +749,7 @@ class Cron_model extends CRM_Model
 				$total_no_lead_total_value = $total_no_lead_total_value + $this->leads_model->total_value_of_leads_by_stage_month_staff($month,$staff_id,$region["id"]);
 
 				$table_content_stage .= "<td style='width:150px;text-align:center;'><strong>".date('M, Y', strtotime($month))."</strong></td>";
-				
+
 				 $table_content_stage .= "<td style='text-align:center;'>".$this->leads_model->total_no_of_leads_by_stage_month_staff($month,$staff_id,$region["id"])."</td>";
 
 				 $table_content_stage .= "<td style='text-align:center;'>".$this->leads_model->total_value_of_leads_by_stage_month_staff($month,$staff_id,$region["id"])."</td>";
@@ -522,7 +782,7 @@ class Cron_model extends CRM_Model
 
 				 $table_content_stage .= "<td style='text-align:center;'>".$this->leads_model->value_of_leads_by_stage_month_staff($month,$leadstage[6]['id'],$staff_id,$region["id"])."</td>";
 
-				 
+
 				 $table_content_stage .= '</tr>';
 
 			}
@@ -530,31 +790,31 @@ class Cron_model extends CRM_Model
 			$table_content_stage .='
 					<tr align="center">
 					 <th colspan="18" style="padding-top:8px"></th>
-					 
+
 				  </tr>';
 
-		}	
-			
+		}
+
 		$table_content_stage .= "</table>";
-		
-		
+
+
 		//echo $table_content_stage;
-		
+
 		$lastdate = date('Y-m-d', strtotime("-1 days"));
 		$subject = "Lead Stage Report - ".$lastdate;
-		
+
 		$to = get_option('stages_wise_daily_reports_to');
 		$stages_wise_daily_reports_cc = get_option('stages_wise_daily_reports_cc');
-		
+
 		$array = explode(',', $stages_wise_daily_reports_cc);
 		$commaCC = "".implode( " , ", $array). "";
 		$ccc = explode(',', $commaCC);;
-		
+
 		$newcc=array();
 		foreach($ccc as $value){
-			
+
 				$newcc[]=$value;
-			
+
 		}
 		$this->sent_smtp__email($to, $subject, $table_content_stage,$newcc);
 
@@ -572,7 +832,7 @@ class Cron_model extends CRM_Model
 			$leadstage = $this->db->get('tblleadsstatus')->result_array();
 
 			$table_content_stage = "<table class='table border' border='1'>";
-			$table_content_stage .= '<tr>	
+			$table_content_stage .= '<tr>
 				<th style="text-align:center;width:150px;" bgcolor="#f47b34" rowspan="2" colspan="2"><strong>Stages<br>/<br>Month</strong></th>
 				<th style="text-align:center;" bgcolor="#f47b34" colspan="2"><strong>Identified</strong></th>
 				<th style="text-align:center;" bgcolor="#f47b34" colspan="2"><strong>Qualified</strong></th>
@@ -583,7 +843,7 @@ class Cron_model extends CRM_Model
 				<th style="text-align:center;" bgcolor="#f47b34" colspan="2"><strong>Closed Lost</strong></th>
 				<th style="text-align:center;" bgcolor="#f47b34" colspan="2"><strong>Total</strong></th>
 			  </tr>
-			  <tr>											
+			  <tr>
 				<th style="text-align:center;width:100px" bgcolor="#f47b34"><strong>Lead(Nos.)</strong></th>
 				<th style="text-align:center;width:100px" bgcolor="#f47b34"><strong>Lead Value(In Lakhs)</strong></th>
 				<th style="text-align:center;width:100px" bgcolor="#f47b34"><strong>Lead(Nos.)</strong></th>
@@ -609,7 +869,7 @@ class Cron_model extends CRM_Model
 				$close_won_lead_total = 0;
 				$close_lost_lead_total = 0;
 				$total_no_lead_total = 0;
-			
+
 
 				$identified_lead_total_value = 0;
 				$qualified_lead_total_value = 0;
@@ -619,14 +879,14 @@ class Cron_model extends CRM_Model
 				$close_won_lead_total_value = 0;
 				$close_lost_lead_total_value = 0;
 				$total_no_lead_total_value = 0;
-				
+
 				$currmonth = date('m');
 				$rowspan = ($currmonth -4)+ 1;
 				for($m=$currmonth; $m>=4; $m--){
-				
+
 				$month = date('Y-m', mktime(0, 0, 0, $m, 1));
 
-				
+
 				$identified_lead_total = $identified_lead_total + $this->leads_model->no_of_leads_by_stage_month_staff($month,$leadstage[0]['id'],$staff_id,'');
 
 				$qualified_lead_total = $qualified_lead_total + $this->leads_model->no_of_leads_by_stage_month_staff($month,$leadstage[1]['id'],$staff_id,'');
@@ -659,11 +919,11 @@ class Cron_model extends CRM_Model
 
 				$total_no_lead_total_value = $total_no_lead_total_value + $this->leads_model->total_value_of_leads_by_stage_month_staff($month,$staff_id,'');
 
-				
+
 
 			}
 
-			$table_content_stage .= '<tr>											
+			$table_content_stage .= '<tr>
 
 				<th colspan="2" style="text-align:center;" bgcolor="#56ff63"><strong>Lead Total</strong></th>
 
@@ -703,10 +963,10 @@ class Cron_model extends CRM_Model
 			$table_content_stage .='
 					<tr align="center">
 					 <th colspan="18"></th>
-					 
+
 				  </tr>';
 			$regions = $this->db->get('tblregion')->result_array();
-			foreach ($regions as $region) {	
+			foreach ($regions as $region) {
 				$identified_lead_total = 0;
 				$qualified_lead_total = 0;
 				$alignment_lead_total = 0;
@@ -715,7 +975,7 @@ class Cron_model extends CRM_Model
 				$close_won_lead_total = 0;
 				$close_lost_lead_total = 0;
 				$total_no_lead_total = 0;
-			
+
 
 				$identified_lead_total_value = 0;
 				$qualified_lead_total_value = 0;
@@ -725,11 +985,11 @@ class Cron_model extends CRM_Model
 				$close_won_lead_total_value = 0;
 				$close_lost_lead_total_value = 0;
 				$total_no_lead_total_value = 0;
-						
+
 			$table_content_stage .= '<tr align="center">
 										<th colspan="18" bgcolor="#f47b34">'.$region["region"].'</th>
 									</tr>';
-									
+
 			for($m=$currmonth; $m>=4; $m--){
 
 				$month = date('Y-m', mktime(0, 0, 0, $m, 1));
@@ -808,7 +1068,7 @@ class Cron_model extends CRM_Model
 
 			}
 
-			$table_content_stage .= '<tr>											
+			$table_content_stage .= '<tr>
 
 				<th colspan="2" style="text-align:center;" bgcolor="#56ff63"><strong>'.$region["region"].' Total</strong></th>
 
@@ -846,43 +1106,43 @@ class Cron_model extends CRM_Model
 
 			  </tr>';
 
-				}	
+				}
 
 		$table_content_stage .= "</table>";
-		
-		
+
+
 		//echo $table_content_stage;
-		
+
 		$lastdate = date('Y-m-d', strtotime("-1 days"));
 		$subject = "Lead Stage Report - ".$lastdate;
-		
+
 		$to = get_option('stages_wise_daily_reports_to');
 		$stages_wise_daily_reports_cc = get_option('stages_wise_daily_reports_cc');
-		
+
 		$array = explode(',', $stages_wise_daily_reports_cc);
 		$commaCC = "".implode( " , ", $array). "";
 		$ccc = explode(',', $commaCC);;
-		
+
 		$newcc=array();
 		foreach($ccc as $value){
 			//if(substr($value, strpos($value, "@") + 1) == 'halonix.co.in')
-			//{ 
+			//{
 				$newcc[]=$value;
-			// } 
+			// }
 		}
 		$this->sent_smtp__email($to, $subject, $table_content_stage,$newcc);
-		
+
 		redirect(admin_url('settings?group=reportemail'));
 	} */
-	
-	//================ Stage Summary Report ==========//	
+
+	//================ Stage Summary Report ==========//
 	public function run_stagesummary($manually = false)
 	{
-	   
+
 		$curr_month = date('Y-m');
 		//$curr_month = '2019-09';
-		
-		if ( date('m') > 6 ) {
+
+		if ( date('m') > 3 ) {
 			$year = date('Y') + 1;
 		}
 		else {
@@ -890,20 +1150,20 @@ class Cron_model extends CRM_Model
 		}
 		$fromyear = ($year-1);
 		$toyear = $year;
-		
+
 		$fromyearmonth = $fromyear.'-04';
 		$toyearmonth = $year.'-03';
-		
-		
-		
+
+
+
 		$this->db->order_by("id", "asc");
 		$leadstage = $this->db->get('tblleadsstatus')->result_array();
-			
+
 		$tbl_data = '<table class="table border" border="1" style="font-size:13px;text-align:center;font-weight: bold;"><tbody>
 			<tr align="center">
 						<th colspan="20" style="background:#f58a4c">All Regions</th>
-					</tr>	
-			 <tr>	
+					</tr>
+			 <tr>
 				<th style="text-align:center;width:250px;" bgcolor="#f4b084" rowspan="2" colspan="2" width="150"><strong>Stages</strong></th>
 				<th style="text-align:center;" bgcolor="#f4b084" colspan="2"><strong>Total</strong></th>
 				<th style="text-align:center;" bgcolor="#f4b084" colspan="2"><strong>Identified</strong></th>
@@ -915,7 +1175,7 @@ class Cron_model extends CRM_Model
 				<th style="text-align:center;" bgcolor="#f4b084" colspan="2"><strong>Closed Lost</strong></th>
 				<th style="text-align:center;" bgcolor="#f4b084" colspan="2"><strong>Open</strong></th>
 			  </tr>
-			  <tr>											
+			  <tr>
 				<th style="text-align:center;width:100px" bgcolor="#f4b084"><strong>Lead<br>(Nos.)</strong></th>
 				<th style="text-align:center;width:100px" bgcolor="#f4b084"><strong>Lead Value(In Lakhs)</strong></th>
 				<th style="text-align:center;width:100px" bgcolor="#f4b084"><strong>Lead<br>(Nos.)</strong></th>
@@ -940,29 +1200,29 @@ class Cron_model extends CRM_Model
 		$mtd_finalselection_lead = 0; $mtd_finalselection_lead_value = 0; $mtd_finalcontract_lead = 0;
 		$mtd_finalcontract_lead_value = 0;	$mtd_closewon_lead = 0;	$mtd_closewon_lead_value = 0;	$mtd_closeloss_lead = 0;
 		$mtd_closeloss_lead_value = 0;
-			
+
 		$mtd_stage_total_lead = 0;	$mtd_stage_total_lead_value = 0;	$mtd_stage_identified_lead = 0;			$mtd_stage_identified_lead_value = 0;	$mtd_stage_qualified_lead = 0;	$mtd_stage_qualified_lead_value = 0;		$mtd_stage_alignment_lead = 0;	$mtd_stage_alignment_lead_value = 0;	$mtd_stage_finalselection_lead = 0;
 		$mtd_stage_finalselection_lead_value = 0; $mtd_stage_finalcontract_lead = 0; $mtd_stage_finalcontract_lead_value = 0;
 		$mtd_stage_closewon_lead = 0; $mtd_stage_closewon_lead_value = 0; $mtd_stage_closeloss_lead = 0;
 		$mtd_stage_closeloss_lead_value = 0;
-		
+
 		$itd_total_lead = 0; $itd_total_lead_value = 0; $itd_closewon_lead = 0; $itd_closewon_lead_value = 0;$itd_closeloss_lead = 0; $itd_closeloss_lead_value = 0;
-		
+
 		$regions = $this->db->get('tblregion')->result_array();
 		foreach ($regions as $region) {
-			
+
 			$mtd_total_lead = $mtd_total_lead + $this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region['id']);
 			$mtd_total_lead_value = $mtd_total_lead_value + $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region['id']);
-			
+
 			$itd_total_lead = $itd_total_lead + $this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region['id']);
 			$itd_total_lead_value = $itd_total_lead_value + $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region['id']);
-			
+
 			$itd_closewon_lead = $itd_closewon_lead + $this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[5]['id'],$region['id']);
 			$itd_closewon_lead_value = $itd_closewon_lead_value + $this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[5]['id'],$region['id']);
 			$itd_closeloss_lead = $itd_closeloss_lead + $this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[6]['id'],$region['id']);
 			$itd_closeloss_lead_value = $itd_closeloss_lead_value + $this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[6]['id'],$region['id']);
-			
-			
+
+
 			$mtd_stage_identified_lead = $mtd_stage_identified_lead + $this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[0]['id'],$region['id']);
 			$mtd_stage_identified_lead_value = $mtd_stage_identified_lead_value + $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[0]['id'],$region['id']);
 			$mtd_stage_qualified_lead = $mtd_stage_qualified_lead + $this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[1]['id'],$region['id']);
@@ -977,18 +1237,18 @@ class Cron_model extends CRM_Model
 			$mtd_closewon_lead_value = $mtd_closewon_lead_value + $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region['id']);
 			$mtd_closeloss_lead = $mtd_closeloss_lead + $this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region['id']);
 			$mtd_closeloss_lead_value = $mtd_closeloss_lead_value + $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region['id']);
-			
-			
+
+
 		}
-		
-		
-		$tbl_data .='<tr bgcolor="#c6e0b4">	
+
+
+		$tbl_data .='<tr bgcolor="#c6e0b4">
 						<th rowspan="3" style="text-align:center;width:120px;">Value</th>
 						<th style="text-align:center;width:160px;" ><strong>MTD('.date('M-y', strtotime($curr_month)).')</strong></th>
-						
+
 						<th style="text-align:center;" ><strong>'.$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','').'</strong></th>
 						<th style="text-align:center;" ><strong>'.$this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','').'</strong></th>
-						
+
 						<th style="text-align:center;" ><strong>'.$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[0]['id'],'').'</strong></th>
 						<th style="text-align:center;" ><strong>'.$this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[0]['id'],'').'</strong></th>
 						<th style="text-align:center;" ><strong>'.$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[1]['id'],'').'</strong></th>
@@ -1003,17 +1263,17 @@ class Cron_model extends CRM_Model
 						<th style="text-align:center;background:#9ccc7c;" ><strong>'.$this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],'').'</strong></th>
 						<th style="text-align:center;background:#9ccc7c;" ><strong>'.$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],'').'</strong></th>
 						<th style="text-align:center;background:#9ccc7c;" ><strong>'.$this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],'').'</strong></th>
-						
+
 						<th style="text-align:center;background:#9ccc7c;" ><strong>'. ($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','')- ($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],'') + $this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],''))).'</strong></th>
-						
+
 						<th style="text-align:center;background:#9ccc7c;" ><strong>'.($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','') -($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],'') + $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],''))).'</strong></th>
-						
+
 					 </tr>';
-		$tbl_data .='<tr bgcolor="#c6e0b4">											
+		$tbl_data .='<tr bgcolor="#c6e0b4">
 						<th style="text-align:center;width:160px;" ><strong>YTD('.date('y', strtotime($fromyearmonth)).'-'.date('y', strtotime($toyearmonth)).')</strong></th>
 						<th style="text-align:center;" ><strong>'.$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','').'</strong></th>
 						<th style="text-align:center;" ><strong>'.$this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','').'</strong></th>
-						
+
 						<th style="text-align:center;" ><strong>'.$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[0]['id'],'').'</strong></th>
 						<th style="text-align:center;" ><strong>'.$this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[0]['id'],'').'</strong></th>
 						<th style="text-align:center;" ><strong>'.$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[1]['id'],'').'</strong></th>
@@ -1029,15 +1289,15 @@ class Cron_model extends CRM_Model
 						<th style="text-align:center;background:#9ccc7c;" ><strong>'.$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],'').'</strong></th>
 						<th style="text-align:center;background:#9ccc7c;" ><strong>'.$this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],'').'</strong></th>
 						<th style="text-align:center;background:#9ccc7c;" ><strong>'.($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','') - ($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],'') + $this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],''))).'</strong></th>
-						
+
 						<th style="text-align:center;background:#9ccc7c;" ><strong>'.( $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','') - ( $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],'') + $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],''))).'</strong></th>
-						
+
 					 </tr>';
-		$tbl_data .='<tr bgcolor="#c6e0b4">											
+		$tbl_data .='<tr bgcolor="#c6e0b4">
 						<th style="text-align:center;width:160px" ><strong>ITD(May-19)</strong></th>
 						<th style="text-align:center;" ><strong>'.$this->leads_model->itd_no_of_leads_by_stage_month_staff('','').'</strong></th>
 						<th style="text-align:center;" ><strong>'.$this->leads_model->itd_value_of_leads_by_stage_month_staff('','').'</strong></th>
-						
+
 						<th style="text-align:center;" ><strong>'.$this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[0]['id'],'').'</strong></th>
 						<th style="text-align:center;" ><strong>'.$this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[0]['id'],'').'</strong></th>
 						<th style="text-align:center;" ><strong>'.$this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[1]['id'],'').'</strong></th>
@@ -1052,138 +1312,138 @@ class Cron_model extends CRM_Model
 						<th style="text-align:center;background:#9ccc7c;" ><strong>'.$this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[5]['id'],'').'</strong></th>
 						<th style="text-align:center;background:#9ccc7c;" ><strong>'.$this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[6]['id'],'').'</strong></th>
 						<th style="text-align:center;background:#9ccc7c;" ><strong>'.$this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[6]['id'],'').'</strong></th>
-						
+
 						<th style="text-align:center;background:#9ccc7c;" ><strong>'.( $this->leads_model->itd_no_of_leads_by_stage_month_staff('','') - ($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[5]['id'],'') + $this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[6]['id'],'')) ).'</strong></th>
-						
+
 						<th style="text-align:center;background:#9ccc7c;" ><strong>'.($this->leads_model->itd_value_of_leads_by_stage_month_staff('','') - ($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[5]['id'],'') + $this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[6]['id'],''))).'</strong></th>
-						
+
 					 </tr>
 					 <tr align="center">
 						<th colspan="20" style="padding-top:5px;"></th>
 					</tr>';
 					$mtd_pipline_no = ($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100) + ($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100);
-							
+
 							$mtd_pipline_value = ($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100) + ($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100);
-							
+
 			$tbl_data .='<tr bgcolor="#ffe699" style="font-style: italic;">
 						<th rowspan="3">Stage Wise %</th>
 						<td ><strong>MTD('.date('M-y', strtotime($curr_month)).') </strong></td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','') / $this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','') *100),0) .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','') / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round((($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[0]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"]))*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round((($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[0]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"]))*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round((($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[1]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"]))*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round((($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[1]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"]))*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round((($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[2]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"]))*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round((($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[2]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"]))*100),0 ).' %</td>
-						
+
 						<td style="text-align:center;">'. round((($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[3]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"]))*100 ),0).' %</td>
 						<td style="text-align:center;">'. round((($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[3]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"]))*100),0).' %</td>
-						
+
 						<td style="text-align:center;">'. round((($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[4]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"]))*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round((($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[4]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"]))*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round((($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"]))*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'. round((($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"]))*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round((($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"]))*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'. round((($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"]))*100),0) .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'. round((100 - $mtd_pipline_no),0) .'%</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round((100 - $mtd_pipline_value),0) .'%</td>
 					</tr>';
-					
+
 					$ytd_pipline_no = ($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"]) / $this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100) + ($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"]) / $this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100);
-							
+
 					$ytd_pipline_value = ($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100) + ($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100);
-							
-							
+
+
 			$tbl_data	.='<tr bgcolor="#ffe699" style="font-style: italic;">
-						<td ><strong>YTD('.date('y', strtotime($fromyearmonth)).'-'.date('y', strtotime($toyearmonth)).')</strong></td>						
+						<td ><strong>YTD('.date('y', strtotime($fromyearmonth)).'-'.date('y', strtotime($toyearmonth)).')</strong></td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','') / $this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','') *100),0) .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','') / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[0]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[0]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[1]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[1]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[2]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[2]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100),0 ).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[3]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100 ),0).' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[3]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100),0).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[4]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[4]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100),0) .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'.round((100 - $ytd_pipline_no),0).'%</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'.round((100 - $ytd_pipline_value),0).'%</td>
 					</tr>';
 					$itd_pipline_no = ($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])*100 ) + ($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])*100 );
-							
+
 					$itd_pipline_value = ($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100) + ($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100);
-							
+
 		$tbl_data	.='<tr bgcolor="#ffe699" style="font-style: italic;">
 						<td ><strong>ITD(May-19)</strong></td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff('','')/$this->leads_model->itd_no_of_leads_by_stage_month_staff('','') *100),0).' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff('','') / $this->leads_model->itd_value_of_leads_by_stage_month_staff('','') *100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[0]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[0]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[1]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[1]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[2]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[2]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100),0 ).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[3]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"]) *100),0).' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[3]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100),0).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[4]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"]) *100),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[4]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round((100 - $itd_pipline_no),0) .'%</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'.  round((100 - $itd_pipline_value),0) .'%</td>
-						
+
 					</tr>
 					';
-		
+
 		$regions = $this->db->get('tblregion')->result_array();
 		foreach ($regions as $region) {
 		$tbl_data .='<tr align="center">
 						<th colspan="20"><br></th>
-					</tr>';	
+					</tr>';
 		$tbl_data .='<tr align="center">';
 						if($region['region']=='North'){
-			$tbl_data .='<th colspan="20" bgcolor="#00ffff">'.$region['region'].'</th>';				
+			$tbl_data .='<th colspan="20" bgcolor="#00ffff">'.$region['region'].'</th>';
 							}else if($region['region']=='East'){
-			$tbl_data .='<th colspan="20" bgcolor="#ff6699">'.$region['region'].'</th>';					
+			$tbl_data .='<th colspan="20" bgcolor="#ff6699">'.$region['region'].'</th>';
 							}else if($region['region']=='South'){
-			$tbl_data .='<th colspan="20" bgcolor="#cc66ff">'.$region['region'].'</th>';					
+			$tbl_data .='<th colspan="20" bgcolor="#cc66ff">'.$region['region'].'</th>';
 							}else if($region['region']=='West'){
-			$tbl_data .='<th colspan="20" bgcolor="#66ffcc">'.$region['region'].'</th>';					
+			$tbl_data .='<th colspan="20" bgcolor="#66ffcc">'.$region['region'].'</th>';
 							}
 		$tbl_data .='</tr>';
-		$tbl_data .='<tr>	
+		$tbl_data .='<tr>
 					<th style="text-align:center;width:250px;" bgcolor="#f4b084" rowspan="2" colspan="2" width="150"><strong>Stages</strong></th>
 					<th style="text-align:center;" bgcolor="#f4b084" colspan="2"><strong>Total</strong></th>
 					<th style="text-align:center;" bgcolor="#f4b084" colspan="2"><strong>Identified</strong></th>
@@ -1195,7 +1455,7 @@ class Cron_model extends CRM_Model
 					<th style="text-align:center;" bgcolor="#f4b084" colspan="2"><strong>Closed Lost</strong></th>
 					<th style="text-align:center;" bgcolor="#f4b084" colspan="2"><strong>Open</strong></th>
 				  </tr>
-				  <tr>											
+				  <tr>
 					<th style="text-align:center;width:100px" bgcolor="#f4b084"><strong>Lead<br>(Nos.)</strong></th>
 					<th style="text-align:center;width:100px" bgcolor="#f4b084"><strong>Lead Value(In Lakhs)</strong></th>
 					<th style="text-align:center;width:100px" bgcolor="#f4b084"><strong>Lead<br>(Nos.)</strong></th>
@@ -1220,315 +1480,315 @@ class Cron_model extends CRM_Model
 						<td ><strong>MTD('.date('M-y', strtotime($curr_month)).') </strong></td>
 						<td style="text-align:center;">'.$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"]).'</td>
-						
+
 						<td style="text-align:center;">'.$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[0]['id'],$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[0]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;">'.$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[1]['id'],$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[1]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;">'.$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[2]['id'],$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[2]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;">'.$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[3]['id'],$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[3]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;">'.$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[4]['id'],$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[4]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;background:#7cc1ff;">'.$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"]).'</td>
 						<td style="text-align:center;background:#7cc1ff;">'.$this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;background:#7cc1ff;">'.$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"]).'</td>
 						<td style="text-align:center;background:#7cc1ff;">'.$this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;background:#7cc1ff;">'.($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"]) - ( $this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"]) + $this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"]))).'</td>
 						<td style="text-align:center;background:#7cc1ff;">'.( $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"]) - ( $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"]) + $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"]) )) .'</td>
-						
+
 					</tr>
-					
+
 					<tr bgcolor="#bdd7ee">
 						<td><strong>YTD('.date('y', strtotime($fromyearmonth)).'-'.date('y', strtotime($toyearmonth)).')</strong></td>
 						<td style="text-align:center;">'.$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"]).'</td>
-						
+
 						<td style="text-align:center;">'.$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[0]['id'],$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[0]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;">'.$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[1]['id'],$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[1]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;">'.$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[2]['id'],$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[2]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;">'.$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[3]['id'],$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[3]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;">'.$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[4]['id'],$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[4]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;background:#7cc1ff;">'.$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"]).'</td>
 						<td style="text-align:center;background:#7cc1ff;">'.$this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;background:#7cc1ff;">'.$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"]).'</td>
 						<td style="text-align:center;background:#7cc1ff;">'.$this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"]).'</td>
 						<td style="text-align:center;background:#7cc1ff;">'.( $this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"]) - ( $this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"]) + $this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"]))).'</td>
 						<td style="text-align:center;background:#7cc1ff;">'. ($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"]) - ($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"]) + $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"]))).'</td>
 					</tr>
-					
-					
+
+
 					<tr bgcolor="#bdd7ee">
 						<td><strong>ITD(May-19)</strong></td>
 						<td style="text-align:center;">'.$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"]).'</td>
-						
+
 						<td style="text-align:center;">'.$this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[0]['id'],$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[0]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;">'.$this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[1]['id'],$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[1]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;">'.$this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[2]['id'],$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[2]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;">'.$this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[3]['id'],$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[3]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;">'.$this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[4]['id'],$region["id"]).'</td>
 						<td style="text-align:center;">'.$this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[4]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;background:#7cc1ff;">'.$this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"]).'</td>
 						<td style="text-align:center;background:#7cc1ff;">'.$this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"]).'</td>
-						
+
 						<td style="text-align:center;background:#7cc1ff;">'.$this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"]).'</td>
 						<td style="text-align:center;background:#7cc1ff;">'.$this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"]).'</td>
 						<td style="text-align:center;background:#7cc1ff;">'.($this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])  - ( $this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"]) + $this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"]))).'</td>
 						<td style="text-align:center;background:#7cc1ff;">'.( $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"]) - ( $this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"]) + $this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"]))).'</td>
-						
-						
+
+
 					</tr>
 					<tr align="center">
 						<th colspan="20" style="padding-top:5px;"></th>
 					</tr>';
 					$mtd_pipline_no = ($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100) + ($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100);
-							
+
 					$mtd_pipline_value = ($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100) + ($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100);
-							
+
 			$tbl_data	.='<tr bgcolor="#ffe699" style="font-style: italic;">
 						<th rowspan="3">Stage Wise %</th>
 						<td ><strong>MTD('.date('M-y', strtotime($curr_month)).') </strong></td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','') / $this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','') *100),0) .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','') / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[0]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[0]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[1]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[1]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[2]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[2]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100),0 ).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[3]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100 ),0).' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[3]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100),0).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[4]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[4]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"])*100),0) .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'. round((100 - $mtd_pipline_no),0) .'%</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round((100 - $mtd_pipline_value),0) .'%</td>
 					</tr>';
-					
+
 					$ytd_pipline_no = ($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"]) / $this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100) + ($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"]) / $this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100);
-							
+
 					$ytd_pipline_value = ($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100) + ($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100);
-				
+
 			$tbl_data	.='<tr bgcolor="#ffe699" style="font-style: italic;">
-						<td ><strong>YTD('.date('y', strtotime($fromyearmonth)).'-'.date('y', strtotime($toyearmonth)).')</strong></td>						
+						<td ><strong>YTD('.date('y', strtotime($fromyearmonth)).'-'.date('y', strtotime($toyearmonth)).')</strong></td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','') / $this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','') *100),0) .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','') / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[0]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[0]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[1]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[1]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[2]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[2]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100),0 ).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[3]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100 ),0).' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[3]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100),0).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[4]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[4]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"])*100),0) .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'. round((100 - $ytd_pipline_no),0).'%</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round((100 - $ytd_pipline_value),0) .' %</td>
 					</tr>';
-					
+
 					$itd_pipline_no = ($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])*100 ) + ($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])*100 );
-							
+
 					$itd_pipline_value = ($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100) + ($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100);
-					
+
 			$tbl_data	.='<tr bgcolor="#ffe699" style="font-style: italic;">
 						<td ><strong>ITD(May-19)</strong></td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff('','')/$this->leads_model->itd_no_of_leads_by_stage_month_staff('','') *100),0).' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff('','') / $this->leads_model->itd_value_of_leads_by_stage_month_staff('','') *100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[0]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[0]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[1]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[1]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[2]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[2]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100),0 ).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[3]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"]) *100),0).' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[3]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100),0).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[4]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"]) *100),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[4]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"])*100),0) .' %</td>
 						<td style="text-align:center;background:#ffd34e;">'.round((100 - $itd_pipline_no),0).' %</td>
-						
+
 						<td style="text-align:center;background:#ffd34e;">'. round((100 - $itd_pipline_value),0) .' %</td>
 					</tr>
-					
+
 					<tr align="center">
 						<th colspan="20" style="padding-top:5px;"></th>
 					</tr>';
 					$mtd_pipline_no = ($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','')*100 ) + ($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','')*100 );
-							
+
 					$mtd_pipline_value = ($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','')*100) + ($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','')*100);
 			$tbl_data	.='<tr bgcolor="#f1dcdc">
 						<th rowspan="3">Region Share</th>
 						<td ><strong>MTD('.date('M-y', strtotime($curr_month)).') </strong></td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'',$region["id"]) / $this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','') *100),0) .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'',$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[0]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','')*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[0]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[1]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','')*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[1]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[2]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','')*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[2]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','')*100),0 ).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[3]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','')*100 ),0).' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[3]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','')*100),0).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[4]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','')*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[4]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#d0cece;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','')*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#d0cece;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[5]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#d0cece;">'. round(($this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"])/$this->leads_model->mtd_no_of_leads_by_stage_month_staff($curr_month,'','')*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#d0cece;">'. round(($this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,$leadstage[6]['id'],$region["id"]) / $this->leads_model->mtd_value_of_leads_by_stage_month_staff($curr_month,'','')*100),0) .' %</td>
 						<td style="text-align:center;background:#dec3c3;">'.  round((100 - $mtd_pipline_no),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#dec3c3;">'.  round((100 - $mtd_pipline_value),0) .' %</td>
 					</tr>';
 					$ytd_pipline_no = ($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100 ) + ($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100 );
-							
+
 					$ytd_pipline_value = ($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100) + ($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100);
-							
+
 			$tbl_data	.='<tr bgcolor="#f1dcdc">
-						<td ><strong>YTD('.date('y', strtotime($fromyearmonth)).'-'.date('y', strtotime($toyearmonth)).')</strong></td>						
+						<td ><strong>YTD('.date('y', strtotime($fromyearmonth)).'-'.date('y', strtotime($toyearmonth)).')</strong></td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"]) / $this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','') *100),0) .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'',$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[0]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[0]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[1]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[1]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[2]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[2]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100),0 ).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[3]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100 ),0).' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[3]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100),0).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[4]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[4]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#d0cece;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#d0cece;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[5]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#d0cece;">'. round(($this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"])/$this->leads_model->ytd_no_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#d0cece;">'. round(($this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,$leadstage[6]['id'],$region["id"]) / $this->leads_model->ytd_value_of_leads_by_stage_month_staff($fromyearmonth,$toyearmonth,'','')*100),0) .' %</td>
 						<td style="text-align:center;background:#dec3c3;">'. round((100 - $ytd_pipline_no),0)  .' %</td>
-						
+
 						<td style="text-align:center;background:#dec3c3;">'. round((100 - $ytd_pipline_value),0) .' %</td>
 					</tr>';
 					$itd_pipline_no = ($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('','')*100 ) + ($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('','')*100 );
-							
+
 					$itd_pipline_value = ($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('','')*100) + ($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('','')*100);
-					
+
 			$tbl_data	.='<tr bgcolor="#f1dcdc">
 						<td ><strong>ITD(May-19)</strong></td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff('',$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('','') *100),0).' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff('',$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('','') *100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[0]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('','')*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[0]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[1]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('','')*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[1]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[2]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('','')*100 ),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[2]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('','')*100),0 ).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[3]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('','') *100),0).' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[3]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('','')*100),0).' %</td>
-						
+
 						<td style="text-align:center;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[4]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('','') *100),0)   .' %</td>
 						<td style="text-align:center;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[4]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#d0cece;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('','')*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#d0cece;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[5]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('','')*100),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#d0cece;">'. round(($this->leads_model->itd_no_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"])/$this->leads_model->itd_no_of_leads_by_stage_month_staff('','')*100 ),0)   .' %</td>
 						<td style="text-align:center;background:#d0cece;">'. round(($this->leads_model->itd_value_of_leads_by_stage_month_staff($leadstage[6]['id'],$region["id"]) / $this->leads_model->itd_value_of_leads_by_stage_month_staff('','')*100),0) .' %</td>
 						<td style="text-align:center;background:#dec3c3;">'. round((100 - $itd_pipline_no),0) .' %</td>
-						
+
 						<td style="text-align:center;background:#dec3c3;">'. round((100 - $itd_pipline_value),0) .' %</td>
 					</tr>';
 		    }
-				
+
 		$tbl_data .= '</tbody></table>';
-			 
+
 		//echo $tbl_data;
 		$lastdate = date('d-F-Y', strtotime("-1 days"));
 		$subject = "Stage Summary Report - ".$lastdate;
 		$to = get_option('stages_summary_daily_reports_to');
 		$daily_status_reports_cc = get_option('stages_summary_daily_reports_cc');
-			
+
 		$array = explode(',', $daily_status_reports_cc);
 		$commaCC = "".implode( " , ", $array). "";
 		$ccc = explode(',', $commaCC);;
-		
+
 		$newcc=array();
 		foreach($ccc as $value){
 			/* if(substr($value, strpos($value, "@") + 1) == 'halonix.co.in')
@@ -1536,144 +1796,15 @@ class Cron_model extends CRM_Model
 				$newcc[]=$value;
 			/* } */
 		}
-		
+
 		//$this->sent_smtp__email('rajeev.gangwar@halonix.co.in', $subject, $tbl_data);
 		$this->sent_smtp__email($to, $subject, $tbl_data,$newcc);
-	
+
 	   redirect(admin_url('settings?group=reportemail'));
 	}
-	
-	public function run_cron_winloss($manually = false)
-	{
-		
-		$table_winloss = '';
-                    $table_winloss .='<table class="table border" border="1px" style="text-align:center;" >
-                        
-                        <tbody>';
-						
-						   						
-							if($this->input->post('from-top') !=''){
-								$topRecord = $this->input->post('from-top');
-							}else{
-								$topRecord = '10';
-							}
-							
-							if($this->input->post('from-stage') !=''){
-								$winloss = $this->input->post('from-stage');
-							}else{
-								$winloss = '7,6';
-							}
-							$report_months  = $this->input->post('report_months');
-							$from_date  = $this->input->post('report_from');
-							$to_date  = $this->input->post('report_to');
-							
-							$regionid = $this->input->post('region_id');
-							$sql =  'SELECT region FROM tblstaff WHERE staffid="'.get_staff_user_id().'"';
-							$region_staff = $this->db->query($sql)->row()->region;
-							
-							if($this->input->post('from-region')=='pan_india'){ 
-								$lead_details = $this->leads_model->winloss_month_zone($report_months,$from_date,$to_date,$regionid,$winloss,$topRecord);
-							}else{
-								$lead_details = $this->leads_model->winloss_month_zone($report_months,$from_date,$to_date,$region_staff,$winloss,$topRecord);
-							}
-							
-					
-				$table_winloss .='<br>
-						<tr align="center" style="border: 1px solid #000 !important;">
-							<th colspan="7" bgcolor="#f58a4c">All Regions</th>
-						</tr>
-						 <tr bgcolor="#f4b084"  style="border: 1px solid #000 !important;">
-							<td width="60px">Lead Id</td>
-							<td width="100px">Remark</td>
-							<td width="">Client Name</td>
-							<td width="120px">Opportunity Value<br>(In Lac)</td>
-							<td width="120px">Order Value<br>(In Lac)</td>
-							<td width="">Competitor</td>
-							<td width="240px">Reason</td>
-						  </tr>';
-							
-					
-							
-							$opportunity_total = 0;
-							$ordervalue_total = 0;
-							foreach($lead_details as $res4)
-                            {
-                              	$competition = '';
-				
-								if($res4['competition'] !='')
-									$competition .= $res4['competition'];
-								if($res4['competition1'] !='')
-									$competition .= ', '.$res4['competition1'];
-								if($res4['competition2'] !='')
-									$competition .= ', '.$res4['competition2'];
-								if($res4['competition3'] !='')
-									$competition .= ', '.$res4['competition3'];
-								if($res4['competition4'] !='')
-									$competition .= ', '.$res4['competition4'];
-								$opportunity_total = $opportunity_total + $res4['opportunity'];
-								$ordervalue_total = $ordervalue_total + $res4['project_total_amount'];
-                    
-							if($res4["status"]==7){
-								$table_winloss .='<tr bgcolor="#ffe699"  style="border: 1px solid #000 !important;">';
-							}else{
-								$table_winloss .='<tr bgcolor="#c6e0b4"  style="border: 1px solid #000 !important;">';								
-							}
-					$table_winloss .='<td><p>'.$res4["id"] .'</p></td>
-									<td><p>'.$this->leads_model->get_status_name($res4["status"]).'</p></td>
-									<td><p>'.$this->leads_model->get_customer_name($res4["customer_name"]).'</p></td>
-									<td><p>'.$res4["opportunity"].'</p></td>';
-									if($res4["project_total_amount"] != ""){
-					$table_winloss .='<td><p>'.$res4["project_total_amount"] .'</p></td>';
-									}else{
-					$table_winloss .='<td><p>'.$res4["project_total_amount"] .'</p></td>';
-									}
-					$table_winloss .='<td><p>'. $competition .'</p></td>';
-					
-					if($res4["status_closed_won"] !=""){ 
-					
-					$table_winloss .='<td><p>'. $this->leads_model->get_status_won_loss($res4["status_closed_won"]).'</p></td>'; 
-					}else{
-						$table_winloss .='<td><p>No remark added</p></td>';
-					}						
-					$table_winloss .='</tr>';
-						       $i++; 
-                              
-                              } 
-						   
-						   $table_winloss .='<tr bgcolor="#f4b084"  style="border: 1px solid #000 !important;">
-									<td colspan="3"><p><strong>Total</strong></p></td>
-									<td><p><strong>'.$opportunity_total.'</strong></p></td>
-									<td><p><strong>'. $ordervalue_total.'</strong></p></td>
-									<td colspan="2"><p></p></td>
-									
-								  </tr>
-					</table>';
-					
-		
-			 
-		//echo $tbl_data;
-		$lastdate = date('d-F-Y', strtotime("-1 days"));
-		$subject = "Win/Loss Report - ".$lastdate;
-		$to = get_option('winloss_daily_reports_to');
-		$daily_status_reports_cc = get_option('winloss_daily_reports_cc');
-			
-		$array = explode(',', $daily_status_reports_cc);
-		$commaCC = "".implode( " , ", $array). "";
-		$ccc = explode(',', $commaCC);;
-		
-		$newcc=array();
-		foreach($ccc as $value){
-			//if(substr($value, strpos($value, "@") + 1) == 'halonix.co.in')
-			//{
-				$newcc[]=$value;
-			//}
-		}
-		
-		$this->sent_smtp__email($to, $subject, $table_winloss,$newcc);
-	   
-	   redirect(admin_url('settings?group=reportemail'));
-	}
-	
+
+
+
 	public function run_lmsdaily($manually = false)
     {
 		$table_content ='<table class="table" border="1" width="100%">
@@ -1683,9 +1814,9 @@ class Cron_model extends CRM_Model
 				 <th bgcolor="#fd4" rowspan="1" colspan="4">Customer</th>
 				 <th bgcolor="#56ff63" rowspan="1" colspan="4">Lead</th>
 				 <th bgcolor="#56FED4" rowspan="1" colspan="4">Lead Value(In Lakhs)</th>
-				
+
 			  </tr>
-			   
+
 		   </thead>
 		   <tbody>';
 		 $table_content .='
@@ -1697,110 +1828,110 @@ class Cron_model extends CRM_Model
 				 <th bgcolor="#fd4">'.date('M', strtotime('-1 month')).'-'.date('Y').'</th>
 				 <th bgcolor="#fd4">'.date('M', strtotime('-0 month')).'-'.date('Y').'</th>
 				 <th bgcolor="#fd4">'.date('d-M-Y', strtotime("-1 days")).'</th>
-				 
+
 				 <th bgcolor="#56ff63">'.date('M', strtotime('-2 month')).'-'.date('Y').'</th>
 				 <th bgcolor="#56ff63">'.date('M', strtotime('-1 month')).'-'.date('Y').'</th>
 				 <th bgcolor="#56ff63">'.date('M', strtotime('-0 month')).'-'.date('Y').'</th>
 				 <th bgcolor="#56ff63">'.date('d-M-Y', strtotime("-1 days")).'</th>
-				
+
 				 <th bgcolor="#56FED4">'.date('M', strtotime('-2 month')).'-'.date('Y').'</th>
 				 <th bgcolor="#56FED4">'.date('M', strtotime('-1 month')).'-'.date('Y').'</th>
 				 <th bgcolor="#56FED4">'.date('M', strtotime('-0 month')).'-'.date('Y').'</th>
 				 <th bgcolor="#56FED4">'.date('d-M-Y', strtotime("-1 days")).'</th>
-				
-				</tr>';  
-		$thisMonth = date('Y-m');	
-		$lastMonth = date('Y-m', strtotime("-1 month"));	
-		$last2Month = date('Y-m', strtotime("-2 month"));	
-		$last2MonthDate = date('Y-m-01', strtotime("-2 month"));	
+
+				</tr>';
+		$thisMonth = date('Y-m');
+		$lastMonth = date('Y-m', strtotime("-1 month"));
+		$last2Month = date('Y-m', strtotime("-2 month"));
+		$last2MonthDate = date('Y-m-01', strtotime("-2 month"));
 		$lastdate = date('Y-m-d', strtotime("-1 days"));
-		
+
 		//========================= Top Customer Total ===============================
 		    $this->db->select('count(*) as total');
 			$this->db->from('tblclients');
-			$where = "tblclients.datetime LIKE '%".$last2Month."%'"; 
+			$where = "tblclients.datetime LIKE '%".$last2Month."%'";
 			$this->db->where($where);
 			$last2Monthdata = $this->db->get()->row();
 			$top_2_total = $last2Monthdata->total;
-		   
+
 		    $this->db->select('count(*) as total');
 			$this->db->from('tblclients');
-			$where = "tblclients.datetime LIKE '%".$lastMonth."%'"; 
+			$where = "tblclients.datetime LIKE '%".$lastMonth."%'";
 			$this->db->where($where);
 			$last2Monthdata = $this->db->get()->row();
 			$top_1_total = $last2Monthdata->total;
-			
+
 			$this->db->select('count(*) as total');
 			$this->db->from('tblclients');
-			$where = "tblclients.datetime LIKE '%".$thisMonth."%'"; 
+			$where = "tblclients.datetime LIKE '%".$thisMonth."%'";
 			$this->db->where($where);
 			$last2Monthdata = $this->db->get()->row();
 			$top_total = $last2Monthdata->total;
-		
+
 			$this->db->select('count(*) as total');
 			$this->db->from('tblclients');
-			$where = "tblclients.datetime LIKE '%".$lastdate."%'"; 
+			$where = "tblclients.datetime LIKE '%".$lastdate."%'";
 			$this->db->where($where);
 			$last2Monthdata = $this->db->get()->row();
 			$top_lastdatetotal = $last2Monthdata->total;
 		//---------------Top Lead Count -------------//
 			$this->db->select('count(*) as total');
 			$this->db->from('tblleads');
-			$where = "tblleads.dateadded LIKE '%".$last2Month."%'"; 
+			$where = "tblleads.dateadded LIKE '%".$last2Month."%'";
 			$this->db->where($where);
 			$last2Monthdata_lead = $this->db->get()->row();
 			$last2monthcount_lead = $last2Monthdata_lead->total;
-			
+
 			$this->db->select('count(*) as total');
 			$this->db->from('tblleads');
-			$where = "tblleads.dateadded LIKE '%".$lastMonth."%'"; 
+			$where = "tblleads.dateadded LIKE '%".$lastMonth."%'";
 			$this->db->where($where);
 			$lastMonthdata_lead = $this->db->get()->row();
 			$lastmonthcount_lead = $lastMonthdata_lead->total;
-			
+
 			$this->db->select('count(*) as total');
 			$this->db->from('tblleads');
-			$where = "tblleads.dateadded LIKE '%".$thisMonth."%'"; 
+			$where = "tblleads.dateadded LIKE '%".$thisMonth."%'";
 			$this->db->where($where);
 			$thisMonthdata_lead = $this->db->get()->row();
 			$thismonthcount_lead = $thisMonthdata_lead->total;
-			
+
 			$this->db->select('count(*) as total');
 			$this->db->from('tblleads');
-			$where = "tblleads.dateadded LIKE '%".$lastdate."%'"; 
+			$where = "tblleads.dateadded LIKE '%".$lastdate."%'";
 			$this->db->where($where);
 			$lastdatedata_lead = $this->db->get()->row();
 			$lastdatecount_lead = $lastdatedata_lead->total;
-			
+
 		//-----------------Top Lead Sum ----------------------//
 			$this->db->select('COALESCE(SUM(opportunity),0) as total');
 			$this->db->from('tblleads');
-			$where = "tblleads.dateadded LIKE '%".$last2Month."%'"; 
+			$where = "tblleads.dateadded LIKE '%".$last2Month."%'";
 			$this->db->where($where);
 			$last2Monthdata_lead_sum = $this->db->get()->row();
 			$last2monthcount_lead_sum = $last2Monthdata_lead_sum->total;
-			
+
 			$this->db->select('COALESCE(SUM(opportunity),0) as total');
 			$this->db->from('tblleads');
-			$where = "tblleads.dateadded LIKE '%".$lastMonth."%'"; 
+			$where = "tblleads.dateadded LIKE '%".$lastMonth."%'";
 			$this->db->where($where);
 			$lastMonthdata_lead_sum = $this->db->get()->row();
 			$lastmonthcount_lead_sum = $lastMonthdata_lead_sum->total;
-			
+
 			$this->db->select('COALESCE(SUM(opportunity),0) as total');
 			$this->db->from('tblleads');
-			$where = "tblleads.dateadded LIKE '%".$thisMonth."%'"; 
+			$where = "tblleads.dateadded LIKE '%".$thisMonth."%'";
 			$this->db->where($where);
 			$thisMonthdata_lead_sum = $this->db->get()->row();
 			$thismonthcount_lead_sum = $thisMonthdata_lead_sum->total;
-			
+
 			$this->db->select('COALESCE(SUM(opportunity),0) as total');
 			$this->db->from('tblleads');
-			$where = "tblleads.dateadded LIKE '%".$lastdate."%'"; 
+			$where = "tblleads.dateadded LIKE '%".$lastdate."%'";
 			$this->db->where($where);
 			$lastdatedata_lead_sum = $this->db->get()->row();
 			$lastdatecount_lead_sum = $lastdatedata_lead_sum->total;
-		
+
 		$table_content .='
 					<tr align="center">
 					 <th bgcolor="#ffff1a" colspan="3">Grand Total:</th>
@@ -1808,12 +1939,12 @@ class Cron_model extends CRM_Model
 					 <th bgcolor="#ffff1a">'.$top_1_total.'</th>
 					 <th bgcolor="#ffff1a">'.$top_total.'</th>
 					 <th bgcolor="#ffff1a">'.$top_lastdatetotal.'</th>
-					 
+
 					<th bgcolor="#ffff1a">'.$last2monthcount_lead.'</th>
 					<th bgcolor="#ffff1a">'.$lastmonthcount_lead.'</th>
 					<th bgcolor="#ffff1a">'.$thismonthcount_lead.'</th>
 					<th bgcolor="#ffff1a">'.$lastdatecount_lead.'</th>
-					
+
 					<th bgcolor="#ffff1a">'.$last2monthcount_lead_sum.'</th>
 					<th bgcolor="#ffff1a">'.$lastmonthcount_lead_sum.'</th>
 					<th bgcolor="#ffff1a">'.$thismonthcount_lead_sum.'</th>
@@ -1822,157 +1953,157 @@ class Cron_model extends CRM_Model
 		$table_content .='
 					<tr align="center">
 					 <th colspan="15"></th>
-					 
+
 				  </tr>';
         $regions = $this->db->get('tblregion')->result_array();
 		foreach ($regions as $region) {
-			
-			$staffs = $this->db->get_where('tblstaff',array('region' => $region["id"],'active' => '1'))->result_array();	
-			
+
+			$staffs = $this->db->get_where('tblstaff',array('region' => $region["id"],'active' => '1'))->result_array();
+
 			$this->db->select('count(*) as total');
 			$this->db->from('tblclients');
 			$this->db->join('tblstaff', 'tblclients.addedfrom = tblstaff.staffid', 'left');
-			$where = "tblstaff.region='".$region['id']."' AND tblclients.datetime LIKE '%".$last2Month."%'"; 
+			$where = "tblstaff.region='".$region['id']."' AND tblclients.datetime LIKE '%".$last2Month."%'";
 			$this->db->where($where);
 			$last2Monthdata = $this->db->get()->row();
 			$last2Monthcount = $last2Monthdata->total;
-			
-			
+
+
 			$this->db->select('count(*) as total');
 			$this->db->from('tblclients');
 			$this->db->join('tblstaff', 'tblclients.addedfrom = tblstaff.staffid', 'left');
-			$where = "tblstaff.region='".$region['id']."' AND tblclients.datetime LIKE '%".$lastMonth."%'"; 
+			$where = "tblstaff.region='".$region['id']."' AND tblclients.datetime LIKE '%".$lastMonth."%'";
 			$this->db->where($where);
 			$lastMonthdata = $this->db->get()->row();
 			$lastMonthcount = $lastMonthdata->total;
-			
-			
+
+
 			$this->db->select('count(*) as total');
 			$this->db->from('tblclients');
 			$this->db->join('tblstaff', 'tblclients.addedfrom = tblstaff.staffid', 'left');
-			$where = "tblstaff.region='".$region['id']."' AND tblclients.datetime LIKE '%".$thisMonth."%'"; 
+			$where = "tblstaff.region='".$region['id']."' AND tblclients.datetime LIKE '%".$thisMonth."%'";
 			$this->db->where($where);
 			$thisMonthdata = $this->db->get()->row();
 			$thisMonthcount = $thisMonthdata->total;
-			
+
 			$this->db->select('count(*) as total');
 			$this->db->from('tblclients');
 			$this->db->join('tblstaff', 'tblclients.addedfrom = tblstaff.staffid', 'left');
-			$where = "tblstaff.region='".$region['id']."' AND tblclients.datetime LIKE '%".$lastdate."%'"; 
+			$where = "tblstaff.region='".$region['id']."' AND tblclients.datetime LIKE '%".$lastdate."%'";
 			$this->db->where($where);
 			$lastdatedata = $this->db->get()->row();
 			$lastdatecount = $lastdatedata->total;
-			
+
 			//--------------- Lead Count -------------//
 			$this->db->select('count(*) as total');
 			$this->db->from('tblleads');
 			$this->db->join('tblstaff', 'tblleads.assigned = tblstaff.staffid', 'left');
-			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$last2Month."%'"; 
+			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$last2Month."%'";
 			$this->db->where($where);
 			$last2Monthdata_lead = $this->db->get()->row();
 			$last2monthcount_lead = $last2Monthdata_lead->total;
-			
+
 			$this->db->select('count(*) as total');
 			$this->db->from('tblleads');
 			$this->db->join('tblstaff', 'tblleads.assigned = tblstaff.staffid', 'left');
-			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$lastMonth."%'"; 
+			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$lastMonth."%'";
 			$this->db->where($where);
 			$lastMonthdata_lead = $this->db->get()->row();
 			$lastmonthcount_lead = $lastMonthdata_lead->total;
-			
+
 			$this->db->select('count(*) as total');
 			$this->db->from('tblleads');
 			$this->db->join('tblstaff', 'tblleads.assigned = tblstaff.staffid', 'left');
-			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$thisMonth."%'"; 
+			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$thisMonth."%'";
 			$this->db->where($where);
 			$thisMonthdata_lead = $this->db->get()->row();
 			$thismonthcount_lead = $thisMonthdata_lead->total;
-			
+
 			$this->db->select('count(*) as total');
 			$this->db->from('tblleads');
 			$this->db->join('tblstaff', 'tblleads.assigned = tblstaff.staffid', 'left');
-			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$lastdate."%'"; 
+			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$lastdate."%'";
 			$this->db->where($where);
 			$lastdatedata_lead = $this->db->get()->row();
 			$lastdatecount_lead = $lastdatedata_lead->total;
-			
+
 		//----------------- Lead Sum ----------------------//
 			$this->db->select('COALESCE(SUM(opportunity),0) as total');
 			$this->db->from('tblleads');
 			$this->db->join('tblstaff', 'tblleads.assigned = tblstaff.staffid', 'left');
-			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$last2Month."%'"; 
+			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$last2Month."%'";
 			$this->db->where($where);
 			$last2Monthdata_lead_sum = $this->db->get()->row();
 			$last2monthcount_lead_sum = $last2Monthdata_lead_sum->total;
-			
+
 			$this->db->select('COALESCE(SUM(opportunity),0) as total');
 			$this->db->from('tblleads');
 			$this->db->join('tblstaff', 'tblleads.assigned = tblstaff.staffid', 'left');
-			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$lastMonth."%'"; 
+			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$lastMonth."%'";
 			$this->db->where($where);
 			$lastMonthdata_lead_sum = $this->db->get()->row();
 			$lastmonthcount_lead_sum = $lastMonthdata_lead_sum->total;
-			
+
 			$this->db->select('COALESCE(SUM(opportunity),0) as total');
 			$this->db->from('tblleads');
 			$this->db->join('tblstaff', 'tblleads.assigned = tblstaff.staffid', 'left');
-			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$thisMonth."%'"; 
+			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$thisMonth."%'";
 			$this->db->where($where);
 			$thisMonthdata_lead_sum = $this->db->get()->row();
 			$thismonthcount_lead_sum = $thisMonthdata_lead_sum->total;
-			
+
 			$this->db->select('COALESCE(SUM(opportunity),0) as total');
 			$this->db->from('tblleads');
 			$this->db->join('tblstaff', 'tblleads.assigned = tblstaff.staffid', 'left');
-			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$lastdate."%'"; 
+			$where = "tblstaff.region='".$region['id']."' AND tblleads.dateadded LIKE '%".$lastdate."%'";
 			$this->db->where($where);
 			$lastdatedata_lead_sum = $this->db->get()->row();
 			$lastdatecount_lead_sum = $lastdatedata_lead_sum->total;
-			
+
 			$table_content .='
 					<tr align="center">
 						<th colspan="15" bgcolor="#f47b34">'.$region["region"].'</th>
 					</tr>';
 			foreach ($staffs as $staff) {
 				if($staff['role'] == '5' || $staff['role'] == '2'){
-					$conditionLead = array('assigned' => $staff["staffid"],'dateassigned <' => $last2MonthDate,'dateassigned >' => $lastdate); 
+					$conditionLead = array('assigned' => $staff["staffid"],'dateassigned <' => $last2MonthDate,'dateassigned >' => $lastdate);
 					$query = $this->db->get_where('tblleads', array('assigned' => $staff["staffid"]));
 					$ifzsmleadvalue = $query->num_rows();
-					
+
 					$conditionClient = array('addedfrom' => $staff["staffid"],'datetime <' => $last2MonthDate,'datetime >' => $lastdate);
 					$queryc = $this->db->get_where('tblclients', $conditionClient);
 					$ifzsmhascustomer = $queryc->num_rows();
-					
-					
+
+
 					if($ifzsmleadvalue > 0 || $ifzsmhascustomer > 0)
 					{
-																	
+
 							$reporting_manager = $this->db->get_where('tblstaff', array('staffid =' => $staff["reporting_manager"]))->row();
-							
+
 							$last2Monthno_of_custTotal = $last2Monthno_of_custTotal + $this->clients_model->no_of_cust_bymonth($last2Month,$staff["staffid"]);
 							$lastMonthno_of_custTotal = $lastMonthno_of_custTotal + $this->clients_model->no_of_cust_bymonth($lastMonth,$staff["staffid"]);
-							$thisMonthno_of_custTotal = $thisMonthno_of_custTotal + $this->clients_model->no_of_cust_bymonth($thisMonth,$staff["staffid"]);				
+							$thisMonthno_of_custTotal = $thisMonthno_of_custTotal + $this->clients_model->no_of_cust_bymonth($thisMonth,$staff["staffid"]);
 							$lastdateno_of_custTotal = $lastdateno_of_custTotal + $this->clients_model->no_of_cust_bydate($lastdate,$staff["staffid"]);
-							
+
 							$last2Monthno_of_leadsTotal = $last2Monthno_of_leadsTotal + $this->leads_model->no_of_leads_bymonth($last2Month,$staff["staffid"]);
 							$lastMonthno_of_leadsTotal = $lastMonthno_of_leadsTotal + $this->leads_model->no_of_leads_bymonth($lastMonth,$staff["staffid"]);
-							$thisMonthno_of_leadsTotal = $thisMonthno_of_leadsTotal + $this->leads_model->no_of_leads_bymonth($thisMonth,$staff["staffid"]);				
+							$thisMonthno_of_leadsTotal = $thisMonthno_of_leadsTotal + $this->leads_model->no_of_leads_bymonth($thisMonth,$staff["staffid"]);
 							$lastdateno_of_leadsTotal = $lastdateno_of_leadsTotal + $this->leads_model->no_of_leads_bydate($lastdate,$staff["staffid"]);
-							
+
 							$last2Monthvalue_of_leadsTotal = $last2Monthvalue_of_leadsTotal + $this->leads_model->value_of_leads_bymonth($last2Month,$staff["staffid"]);
 							$lastMonthvalue_of_leadsTotal = $lastMonthvalue_of_leadsTotal + $this->leads_model->value_of_leads_bymonth($lastMonth,$staff["staffid"]);
-							$thisMonthvalue_of_leadsTotal = $thisMonthvalue_of_leadsTotal + $this->leads_model->value_of_leads_bymonth($thisMonth,$staff["staffid"]);				
+							$thisMonthvalue_of_leadsTotal = $thisMonthvalue_of_leadsTotal + $this->leads_model->value_of_leads_bymonth($thisMonth,$staff["staffid"]);
 							$lastdatevalue_of_leadsTotal = $lastdatevalue_of_leadsTotal + $this->leads_model->value_of_leads_bydate($lastdate,$staff["staffid"]);
-							
+
 							if($staff["last_login"]=="")
 							{
-								$datelogin = "-"; 
+								$datelogin = "-";
 							}else
-							{ 
-								$datelogin = date("d-M-Y", strtotime($staff["last_login"])); 
+							{
+								$datelogin = date("d-M-Y", strtotime($staff["last_login"]));
 							}
-							
-							
+
+
 							$table_content .='
 								<tr align="center">
 								 <td>'.$staff["firstname"].' '.$staff["lastname"].'</td>
@@ -1982,46 +2113,46 @@ class Cron_model extends CRM_Model
 								 <td bgcolor="#56FED4">'.$this->clients_model->no_of_cust_bymonth($lastMonth,$staff["staffid"]).'</td>
 								 <td bgcolor="#56FED4">'.$this->clients_model->no_of_cust_bymonth($thisMonth,$staff["staffid"]).'</td>
 								 <td bgcolor="#56FED4">'.$this->clients_model->no_of_cust_bydate($lastdate,$staff["staffid"]).'</td>
-								 
+
 								 <td bgcolor="#56ff63">'.$this->leads_model->no_of_leads_bymonth($last2Month,$staff["staffid"]).'</td>
 								 <td bgcolor="#56ff63">'.$this->leads_model->no_of_leads_bymonth($lastMonth,$staff["staffid"]).'</td>
 								 <td bgcolor="#56ff63">'.$this->leads_model->no_of_leads_bymonth($thisMonth,$staff["staffid"]).'</td>
 								 <td bgcolor="#56ff63">'.$this->leads_model->no_of_leads_bydate($lastdate,$staff["staffid"]).'</td>
-							  
+
 								 <td bgcolor="#56FED4">'.$this->leads_model->value_of_leads_bymonth($last2Month,$staff["staffid"]).'</td>
 								 <td bgcolor="#56FED4">'.$this->leads_model->value_of_leads_bymonth($lastMonth,$staff["staffid"]).'</td>
 								 <td bgcolor="#56FED4">'.$this->leads_model->value_of_leads_bymonth($thisMonth,$staff["staffid"]).'</td>
 								 <td bgcolor="#56FED4">'.$this->leads_model->value_of_leads_bydate($lastdate,$staff["staffid"]).'</td>
 							  </tr>';
-						
-													
-						
+
+
+
 					}
 				}else if($staff['role'] == '1' || $staff['role'] == '3'){
 
 							$reporting_manager = $this->db->get_where('tblstaff', array('staffid =' => $staff["reporting_manager"]))->row();
-							
+
 							$last2Monthno_of_custTotal = $last2Monthno_of_custTotal + $this->clients_model->no_of_cust_bymonth($last2Month,$staff["staffid"]);
 							$lastMonthno_of_custTotal = $lastMonthno_of_custTotal + $this->clients_model->no_of_cust_bymonth($lastMonth,$staff["staffid"]);
-							$thisMonthno_of_custTotal = $thisMonthno_of_custTotal + $this->clients_model->no_of_cust_bymonth($thisMonth,$staff["staffid"]);				
+							$thisMonthno_of_custTotal = $thisMonthno_of_custTotal + $this->clients_model->no_of_cust_bymonth($thisMonth,$staff["staffid"]);
 							$lastdateno_of_custTotal = $lastdateno_of_custTotal + $this->clients_model->no_of_cust_bydate($lastdate,$staff["staffid"]);
-							
+
 							$last2Monthno_of_leadsTotal = $last2Monthno_of_leadsTotal + $this->leads_model->no_of_leads_bymonth($last2Month,$staff["staffid"]);
 							$lastMonthno_of_leadsTotal = $lastMonthno_of_leadsTotal + $this->leads_model->no_of_leads_bymonth($lastMonth,$staff["staffid"]);
-							$thisMonthno_of_leadsTotal = $thisMonthno_of_leadsTotal + $this->leads_model->no_of_leads_bymonth($thisMonth,$staff["staffid"]);				
+							$thisMonthno_of_leadsTotal = $thisMonthno_of_leadsTotal + $this->leads_model->no_of_leads_bymonth($thisMonth,$staff["staffid"]);
 							$lastdateno_of_leadsTotal = $lastdateno_of_leadsTotal + $this->leads_model->no_of_leads_bydate($lastdate,$staff["staffid"]);
-							
+
 							$last2Monthvalue_of_leadsTotal = $last2Monthvalue_of_leadsTotal + $this->leads_model->value_of_leads_bymonth($last2Month,$staff["staffid"]);
 							$lastMonthvalue_of_leadsTotal = $lastMonthvalue_of_leadsTotal + $this->leads_model->value_of_leads_bymonth($lastMonth,$staff["staffid"]);
-							$thisMonthvalue_of_leadsTotal = $thisMonthvalue_of_leadsTotal + $this->leads_model->value_of_leads_bymonth($thisMonth,$staff["staffid"]);				
+							$thisMonthvalue_of_leadsTotal = $thisMonthvalue_of_leadsTotal + $this->leads_model->value_of_leads_bymonth($thisMonth,$staff["staffid"]);
 							$lastdatevalue_of_leadsTotal = $lastdatevalue_of_leadsTotal + $this->leads_model->value_of_leads_bydate($lastdate,$staff["staffid"]);
 							$datelogin = "";
 							if($staff["last_login"]=="")
 							{
-								$datelogin = "-"; 
+								$datelogin = "-";
 							}else
-							{ 
-								$datelogin = date("d-M-Y", strtotime($staff["last_login"])); 
+							{
+								$datelogin = date("d-M-Y", strtotime($staff["last_login"]));
 							}
 							$table_content .='
 								<tr align="center">
@@ -2032,20 +2163,20 @@ class Cron_model extends CRM_Model
 								 <td bgcolor="#56FED4">'.$this->clients_model->no_of_cust_bymonth($lastMonth,$staff["staffid"]).'</td>
 								 <td bgcolor="#56FED4">'.$this->clients_model->no_of_cust_bymonth($thisMonth,$staff["staffid"]).'</td>
 								 <td bgcolor="#56FED4">'.$this->clients_model->no_of_cust_bydate($lastdate,$staff["staffid"]).'</td>
-								 
+
 								 <td bgcolor="#56ff63">'.$this->leads_model->no_of_leads_bymonth($last2Month,$staff["staffid"]).'</td>
 								 <td bgcolor="#56ff63">'.$this->leads_model->no_of_leads_bymonth($lastMonth,$staff["staffid"]).'</td>
 								 <td bgcolor="#56ff63">'.$this->leads_model->no_of_leads_bymonth($thisMonth,$staff["staffid"]).'</td>
 								 <td bgcolor="#56ff63">'.$this->leads_model->no_of_leads_bydate($lastdate,$staff["staffid"]).'</td>
-							  
+
 								 <td bgcolor="#56FED4">'.$this->leads_model->value_of_leads_bymonth($last2Month,$staff["staffid"]).'</td>
 								 <td bgcolor="#56FED4">'.$this->leads_model->value_of_leads_bymonth($lastMonth,$staff["staffid"]).'</td>
 								 <td bgcolor="#56FED4">'.$this->leads_model->value_of_leads_bymonth($thisMonth,$staff["staffid"]).'</td>
 								 <td bgcolor="#56FED4">'.$this->leads_model->value_of_leads_bydate($lastdate,$staff["staffid"]).'</td>
 							  </tr>';
-						} 
+						}
 			}
-			
+
 			$table_content .='
 					<tr align="center">
 						<th colspan="3" bgcolor="#ffff1a">'.$region["region"].' Total</th>
@@ -2053,32 +2184,32 @@ class Cron_model extends CRM_Model
 						<th bgcolor="#ffff1a">'.$lastMonthcount.'</th>
 						<th bgcolor="#ffff1a">'.$thisMonthcount.'</th>
 						<th bgcolor="#ffff1a">'.$lastdatecount.'</th>
-						
+
 						<th bgcolor="#ffff1a">'.$last2monthcount_lead.'</th>
 						<th bgcolor="#ffff1a">'.$lastmonthcount_lead.'</th>
 						<th bgcolor="#ffff1a">'.$thismonthcount_lead.'</th>
 						<th bgcolor="#ffff1a">'.$lastdatecount_lead.'</th>
-						
+
 						<th bgcolor="#ffff1a">'.$last2monthcount_lead_sum.'</th>
 						<th bgcolor="#ffff1a">'.$lastmonthcount_lead_sum.'</th>
 						<th bgcolor="#ffff1a">'.$thismonthcount_lead_sum.'</th>
 						<th bgcolor="#ffff1a">'.$lastdatecount_lead_sum.'</th>
 					</tr>';
-			
-			
+
+
 		}
-		
+
 		$table_content .='</tbody>
 		</table>';
 		$table_content .='
 		<style>
 		.container{
-					
+
 			display: block;
 			margin: 0 auto !important;
 			max-width: 100% !important;
 			padding: 10px;
-			width: 100% !important; 
+			width: 100% !important;
 		}
 		.content{
 			box-sizing: border-box;
@@ -2089,20 +2220,20 @@ class Cron_model extends CRM_Model
 		}
 		</sytle>
 		';
-		
+
 		//echo $table_content;
-		
-		
-		
+
+
+
 		$lastdate = date('d-F-Y', strtotime("-1 days"));
 		$subject = "Testing Daily Status Reports - ".$lastdate;
 		$to = get_option('daily_status_reports_to');
 		$daily_status_reports_cc = get_option('daily_status_reports_cc');
-			
+
 		$array = explode(',', $daily_status_reports_cc);
 		$commaCC = "".implode( " , ", $array). "";
 		$ccc = explode(',', $commaCC);;
-		
+
 		$newcc=array();
 		foreach($ccc as $value){
 			if(substr($value, strpos($value, "@") + 1) == 'halonix.co.in')
@@ -2110,14 +2241,14 @@ class Cron_model extends CRM_Model
 				$newcc[]=$value;
 			}
 		}
-		
+
 	     $this->sent_smtp__email($to, $subject, $table_content,$newcc);
-		 
+
 		redirect(admin_url('settings?group=reportemail'));
-		
+
     }
-	
-	
+
+
     private function events()
     {
         // User events
@@ -3522,25 +3653,28 @@ class Cron_model extends CRM_Model
             $backup_name = unique_filename(BACKUPS_FOLDER, $backup_name);
             $save        = BACKUPS_FOLDER . $backup_name;
             $this->load->helper('file');
+
             if (write_file($save, $backup)) {
-                if ($manual == false) {
+                /* if ($manual == false) {
                     logActivity('Database Backup [' . $backup_name . ']', null);
                     update_option('last_auto_backup', time());
                 } else {
                     logActivity('Database Backup [' . $backup_name . ']');
-                }
-				
+                } */
+
 				//----------------------------- Mail ---------//
 				$tbl_data ="Hi,<br><br> Your database backup has been generated please download from given link.<br><br>";
 				$tbl_data .= '<a href="'. base_url().'admin/utilities/backup" >Click here to download</a>';
 				$lastdate = date('d-F-Y', strtotime("-1 days"));
 				$subject = "LMS Database Backup - ".$lastdate;
-				$to = 'rajeev.gangwar@halonix.co.in';
+				//$to = 'rajeev.gangwar@halonix.co.in';
 				//$to = 'rana.raghavendra@bhavyansh.in';
-				
+        //$to = 'ajayit2020@gmail.com';
+          $to = 'neerajvermaabc@gmail.com';
+
 				$this->sent_smtp__email($to, $subject, $tbl_data);
 				//----------------------------- Mail ---------//
-				
+
                 $delete_backups = get_option('delete_backups_older_then');
                 // After write backup check for delete
                 if ($delete_backups != '0') {
@@ -3670,44 +3804,44 @@ class Cron_model extends CRM_Model
 
         return $body;
     }
-	
+
 	public function sent_smtp__email($to_email, $subject, $message,$cc='')
     {
-        
+
         // Simulate fake template to be parsed
         $template           = new StdClass();
         //$template->message  = get_option('email_header') . ' ' . $message . get_option('email_footer');
         $template->message  = $message;
         $template->fromname = get_option('companyname');
         $template->subject  = $subject;
-        
+
         $template = parse_email_template($template);
-        
+
         do_action('before_send_test_smtp_email');
-        
+
         $this->email->initialize();
-        
+
         $this->email->set_newline("\r\n");
-        
+
         $this->email->from(get_option('smtp_email'), $template->fromname);
-        
+
         $this->email->to($to_email);
-		
+
         $systemBCC = get_option('bcc_emails');
 		$this->email->bcc($systemBCC);
-		
+
 		if(isset($cc)){
 			$cc = array_filter(array_unique($cc));
 			$cc = implode(', ', $cc);
 			$ccmail = "'".$cc."'";
 			$this->email->cc($cc);
-			
-        } 
-		
+
+        }
+
         $this->email->subject($template->subject);
         $this->email->message($template->message);
         $this->email->send(true);
-        
+
     }
 
 }

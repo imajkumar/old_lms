@@ -1,4 +1,4 @@
-<?php init_head(); 
+<?php init_head();
 $has_permission_create = has_permission('leads','','create');
 ?>
 <div id="wrapper">
@@ -13,9 +13,9 @@ $has_permission_create = has_permission('leads','','create');
                       <?php echo _l('new_lead'); ?>
                   </a>
 				  <?php
-				   } 
+				   }
 				  ?>
-				
+
                   <div class="row">
                      <div class="col-md-5">
                         <a href="#" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" data-title="<?php echo _l('Lead Filter'); ?>" data-placement="bottom" onclick="slideToggle('.leads-overview'); return false;"><i class="fa fa-filter"></i> Lead Filter</a>
@@ -43,9 +43,9 @@ $has_permission_create = has_permission('leads','','create');
 						 </div>
 						 <table >
 						 <tr >
-						
+
 						<?php
-					      
+
 						$total_value = 0;
 						$numStatuses = count($statuses);
                         $whereNoViewPermission ='';
@@ -63,12 +63,12 @@ $has_permission_create = has_permission('leads','','create');
 										$whereNoViewPermission = 'status="'.$status['id'].'" AND tblleads.state IN('. trim(get_staff_state_id(),",") .')';
 										$this->db->where($whereNoViewPermission);
 									 }
-									 else if(get_staff_role() <= 8) 
+									 else if(get_staff_role() <= 8)
 									{
 										$whereNoViewPermission = 'status="'.$status['id'].'" AND (CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%"  OR tblleads.assigned='.get_staff_user_id().')';
 										$this->db->where($whereNoViewPermission);
 									}
-									
+
 									$query = $this->db->select_sum('opportunity', 'Amount');
 									$query = $this->db->where($whereNoViewPermission);
 									$query = $this->db->get('tblleads');
@@ -83,22 +83,22 @@ $has_permission_create = has_permission('leads','','create');
 							 </div>
 							 </td>
 						<?php } ?>
-					 
+
 					<td width="150px">
 						<div class="border-right text-center">
-                        
+
                         <h3 class="bold"><?php echo $total_value; ?></h3>
                         <span style="color:<?php echo '#fb8c00'; ?>"><?php echo 'Total'; ?></span>
                      </div>
 					 </td>
-					
+
 					 </tr>
-					
+
 					 </table>
-					 
+
                     </div>
                     <div id="filterdata">
-					
+
 					</div>
 					 <div class="col-md-12">
                            <div class="row">
@@ -108,13 +108,13 @@ $has_permission_create = has_permission('leads','','create');
                               </div>
 							  <div class="col-md-2 leads-filter-column">
 							    <label>Customer Group</label>
-								
+
                                  <?php
-								
+
                                    echo render_select('view_customer_group',$customer_groups,array('id','name'),'','',array('data-width'=>'100%','data-none-selected-text'=>_l('Customer Group')),array(),'no-mbot');
                                     ?>
                               </div>
-                              
+
                               <div class="col-md-2 leads-filter-column">
 							     <label>Status</label>
                                  <?php
@@ -124,14 +124,14 @@ $has_permission_create = has_permission('leads','','create');
                                  } else {
                                   foreach($statuses as $key => $status) {
                                     /* if($status['isdefault'] == 0) { */
-									if(get_staff_role() == 4) 
+									if(get_staff_role() == 4)
 									{
-										if($status['id'] > 2 && $status['id'] < 6 ) 
+										if($status['id'] > 2 && $status['id'] < 6 )
 										{
 											$selected[] = $status['id'];
 										}
 									}else if(get_staff_role() == 7){
-										if($status['id'] > 2 && $status['id'] < 6 ) 
+										if($status['id'] > 2 && $status['id'] < 6 )
 										{
 											$selected[] = $status['id'];
 										}
@@ -148,11 +148,11 @@ $has_permission_create = has_permission('leads','','create');
                                     echo '</div>';
                                     ?>
                               </div>
-                              
+
 							  <div class="col-md-2 leads-filter-column hide">
                                  <?php
-								 
-								
+
+
                                    // echo render_select('view_source',$sources,array('id','name'),'','',array('data-width'=>'100%','data-none-selected-text'=>_l('leads_source')),array(),'no-mbot');
                                     ?>
                               </div>
@@ -185,23 +185,23 @@ $has_permission_create = has_permission('leads','','create');
 										{
 										?>
 											<option value="<?php echo $staffs['staffid']; ?>"> <?php echo $staffs['firstname'].' '.$staffs['lastname'].' - '.$staffs['emp_code'];?></option>
-									<?php 
-										} 
-										
-									} 
-										
+									<?php
+										}
+
+									}
+
 									?>
 								</select>
-                                
+
                               </div>
-                              
+
 							  <div class="col-md-2 leads-filter-column hide">
                                  <?php
-								
+
                                     echo render_select('view_region',$regions,array('id','region'),'','',array('data-width'=>'100%','data-none-selected-text'=>_l('region')),array(),'no-mbot');
                                     ?>
                               </div>
-                              
+
 							  <div class="col-md-2 leads-filter-column" id="report-time">
 								<label for="months-report"><?php echo _l('period_datepicker'); ?></label><br />
 								<select class="selectpicker filtersummary" name="months-report" id="months_report" data-width="100%" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
@@ -213,9 +213,9 @@ $has_permission_create = has_permission('leads','','create');
 								   <option value="report_sales_months_three_months" data-subtext="<?php echo _d(date('Y-m-01', strtotime("-2 MONTH"))); ?> - <?php echo _d(date('Y-m-t')); ?>"><?php echo _l('report_sales_months_three_months'); ?></option>
 								   <option value="report_sales_months_six_months" data-subtext="<?php echo _d(date('Y-m-01', strtotime("-5 MONTH"))); ?> - <?php echo _d(date('Y-m-t')); ?>"><?php echo _l('report_sales_months_six_months'); ?></option>
 								   <option value="report_sales_months_twelve_months" data-subtext="<?php echo _d(date('Y-m-01', strtotime("-11 MONTH"))); ?> - <?php echo _d(date('Y-m-t')); ?>"><?php echo _l('report_sales_months_twelve_months'); ?></option>
-								   <option value="till_last_month"><?php echo 'Till Last Month'; ?></option> 
+								   <option value="till_last_month"><?php echo 'Till Last Month'; ?></option>
 								   <!--<option value="custom"><?php echo _l('Custom'); ?></option> -->
-								   
+
 								</select>
 							 </div>
 							  <div id="date-range" class="hide mbot15 col-md-5 offset-md-7">
@@ -240,19 +240,19 @@ $has_permission_create = has_permission('leads','','create');
 								   </div>
 								</div>
 							 </div>
-                  	 
-                  	 
-							  
+
+
+
                            </div>
                         </div>
                         <div class="clearfix"></div>
-					 
+
                   </div>
                </div>
-			   
-			   
-			   
-			   
+
+
+
+
                   <hr class="hr-panel-heading" />
                   <div class="tab-content">
                      <?php
@@ -278,13 +278,13 @@ $has_permission_create = has_permission('leads','','create');
                            </div>
                         </div>
                      </div>
-                     <?php 
-					 } 
-					 else 
-					 { 
+                     <?php
+					 }
+					 else
+					 {
 ?>
                      <div class="row" id="leads-table">
-                        
+
                         <div class="col-md-12">
                            <!--<a href="#" data-toggle="modal" data-table=".table-leads" data-target="#leads_bulk_actions" class="hide bulk-actions-btn table-btn"><?php echo _l('bulk_actions'); ?></a>-->
                            <div class="modal fade bulk_actions" id="leads_bulk_actions" tabindex="-1" role="dialog">
@@ -345,34 +345,38 @@ $has_permission_create = has_permission('leads','','create');
                            <?php
                               $table_data = array();
                               $_table_data = array(
-                               
+
 								_l('id'),
-								_l('Created Date'),									
+								_l('Created Date'),
 								 _l('Customer Group'),
-								 _l('Customer'),								 
-                                _l('Cust. Type'), 
+								 _l('Customer'),
+                                _l('Cust. Type'),
                                 _l('Lead Title'),
                                 _l('Opportunity(In Lacs)'),
                                 _l('leads_dt_status'),
-                                _l('Document Required By'),                              
-                                _l('PM Approval'),                               
-                                _l('TS Approval'),  										
+                                _l('Document Required By'),
+                                _l('PM Approval'),
+                                _l('TS Approval'),
 								_l('Created By'),
-																
+
                                 array(
                                  'name'=>_l('Last Changed'),
                                  'th_attrs'=>array('class'=>'date-created')
                                  ));
-								 
-								
+
+
+
                               foreach($_table_data as $_t){
                                array_push($table_data,$_t);
                               }
+
+
                               /* $custom_fields = get_custom_fields('leads',array('show_on_table'=>1));
                               foreach($custom_fields as $field){
                                array_push($table_data,$field['name']);
                               } */
                               $table_data = do_action('leads_table_columns',$table_data);
+                                //echo "<pre>";print_r($table_data);
                               $_op = _l('options');
                               array_push($table_data,$_op);
                               render_datatable($table_data,'leads'); ?>
@@ -385,7 +389,7 @@ $has_permission_create = has_permission('leads','','create');
          </div>
       </div>
    </div>
-   
+
    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 		<div class="modal-content">
@@ -400,7 +404,7 @@ $has_permission_create = has_permission('leads','','create');
 			<a href="<?php echo base_url(); ?>admin/leads" class="btn btn-default">No</a>
 			<a href='<?php echo base_url().'admin/lead_requirment/add_lead_requirement?id='.$_REQUEST['lead_id']; ?>' class="btn btn-primary">Yes</a>
 		  </div>
-		</div> 
+		</div>
 	  </div>
 	</div>
 
@@ -417,7 +421,7 @@ $has_permission_create = has_permission('leads','','create');
    $(function(){
       leads_kanban();
    });
- 
+
 	var url_string = document.URL;
 
 	var url = new URL(url_string);
@@ -426,9 +430,9 @@ $has_permission_create = has_permission('leads','','create');
 	console.log(url_string);
 	if(c==1){
 		$("#myModal").modal();
-		
+
 	}
-	
+
 	$(document).on('change', '.filtersummary', function (e) {
 			var staff = $("#view_assigned").val();
 			var months_report = $("#months_report").val();
@@ -446,39 +450,40 @@ $has_permission_create = has_permission('leads','','create');
 				$('#filterdata').append("");
 				$('#filterdata').removeClass("hide");
 				$('#original').addClass("hide");
-				var base_url = '<?php echo base_url() ?>';				
+				var base_url = '<?php echo base_url() ?>';
 					$.ajax({
 					  type: "GET",
 					  url: base_url + "admin/leads/getFilterCountData",
 					  data: {'staff_id': staff,'months_report': months_report},
 					  dataType: "json",
-					  success: function (data) {	
+					  success: function (data) {
 							$('#filterdata').html("");
-						     $('#filterdata').append(data);							
+
+						     $('#filterdata').append(data);
 						}
-					}); 
+					});
 			}
 	});
-   
+
 </script>
 
 <script>
 $(document).ready(function(){
 	   $("#item_details").hide();
 	   $("#item_details_d").hide();
-	   
-	  
+
+
 	   /*  $(document).on('change', '#view_assigned', function (e) {
 		  var item = $(this).val();
 		  alert(item);
-		  
+
 	   });  */
-	   
-	  
-		   
-  
+
+
+
+
    });
-	
+
 	$(document).on('change', '.selectpickerlr', function (e) {
 		  var item = $(this).val();
 		   var id = $(this).attr("id");
@@ -486,39 +491,39 @@ $(document).ready(function(){
 			$("#"+item).removeClass("hidden");
 			$("#"+item).val("");
 		  }else{
-			 $("#new"+id).addClass("hidden"); 
+			 $("#new"+id).addClass("hidden");
 			  $("#new"+id).val('');
 		  }
 	   });
-	   
+
     $(function(){
        var LeadsServerParams = {
 			"report_months": '[name="months-report"]',
 			"report_from": '[name="report-from"]',
 			"report_to": '[name="report-to"]',
 		}
-		
+
 		table_leads = $('table.table-leads');
-		
+
         var headers_leads = table_leads.find('th');
         initDataTable(table_leads, admin_url + 'leads/table', [headers_leads.length - 1, 0], [headers_leads.length - 1, 0], LeadsServerParams, [table_leads.find('th.date-created').index(), 'DESC']);
-        
+
 		$('#report-to').focusout(function(){
-			
+
 			table_leads.DataTable().ajax.reload()
 				.columns.adjust()
 				.responsive.recalc();
 		});
-       
+
 		$('#report-from').focusout(function(){
 			table_leads.DataTable().ajax.reload()
 				.columns.adjust()
 				.responsive.recalc();
 		});
-       
+
     });
 
-	
+
 </script>
 </body>
 </html>

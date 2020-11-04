@@ -82,7 +82,7 @@
 
 								<select class="selectpicker" id="months-report" name="report_months" data-width="100%" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
 
-								   <option <?php if($this->input->post('report_months')==''){ echo 'selected'; } ?> value=""><?php echo _l('report_sales_months_all_time'); ?></option>
+								   <option <?php if($this->input->post('report_months')=='report_sales_months_all_time'){ echo 'selected'; } ?> value="report_sales_months_all_time"><?php echo _l('report_sales_months_all_time'); ?></option>
 
 								   <option <?php if($this->input->post('report_months')=='this_month'){ echo 'selected'; } ?> value="this_month"><?php echo _l('this_month'); ?></option>
 									
@@ -268,8 +268,7 @@
 							$region_staff = $this->db->query($sql)->row()->region;
 							$_staff_name = $this->db->query($sql)->row()->firstname.' '.$this->db->query($sql)->row()->lastname;
 							
-							echo $report_months.' - '.$from_date.' - '.$to_date.' - '.$regionid.' - '.$winloss.' - '.$topRecord.' - '.$view_assigned;
-							exit;
+							
 							if($this->input->post('from-region')=='pan_india'){
 							
 								$lead_details = $this->leads_model->winloss_month_zone($report_months,$from_date,$to_date,$regionid,$winloss,$topRecord,$view_assigned);

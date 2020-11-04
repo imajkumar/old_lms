@@ -58,25 +58,25 @@ if (get_staff_role() > 8) {
 else if (get_staff_role() == 1) {
     array_push($where, 'AND tblleads.assigned =' . get_staff_user_id() . '');
 }
-else if(get_staff_role() == 2) 
+else if(get_staff_role() == 2)
 {
 	array_push($where, 'AND (CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%"  OR tblleads.assigned ='. get_staff_user_id() .')');
 }
-else if(get_staff_role() == 5 || get_staff_role() == 3) 
+else if(get_staff_role() == 5 || get_staff_role() == 3)
 {
 	array_push($where, 'AND (CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%"  OR tblleads.assigned ='. get_staff_user_id() .')');
 }
-else if(get_staff_role() == 6) 
+else if(get_staff_role() == 6)
 {
 	array_push($where, 'AND (CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%"  OR tblleads.assigned ='. get_staff_user_id() .')');
 }
-else if(get_staff_role() == 8) 
+else if(get_staff_role() == 8)
 {
 	array_push($where, 'AND (CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%"  OR tblleads.assigned ='. get_staff_user_id() .')');
 }
-else if(get_staff_role() == 7 || get_staff_role() == 4) 
+else if(get_staff_role() == 7 || get_staff_role() == 4)
 {
-	array_push($where, 'AND tblleads.state IN('. trim(get_staff_state_id(),",") .')');
+	//array_push($where, 'AND tblleads.state IN('. trim(get_staff_state_id(),",") .')');
 }
 if ($this->ci->input->post('assigned')) {
     array_push($where, 'AND assigned =' . $this->ci->input->post('assigned'));
@@ -120,11 +120,11 @@ if ($this->ci->input->post('report_months')) {
 		array_push($where, 'AND (dateadded BETWEEN "'.$report_from.' 00:00:00" AND "'.$report_to.' 23:59:59" )');
 	}else if($this->ci->input->post('report_months') =='till_last_month') {
 		$report_from = date('2019-04-01');
-		
+
 		$report_to= date('Y-m-d', strtotime("last day of -1 month"));
 		array_push($where, 'AND (dateadded BETWEEN "'.$report_from.' 00:00:00" AND "'.$report_to.' 23:59:59" )');
 	}
-	
+
 }if ($this->ci->input->post('report_to')) {
 	$report_from = $this->ci->input->post('report_from');
 	$report_to= $this->ci->input->post('report_to');
@@ -143,7 +143,7 @@ if ($this->ci->input->post('region')) {
 $aColumns = do_action('leads_table_sql_columns', $aColumns);
 
  /*  print_r($where);exit;  */
-  
+
 // Fix for big queries. Some hosting have max_join_limit
 if (count($custom_fields) > 4) {
     @$this->ci->db->query('SET SQL_BIG_SELECTS=1');
@@ -164,26 +164,26 @@ $i = 0;
 foreach ($rResult as $aRow) {
     $row = array();
 
-   
-	
+
+
     $row[] = '<span  data-toggle="tooltip" data-title="'.$aRow['id'].'">'.$aRow['id'].'</span>';
-	
+
 	$timestamp1 = strtotime($aRow['dateadded']);
 	$date1 = date("d-m-Y", $timestamp1);
-	
-	
+
+
     $row[] = '<span  data-toggle="tooltip" data-title="'._dt($aRow['dateadded']).'">'.$date1.'</span>';
 	$row[] = $aRow['group_name'];
 	$row[] = $aRow['companyname'];
 	$customerOutput = '<span data-toggle="tooltip" data-title="'.$aRow['customer_tname'].'">' . $aRow['customer_type'] . '</span>';
-	
+
     $row[] = $customerOutput;
-	
+
     $row[] = '<a href="'.admin_url('leads/index/'.$aRow['id']).'" onclick="init_lead('.$aRow['id'].');return false;"><span data-toggle="tooltip" data-title="'.$aRow['description'].'">'. $aRow['leaddesc'] . '</span></a>';
 
 	$row[] = format_money($aRow['opportunity'], ($aRow['currency'] != 0 ? $this->ci->currencies_model->get_currency_symbol($aRow['currency']) : $baseCurrencySymbol));
-    
-	
+
+
     if ($aRow['status_name'] == null) {
         if ($aRow['lost'] == 1) {
             $statusOutput = '<span >' . _l('lead_lost') . '</span>';
@@ -201,11 +201,11 @@ foreach ($rResult as $aRow) {
 	if($date2 =='01-01-1970'){
 		$row[] = '-';
 	}else{
-		$row[] = $date2; 
+		$row[] = $date2;
 	}
-  
-	
-	
+
+
+
 	$project_manager = '';
 	if($aRow['lstatus'] < 3 )
 	{
@@ -218,7 +218,7 @@ foreach ($rResult as $aRow) {
     }else{
             $project_manager = '<span class="label label-default inline-block" style="color:#000;border:0px;">' . _l('Partial Approved') . '</span>';
     }
-	
+
 	$row[] = $project_manager;
 	 $assproject = '';
 	if($aRow['lstatus'] < 3 )
@@ -233,7 +233,7 @@ foreach ($rResult as $aRow) {
             $assproject = '<span class="label label-default inline-block" style="color:#000;border:0px;">' . _l('Partial Approved') . '</span>';
     }
 	$row[] = $assproject;
-	
+
 	$assignedOutput = '';
     if ($aRow['assigned'] != 0) {
         $full_name = $aRow['assigned_name'];
@@ -242,11 +242,11 @@ foreach ($rResult as $aRow) {
 
     $row[] = $assignedOutput;
 
-	
+
 	$timestamp = strtotime($aRow['dateassigned']);
 	$date = date("d-m-Y", $timestamp);
 	$row[] = '<span data-toggle="tooltip" data-title="'._dt($aRow['dateassigned']).'">'.$date.'</span>';
- 
+
      // Custom fields add values
     foreach($customFieldsColumns as $customFieldColumn){
         $row[] = (strpos($customFieldColumn, 'date_picker_') !== false ? _d($aRow[$customFieldColumn]) : $aRow[$customFieldColumn]);
@@ -258,18 +258,18 @@ foreach ($rResult as $aRow) {
     ));
 
     $row = $hook_data['output'];
-    
+
     $options = '';
 
     $options .= '<a class="btn btn-default btn-icon" href="'.admin_url('leads/index/'.$aRow['id']).'" onclick="init_lead('.$aRow['id'].');return false;"><i  class="fa fa-eye" style="color"></i></a>';
-    
+
 	if($aRow['lstatus'] == 7 || $aRow['lstatus'] == 6)
 	{
 		$options .= '<a class="btn btn-default btn-icon" href="'.admin_url('leads/manage/'.$aRow['id']).'"><i class="fa fa-ban"></i></a>';
 	}else if($aRow['assigned'] == get_staff_user_id()){
-		
+
 		$options .= '<a class="btn btn-default btn-icon" href="'.admin_url('leads/manage/'.$aRow['id']).'"><i class="fa fa-pencil-square-o"></i></a>';
-	
+
 	}
     if ($aRow['addedfrom'] == get_staff_user_id() || $has_permission_delete) {
        // $options .= icon_btn('leads/delete/' . $aRow['id'], 'remove', 'btn-danger _delete');
@@ -284,6 +284,5 @@ foreach ($rResult as $aRow) {
 
 
     $output['aaData'][] = $row;
-	
-}
 
+}

@@ -280,7 +280,7 @@ function render_datatable($headings = array(), $class = '', $additional_classes 
                 }
             }
             $th_attrs = ($th_attrs != '' ? ' '.$th_attrs : $th_attrs);
-			
+
             $table .= '<th'.$th_attrs.'>' . $heading['name'] . '</th>';
         }
     }
@@ -288,6 +288,7 @@ function render_datatable($headings = array(), $class = '', $additional_classes 
     $table .= '</thead>';
     $table .= '<tbody></tbody>';
     $table .= '</table></div>';
+  
     echo $table;
 }
 

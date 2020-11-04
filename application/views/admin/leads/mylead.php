@@ -18,28 +18,28 @@
     </div>
     <h3 class="panel-title">
         </h3><h3 class="panel-title"><i class="glyphicon glyphicon-th-list"></i> Leads </h3>
-    
+
     <div class="clearfix"></div></div>
     <div class="kv-panel-before">    <div class="pull-right">
         <div class="btn-toolbar kv-grid-toolbar" role="toolbar">
-            
+
 <div class="btn-group"><a id="w0-togdata-page" class="btn btn-default" href="=all" title="Show all data" data-pjax="true"><i class="glyphicon glyphicon-resize-full"></i> All</a></div>
 
-        </div>    
+        </div>
     </div>
     <form action="" method="post" name="frm">
 										<input type="hidden" name="_csrf" value="">
-           <input type="hidden" name="multiple_del" value="true"><a class="btn btn-success  btn-sm" href="<?php echo base_url('admin/leads/lead_add'); ?>"></i> Add</a> 
+           <input type="hidden" name="multiple_del" value="true"><a class="btn btn-success  btn-sm" href="<?php echo base_url('admin/leads/lead_add'); ?>"></i> Add</a>
     <div class="clearfix"></div></form></div>
-	
-	
+
+
 	 <div class="table-responsive" data-pattern="priority-columns">
     <table class="table table-striped table-bordered dataTable" id="xin_table1" style="width:100%;">
   <thead>
         <tr>
          <th style="width:150px;"><?php echo 'Lead Title';?></th>
               <th><?php echo 'Lead Status';?></th>
-			  
+
               <th><?php echo 'Lead Type';?></th>
 			  <th><?php echo 'Date';?></th>
               <th><?php echo 'First Name';?></th>
@@ -47,29 +47,29 @@
               <th><?php echo 'Email';?></th>
               <th><?php echo 'Mobile';?></th>
               <th><?php echo 'Owner';?></th>
-              
+
               <th><?php echo 'Action';?></th>
         </tr>
       </thead>
 
 
 <tbody>
-	<?php 
+	<?php
 		foreach($result as $data_leads) {
 
 	?>
-	
+
 	<tr>
 		<td><?php echo $data_leads->lead_title; ?></td>
 		<td><?php echo $this->leads_model->get_status_byid($data_leads->lead_status); ?></td>
-		<td><?php 
+		<td><?php
 		if($data->lead_type == 0){
 			echo $this->leads_model->get_lead_type_byid($data_leads->lead_type);
-			
+
 		}
 		else{
 		echo $this->leads_model->get_lead_type_byid($data_leads->lead_type);
-	
+
 		}?></td>
 		<td><?php echo $data_leads->lead_date; ?></td>
 		<td><?php echo $data_leads->first_name; ?></td>
@@ -77,25 +77,25 @@
 		<td><?php echo $data_leads->email; ?></td>
 		<td><?php echo $data_leads->mobile; ?></td>
 		<td>
-			<?php 
+			<?php
 				   $user = $this->leads_model->read_user_info($data_leads->lead_owner);
    				  if(!is_null($user)){
 					  $fname = $user[0]->first_name.' '.$user[0]->last_name;
-					 
+
 				  } else {
-					 $fname = '--';   
+					 $fname = '--';
 				  }
 				  echo $fname;
 			?>
 		</td>
-		
+
 		<td class="sorting_1">
 			<span data-toggle="tooltip" data-placement="top" title="" data-original-title="View Details">
 				<a href="<?php echo base_url().'admin/leads/manage/'.$data_leads->leadid;?>">
 					<button type="button" class="btn btn-secondary btn-sm m-b-0-0 waves-effect waves-light">
 					<i class="fa fa-arrow-circle-right"></i></button></a>
 			</span>
-			
+
 		</td>
 	</tr>
 
@@ -111,18 +111,18 @@
 
 
 </table></div>
-	
-	
-	
-	
-  
+
+
+
+
+
 
 
    <div class="kv-panel-after"><a class="btn btn-info  btn-sm" href="/LiveSales/livecrm/web/index.php?r=sales%2Flead%2Findex"><i class="glyphicon glyphicon-repeat"></i> Reset List</a></div>
     <div class="panel-footer">    <div class="kv-panel-pager">
-        
+
     </div>
-    
+
     <div class="clearfix"></div></div>
 </div>
     <div class="clearfix"></div></div>
@@ -201,56 +201,56 @@
        $(document).on('change', '#country_id', function (e) {
             $('#state_id').html("");
             var country_id = $(this).val();
-			
+
 			var base_url = '<?php echo base_url() ?>';
             var div_data = '<option value=""><?php echo 'select'; ?></option>';
-			
+
             $.ajax({
                 type: "GET",
                 url: base_url + "admin/leads/getBystate",
                 data: {'country_id': country_id},
                 dataType: "json",
                 success: function (data) {
-					
-						
+
+
                     $.each(data, function (i, obj)
                     {
-						
+
                         div_data += "<option value=" + obj.id + ">" + obj.state + "</option>";
-						
+
                     });
                     $('#state_id').append(div_data);
                 }
             });
         });
-       
+
           $(document).on('change', '#state_id', function (e) {
             $('#city_id').html("");
-			
+
             var state_id = $(this).val();
-			
+
 			var base_url = '<?php echo base_url() ?>';
             var div_data = '<option value=""><?php echo 'select'; ?></option>';
-			
+
             $.ajax({
                 type: "GET",
                 url: base_url + "admin/leads/getBycity",
                 data: {'state_id': state_id},
                 dataType: "json",
                 success: function (data) {
-				
+
                     $.each(data, function (i, obj)
                     {
-						
+
                         div_data += "<option value=" + obj.city + ">" + obj.city + "</option>";
                     });
                     $('#city_id').append(div_data);
                 }
             });
         });
-       
-   
-  
+
+
+
 </script>
 </body>
 </html>
