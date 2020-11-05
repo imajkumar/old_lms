@@ -24,14 +24,14 @@
          <?php if($group == 'profile'){ ?>
          <!--<div class="btn-bottom-toolbar btn-toolbar-container-out text-right">
            <?php
-
-			if(get_staff_role() > 1 || get_staff_role() == 0)
+		   
+			if(get_staff_role() > 1 || get_staff_role() == 0) 
 			{
 			?>
 		   <button class="btn btn-info only-save customer-form-submiter">
                <?php echo _l( 'submit'); ?>
             </button>
-
+			
 			<?php } ?>
             <?php if(!isset($client)){ ?>
             <button class="btn btn-info save-and-add-contact customer-form-submiter">

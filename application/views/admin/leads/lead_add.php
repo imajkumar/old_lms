@@ -70,7 +70,7 @@
                </div>
             </div>
       </fieldset>
-
+      
 	  <div class="panel panel-info">
    <div class="panel-heading">
       <h3 class="panel-title">Project /Lead</h3>
@@ -150,11 +150,11 @@
                   <label class="control-label" for="lead-lead_status_id">Lead Status *</label>
                   <select id="lead-lead_status_id" required class="form-control" name="lead_status">
                      <option value="">--Lead Status--</option>
-                     <?php foreach($all_status as $status) {
+                     <?php foreach($all_status as $status) { 
 							if($status['id'] == 1 || $status['id'] == 2 || $status['id'] == 3 || $status['id'] == 4 || $status['id'] == 5){
                          ?>
 							<option value="<?php echo $status['id']; ?>"><?php echo $status['name'];?></option>
-						<?php }
+						<?php } 
 						} ?>
                   </select>
                   <div class="help-block"></div>
@@ -215,10 +215,10 @@
 			  </fieldset>
 		   </div>
 		</div>
-
+		
 <!--  Lead Contact -->
-
-
+		
+		
 			<div class="panel panel-info">
 			   <div class="panel-heading">
 				  <h3 class="panel-title">Lead Contact Details</h3>
@@ -285,15 +285,15 @@
 				  </div>
 			   </div>
 			</div>
-
+			
 <!--  Lead Requirnment -->
 		<div class="panel panel-info">
 			   <div class="panel-heading">
 				  <h3 class="panel-title">Lead Requirnment Details</h3>
 			   </div>
 			   <div class="panel-body">
-
-			<div class="row around10">
+				 	
+			<div class="row around10">   
 				<div class="col-md-6">
 					<table class="table">
 						<tbody><tr>
@@ -349,24 +349,24 @@
 								<td>6.</td>
 								<td><h4>Document Required By</h4></td>
 								<td width="100px">
-
+									
 									<input type="date" name='document_due_date' id='document_due_date' min="<?php echo date('Y-m-d'); ?>"  onkeydown="return false" class="form-control">
 								</td>
-
+								
 							</tr>
-
-
+							
+							
 						</tbody></table>
 				</div>
 			</div>
-
+                                                        	
 			<div class="row">
-
+				
 				<div class="table-responsive s_table">
-
+				
 					<table class="table estimate-items-table items table-main-estimate-edit tablep">
 					 <thead>
-
+					   
 					 <tr>
 						   <th></th>
 						   <th style="width:170px" align="center"><?php echo 'Category *'; ?></th>
@@ -382,17 +382,17 @@
 								if(is_admin())
 								{
 							?>
-						   <th style="width:170px" align="center"><?php echo 'Proposed Item'; ?></th>
+						   <th style="width:170px" align="center"><?php echo 'Proposed Item'; ?></th> 
 						   <th style="width:170px" id="propsed_item_details" align="center"><?php echo 'Proposed Item Details'; ?></th>
 						   <th style="width:80px" align="center"><?php echo 'Proposed Price'; ?></th>
-						   <?php
+						   <?php 
 							   }
-
+							  
 						   ?>
 						   <th align="center"><i class="fa fa-cog"></i></th>
 						</tr>
-
-
+						
+						
 						<tr>
 						   <td style="width:50px">
 						   </td>
@@ -402,23 +402,23 @@
 										<?php foreach($items_groups as $_items){ ?>
 										  <option value="<?php echo $_items['id']; ?>"><?php echo $_items['name']; ?></option>
 									   <?php } ?>
-
+									   
 								</select>
 						   </td> <td style="width:100px">
 								<select class="form-control" id="sub_item_cat">
 									<option value="">Select Wattage</option>
-
+										
 								</select>
 						   </td>
 						   <td style="width:320px">
 								<select class="form-control" id="item">
 									<option value="">Select Item</option>
-
+										
 								</select>
 						   </td>
 						   <td id="item_details_d"  style="width:150px">
 							  <input type="text" class="form-control" name="item_description" id="item_description" placeholder="<?php echo _l('Item Details'); ?>">
-
+							 
 						   </td>
 						   <td >
 							 <select id="warranty" class="form-control">
@@ -436,12 +436,12 @@
 
 						  <td style="width:80px">
 							  <input style='width:90px;' type="number" min="0" value="1" class="form-control" id="quantity" placeholder="<?php echo _l('item_quantity_placeholder'); ?>">
-
+							 
 						   </td>
-
+						   
 						   <td style="width:100px">
 							  <input type="number" style='width:90px;' id="rate" class="form-control" placeholder="<?php echo _l('item_rate_placeholder'); ?>">
-
+							 
 						   </td>
 						   <td style="width:190px">
 								<select class="form-control selectpicker"  multiple data-live-search="false"  id="document">
@@ -449,9 +449,9 @@
 									<?php foreach($get_groups_document as $document){ ?>
 										  <option value="<?php echo $document['id']; ?>"><?php echo $document['name']; ?></option>
 									   <?php } ?>
-
-
-								</select>
+									
+									
+								</select>                     
 						   </td>
 					<?php
 						if(is_admin())
@@ -464,55 +464,55 @@
 									 <?php foreach($_items as $item){ ?>
 									  <option value="<?php echo $item['id']; ?>"><?php echo $item['description']; ?> </option>
 									  <?php } ?>
-
+								   
 								   <?php } ?>
 								</select>
 						   </td>
-
+						   
 						    <td id="item_details_du"  style="width:150px">
 							  <input type="text" class="form-control" name="item_description_propsed"  id='item_description_propsed' placeholder="<?php echo 'Proposed Item Details'; ?>">
-
+							 
 						   </td>
-
+						   
 						   <td style="width:100px">
 							  <input type="number" id="proposed_rate" class="form-control" placeholder="<?php echo _l('item_rate_placeholder'); ?>">
 						   </td>
-					<?php
+					<?php 
 						 }
-
+						 
 					?>
 						   <td style="width:50px">
-
+							
 							<a href="javascript:void(0);"  class="add-row btn btn-success create-new-field">
 								Add
 								<span class="hidden-xs"></span>
 							</a>
 						   </td>
 						</tr>
-
+					   
 					 </thead>
 					 <tbody>
-
+						
 					 </tbody>
 				  </table>
-
+				  
 				  <button type="button" class="delete-row">Delete Row</button>
 			  </div>
 			  <div class="table-responsive col-md-12">
 					<table id="datarecord" class="table tabled">
 					<tbody>
-
+						
 					 </tbody>
 				  </table>
 				</div>
-
+				
 			</div>
-
-
-
+			
+		
+				 
 			   </div>
 			</div>
-
+			
 			<div class="panel panel-info hide">
 			   <div class="panel-heading">
 				  <h3 class="panel-title">Address Details</h3>
@@ -544,10 +544,10 @@
 						   <label for="direction"><?php echo _l('Region'); ?></label>
 						   <select class="selectpicker" data-none-selected-text="<?php echo _l('system_default_string'); ?>" data-width="100%" name="region" id="region">
 							  <option value="">Select Region</option>
-							  <?php
+							  <?php 
 								 foreach($region as $region_data){
-
-
+								  
+								 
 								 ?>
 							  <option value="<?php echo $region_data['id'] ?>"<?php
 								 if (set_value('region',$region_data['id']) == $member_list['region']) {
@@ -575,8 +575,8 @@
 				  </div>
 			   </div>
 			</div>
-
-
+			
+			
 			<div class="panel">
 			   <div class="panel-body">
 				  <div class="col-md-10">
@@ -586,7 +586,7 @@
 				  </div>
 			   </div>
 			</div>
-
+	  
 	  </form>
 </div>
 <div class="btn-bottom-pusher"></div>
@@ -594,13 +594,13 @@
 <?php init_tail(); ?>
 <?php $this->load->view('admin/clients/client_group'); ?>
 <?php $this->load->view('admin/clients/client_js'); ?>
-<script type="text/javascript">
+<script type="text/javascript">  
 	var item_requirnment_exist=0;
-
-
+            
+	
 
    //$('#my_l_searchd').hide();
-   /*
+   /* 
    $('#customer_namec').change(function(){
       if($(this).is(":checked")) {
    	 $('#my_l_searchd').show();
@@ -615,15 +615,15 @@
         $('#my_l_searchd').hide();
       $('#my_l_searcht').show();
       $("#lead_customer_type_id").prop("disabled", false);
-      }
+      } 
    });
-
+     
    */
    $(document).on('change', '#my_l_searchd', function (e) {
          $('#lead_contact').html("");
-          var my_l_searchdr = $(this).val();
+          var my_l_searchdr = $(this).val(); 
    	var div_data = '<option value=""><?php echo '-- Select --'; ?></option>';
-
+   	
    	var base_url = '<?php echo base_url() ?>';
           $.ajax({
               type: "GET",
@@ -631,7 +631,7 @@
               data: {'customer_type': my_l_searchdr},
               dataType: "json",
               success: function (data) {
-
+   		
    			$("#lead_customer_type_id option[value="+data[0].details.customer_type+"]").attr('selected', 'selected');
    			$("#hidden_customer_type").val(data[0].details.customer_type);
    			$("#lead_customer_type_id").prop("disabled", true);
@@ -640,91 +640,91 @@
    			$("#country_id").val(data[0].details.country);
    			$("#state_id").val(data[0].details.state);
    			$("#city_id").val(data[0].details.city);
-
+   			
    			$.each(data[0].contact, function (i, obj)
                   {
-
+     
                       div_data += "<option value=" + obj.id + ">" + obj.firstname +"  "  + obj.lastname  + "</option>";
-
+     
                   });
-
+   			
                   $('#lead_contact').append(div_data);
-
-
+   			
+   			
    	    }
           });
       });
-
+   
    $(document).on('change', '#lead_contact', function (e) {
    	$("#lead-first_name").val("");
    	$("#lead-last_name").val("");
    	$("#lead-email").val("");
    	$("#lead-phone").val("");
    	$("#lead-mobile").val("");
-
+   			
          var lead_contact = $(this).val();
-
+     
    	var base_url = '<?php echo base_url() ?>';
-
+         
           $.ajax({
               type: "GET",
               url: base_url + "admin/leads/getlead_contact",
               data: {'id': lead_contact},
               dataType: "json",
               success: function (data) {
-
+   			
    			$("#lead-first_name").val(data.firstname+" "+data.lastname);
    			$("#lead-last_name").val(data.title);
    			$("#lead-email").val(data.email);
    			$("#lead-phone").val(data.phonenumber);
    			$("#lead-mobile").val(data.mobilenumber);
-
+     
               }
           });
       });
-
+   
    $(document).on('change', '#customer_group', function (e) {
           $('#my_l_searchd').html("");
-
+       
           var customer_group = $(this).val();
-
+   	
    	var base_url = '<?php echo base_url() ?>';
           var div_data = '<option value=""><?php echo '-- Select --'; ?></option>';
-
+     
           $.ajax({
               type: "GET",
               url: base_url + "admin/leads/getCustomerByGroup",
               data: {'customer_group': customer_group},
               dataType: "json",
               success: function (data) {
-
+   		
                   $.each(data, function (i, obj)
                   {
-
+     
                       div_data += "<option value=" + obj.id + ">" + obj.name + "</option>";
-
+     
                   });
-
+   			
                   $('#my_l_searchd').append(div_data);
-
+                 
               }
           });
       });
-
-
-
-</script>
+   
+    
+     
+</script>  
 <script type="text/javascript">
    $(document).ready(function () {
    $('.project_awarded_to').hide();
-   $('.project_total_amount').hide();
+   $('.project_total_amount').hide(); 
    $('#lead-dellar').hide();
    $('#lead-dellar_name').hide();
    $('#lead-dellar_contractor').hide();
-
+   
    $('#lead-lead_status_id').change(function(){
 	   var errormsg = $(this).find("option:selected").text();
-
+	    
    		  if( $('#lead-lead_status_id').val() ==7) {
 			  $("#save_record").show()
 				$('.project_awarded_to').show();
@@ -735,7 +735,7 @@
 				$("#lead_status_losss").prop("required", true);
 				$('.project_total_amount').hide();
 				$("#lead_status_lo").prop("required", false);
-
+   			
            } else if( $('#lead-lead_status_id').val() ==6){
 				$('.project_awarded_to').hide();
 				$('.project_total_amount').show();$('#lead-dellar').show();
@@ -752,15 +752,15 @@
 			$("#lead-dellar").prop("required", true);
 			$("#project_location").prop("required", true);
 			$("#project_title").prop("required", true);
-
+			
 			$("#lead-lead_description").prop("required", true);
-
+			
 			$("#lead-lead_source_id").prop("required", true);
 			$("#lead_status_lo").prop("required", true);
-
+			
 			$('.project_total_amount').hide();
 			$("#lead_status_losss").prop("required", false);
-
+   		
    }else if($('#lead-lead_status_id').val() ==3){
 	   ////alert('Lead cannot be saved in '+errormsg+' without item requirement');
 	  ////$("#save_record").prop("disabled", true);
@@ -771,10 +771,10 @@
    	$('#lead-dellar_contractor').hide();
    	$("#lead-dellar").prop("required", false);
    	$("#project_location").prop("required", false);
-
+   	
    	$("#project_title").prop("required", false);
    	$("#project_title").prop("readonly", false);
-
+   	
    	$("#lead-lead_description").prop("required", false);
    	$("#lead-lead_description").prop("readonly", false);
    	$("#lead_status_losss").prop("required", false);
@@ -789,100 +789,100 @@
    	$('#lead-dellar_contractor').hide();
    	$("#lead-dellar").prop("required", false);
    	$("#project_location").prop("required", false);
-
+   	
    	$("#project_title").prop("required", false);
    	$("#project_title").prop("readonly", false);
-
+   	
    	$("#lead-lead_description").prop("required", false);
    	$("#lead-lead_description").prop("readonly", false);
    	$("#lead_status_losss").prop("required", false);
    	$("#lead-lead_source_id").prop("required", false);
    	$("#lead-lead_source_id").prop("disabled", false);
-   }
-
+   }	
+   	 
    });
-
-   });
-
+    
+   }); 
+   
    $('#lead_status_lo').hide();
    $(document).on('change', '#lead-lead_status_id', function (e) {
         $('#lead_status_losss').html("");
-
-
+       
+        
    var status_loss = $(this).val();
-
+   
    if(status_loss==6 || status_loss==7){
-    $('#lead_status_losss').show();
+    $('#lead_status_losss').show();	   
     $('#lead_status_lo').hide();
    }else{
     $('#lead_status_losss').hide();
     $('#lead_status_lo').show();
    }
-
-
+      
+   
    var base_url = '<?php echo base_url() ?>';
         var div_data = '<option value=""><?php echo '-- Select Remark --'; ?></option>';
-
+    
         $.ajax({
             type: "GET",
             url: base_url + "admin/leads/getReasonByStatus",
             data: {'status_loss': status_loss},
             dataType: "json",
             success: function (data) {
-
+   
                 $.each(data, function (i, obj)
                 {
-
+   
                     div_data += "<option value=" + obj.id + ">" + obj.name + "</option>";
-
+   
                 });
-
+   	
                 $('#lead_status_losss').append(div_data);
-
+               
             }
         });
     });
-
+   
    $(document).on('change', '#lead_dillar_data', function (e) {
    if($('#lead_dillar_data').val() ==1){
-   $('#lead-dellar_name').show();
-   $('#lead-dellar_contractor').hide();
+   $('#lead-dellar_name').show();	
+   $('#lead-dellar_contractor').hide();			
    $("#dilar").prop("required", true);
    $("#contractor").prop("required", false);
-
+   
    		}else if($('#lead_dillar_data').val() ==2){
    $('#lead-dellar_contractor').show();
-   $('#lead-dellar_name').hide();
-
+   $('#lead-dellar_name').hide();	
+   
    $("#dilar").prop("required", false);
    $("#contractor").prop("required", true);
-
+   
    }else if($('#lead_dillar_data').val() ==3){
    $('#lead-dellar_name').show();
    $('#lead-dellar_contractor').show();
-
+   
    $("#dilar").prop("required", true);
    $("#contractor").prop("required", true);
    }
    		else{
    			$("#dilar").prop("required", false);
    $("#contractor").prop("required", false);
-
-   			$('#lead-dellar_name').hide();
+   
+   			$('#lead-dellar_name').hide();		
    $('#lead-dellar_contractor').hide();
    		}
-
+   
    });
-
+   
 </script>
 <script>
    $(function() {
-
+   
        $('select[name="role"]').on('change', function() {
            var roleid = $(this).val();
            init_roles_permissions(roleid, true);
        });
-
+   
        $('input[name="administrator"]').on('change', function() {
            var checked = $(this).prop('checked');
            var isNotStaffMember = $('.is-not-staff');
@@ -895,7 +895,7 @@
                $('.roles').find('input').prop('disabled', false);
            }
        });
-
+   
        $('#is_not_staff').on('change', function() {
            var checked = $(this).prop('checked');
            var row_permission_leads = $('tr[data-name="leads"]');
@@ -906,9 +906,9 @@
                row_permission_leads.removeClass('hide');
            }
        });
-
+   
        init_roles_permissions();
-
+   
        _validate_form($('.staff-form'), {
            firstname: 'required',
            lastname: 'required',
@@ -938,59 +938,59 @@
            }
        });
    });
-
+   
 </script>
 <script>
    $(document).on('change', '#country_id', function (e) {
         $('#state_id').html("");
         var country_id = $(this).val();
-
+   
    var base_url = '<?php echo base_url() ?>';
         var div_data = '<option value=""><?php echo 'select'; ?></option>';
-
+   
         $.ajax({
             type: "GET",
             url: base_url + "admin/leads/getBystate",
             data: {'country_id': country_id},
             dataType: "json",
             success: function (data) {
-
-
+   
+   
                 $.each(data, function (i, obj)
                 {
-
+   
                     div_data += "<option value=" + obj.id + ">" + obj.state + "</option>";
-
+   
                 });
                 $('#state_id').append(div_data);
             }
         });
     });
-
+   
       $(document).on('change', '#state_id', function (e) {
         $('#city_id').html("");
-
+   
         var state_id = $(this).val();
    		var base_url = '<?php echo base_url() ?>';
         var div_data = '<option value=""><?php echo 'select'; ?></option>';
-
+   
         $.ajax({
             type: "GET",
             url: base_url + "admin/leads/getBycity",
             data: {'state_id': state_id},
             dataType: "json",
             success: function (data) {
-
+   
                 $.each(data, function (i, obj)
                 {
-
+   
                     div_data += "<option value=" + obj.id + ">" + obj.city + "</option>";
                 });
                 $('#city_id').append(div_data);
             }
         });
     });
-
+   
    $( "#lead-opportunity_amount" ).focusout(function() {
        var value = $(this).val();
     if(value < 0){
@@ -1004,7 +1004,7 @@
                 alert('Opportunity amount must be grater than 0!');
    	$("#lead-opportunity_amount").focus();
             }
-
+           
         });
     });
 </script>
@@ -1012,46 +1012,46 @@
 
    <script type="text/javascript">
     $(document).ready(function(){
-
-
+		
+		
 		$("#item_details").hide();
 		$("#item_details_d").hide();
 		$("#propsed_item_details").hide();
 		$("#item_details_du").hide();
 		//$("#save_record").hide();
-
-
+		
+		
         $(".add-row").click(function(){
 			//$("#save_record").prop("disabled", false);
-			$("#document_due_date").prop("required", true);
+			$("#document_due_date").prop("required", true);	
 			var item_cat_val = $('#item_cat').find('option:selected').val();
-            var item_cat_text = $('#item_cat').find('option:selected').text();
+            var item_cat_text = $('#item_cat').find('option:selected').text(); 
 			var item_sub_cat_val = $('#sub_item_cat').find('option:selected').val();
             var item_sub_cat_text = $('#sub_item_cat').find('option:selected').text();
-
+            
 			var item_val = $("#item :selected").val();
             var item_text = $("#item :selected").text();
-
-            var quantity = $("#quantity").val();
+			
+            var quantity = $("#quantity").val(); 
 			var warranty = $('#warranty').find('option:selected').val();
-            var item_description = $("#item_description").val();
-
+            var item_description = $("#item_description").val(); 
+			
 			var item_description_propsed = $("#item_description_propsed").val();
-
-
+			
+			
             var rate = $("#rate").val();
             //var document = $('#document').val();
            // var document = $('#document').find('option:selected').text();
 			var document = $('#document option:selected').toArray().map(item => item.text).join();
 
-
+            
             var proposed_item_val = $('#proposed_item').find('option:selected').val();
             var proposed_item_text = $('#proposed_item').find('option:selected').text();
-
+			
             var proposed_rate = $("#proposed_rate").val();
-
-
-
+			
+			
+			
 			<?php if(is_admin()){ ?>
             var markup = "<tr class='main'><td><input type='checkbox' name='record'></td><td style='width:180px'><span>"+item_cat_text+"</span><input  class='form-control' type='hidden' required name='item_cat[]' value="+ item_cat_val +"></td><td style='width:180px'><span>"+item_sub_cat_text+"</span><input type='hidden' name='item_sub_cat[]' value="+ item_sub_cat_val +"></td><td style='width:180px'><span>"+item_text+"</span><input type='hidden' name='item[]' value="+ item_val +"></td><td style='width:280px;'><input type='text'  id='item_desc' name='item_description[]' value="+ item_description +"></td><td style='width:60px;'><span>"+warranty+"</span><input type='hidden' name='warranty[]' value="+ warranty +"></td><td><input style='width:80px;' type='number' name='quantity[]' value="+ quantity +"></td><td style='width:80px'><input type='number' style='width:80px;' name='rate[]' value="+ rate +"></td><td style='width:120px'><input type='text' name='document[]' value="+ document +"></td><td><span>"+proposed_item_text+"</span><input type='hidden' name='proposed_item[]' value="+ proposed_item_val +"></td><td style='width:180px;display:none;'><input type='text' name='item_description_propsed[]'  class='form-control' value="+ item_description_propsed +"></td><td style='width:80px'><input type='number' placeholder='Proposed Rate' class='form-control' name='proposed_rate[]' style='width:80px;' value="+ proposed_rate +"></td></tr>";
 			<?php } else { ?>
@@ -1070,7 +1070,7 @@
 			var markup = "<tr class='main'><td ><input type='checkbox' name='record'></td><td>Category<br><b><span>"+item_cat_text+"</span></b><input type='hidden' required name='item_cat[]' value="+ item_cat_val +"></td><td style='width:180px'>Wattage<br><b><span>"+item_sub_cat_text+"</span></b><input type='hidden' name='item_sub_cat[]' value="+ item_sub_cat_val +"></td><td>Item<br><b><span>"+item_text+"</span></b><input type='hidden' name='item[]' value="+ item_val +"></td><td id='itemdesc'>Description<br><b><span>"+item_description+"</span></b><input id='item_desc' class='form-control' type='hidden' name='item_description[]' value='"+ item_description +"' /></td><td>Warranty<br><span>"+warranty+"</span><input  class='form-control' type='hidden' name='warranty[]' value="+ warranty +"></td><td>Quantity<br><b><span>"+ quantity +"</span></b><input  class='form-control' type='hidden' style='width:80px;' name='quantity[]' value="+ quantity +"></td><td>Rate<br><b><span>"+ rate +"</span></b><input  class='form-control' type='hidden' name='rate[]' style='width:80px;' value="+ rate +"></td><td>Document<br><b><span>"+ document +"</span></b><input  class='form-control' type='hidden' name='document[]' value='"+ document +"'></td></tr>";
 		}
 			<?php }?>
-
+			
 				if(item_cat_text == 'Select' || item_cat_text == 'Select Category'){
 					alert('Please select Category');
 					return false;
@@ -1096,7 +1096,7 @@
 				  if($("#item_desc").val()==''){
 						$("#itemdesc").hide();
 					}
-				  $('#item_cat').val(0);
+				  $('#item_cat').val(0);  
 					$('#warranty').val();
 					$('#item_description').val();
 					// $('#sub_item_cat').val(0);
@@ -1105,29 +1105,29 @@
 					$('#quantity').val('');
 					$('#rate').val('');
 					$('#proposed_rate').val('');
-
+				   
 					$("#item_cat").val('default');
 					$("#item_cat").selectpicker("refresh");
 					$("#warranty").val('');
 					$("#warranty").selectpicker("refresh");	$("#item_description").val('');
 					$("#item_description").selectpicker("refresh");
-
+					
 					$("#document").val('default');
 					$("#document").selectpicker("refresh");
-
+					
 					$("#item").val('default');
 					//$("#item").selectpicker("refresh");
-
+					
 					$("#sub_item_cat").val('default');
 					//$("#sub_item_cat").selectpicker("refresh");
-
+			
 				  return true;
-				}
-
-
-
-
-		    $('#item_cat').val(0);
+				}		
+				
+			
+			
+			
+		    $('#item_cat').val(0);  
 			$('#warranty').val();
 			$('#item_description').val();
 			// $('#sub_item_cat').val(0);
@@ -1136,25 +1136,25 @@
 			$('#quantity').val('');
 			$('#rate').val('');
 			$('#proposed_rate').val('');
-
+           
 		    $("#item_cat").val('default');
 			$("#item_cat").selectpicker("refresh");
 			$("#warranty").val('');
 			$("#warranty").selectpicker("refresh");	$("#item_description").val('');
 			$("#item_description").selectpicker("refresh");
-
+			
 			$("#document").val('default');
 			$("#document").selectpicker("refresh");
-
+			
 			$("#item").val('default');
 			//$("#item").selectpicker("refresh");
-
+			
 			$("#sub_item_cat").val('default');
 			//$("#sub_item_cat").selectpicker("refresh");
-
-
+			
+			
         });
-
+        
         // Find and remove selected table rows
         $(".delete-row").click(function(){
 			$(".tablep tbody").find('input[name="record"]').each(function(){
@@ -1164,25 +1164,25 @@
             });
 			 var item_requirnmentexist =0;
 			$(".tablep tbody").find('input[name="record"]').each(function(){
-
+            	
 				item_requirnmentexist++;
             });
 			if(item_requirnmentexist == 0){
 				//$("#save_record").prop("disabled", true);
-				$("#document_due_date").prop("required", false);
-			}
-
+				$("#document_due_date").prop("required", false);	
+			} 
+			
         });
-
-
-
-    });
+		
+		
+		
+    });    
  </script>
-
-
+	
+	
 	<script>
-
-
+	
+		
 
 
  $(document).on('change', '#item_cat', function (e) {
@@ -1199,116 +1199,116 @@
    				console.log(data);
                 $.each(data, function (i, obj)
                 {
-
+   
                     div_data += "<option value=" + obj.id + ">" + obj.name + "</option>";
-
+   
                 });
 				div_data += "<option value='0'>New Wattage</option>";
                 $('#sub_item_cat').append(div_data);
-
+               
             }
         });
-
-
+		
+		
 		/* var item = $("#item option:selected").text();
 		var sub_item_cat = $("#sub_item_cat option:selected").text();
         var item_cat = $("#item_cat option:selected").text();
-
+		
 		if(item_cat=='New Category' || sub_item_cat=='New Wattage' || item=='New Item'){
 			$("#item_details").show();
 			$("#item_details_d").show();
-
+		
 		}else{
 			$("#item_details").hide();
 			$("#item_details_d").hide();
-
+		
 		} */
     });
-
+  
 
 
   $(document).on('change', '#sub_item_cat', function (e) {
         $('#item').html("");
         $('#proposed_item').html("");
-
+       
 	    var sub_item_cat = $(this).val();
-
+		
         var base_url = '<?php echo base_url() ?>';
         var div_data = '<option value=""><?php echo 'Select'; ?></option>';
-
+   
         $.ajax({
             type: "GET",
             url: base_url + "admin/lead_requirment/getItemByCatID",
             data: {'subgroup_id': sub_item_cat},
             dataType: "json",
             success: function (data) {
-
+   
 				//console.log(data);
                 $.each(data, function (i, obj)
                 {
-
+   
                     div_data += "<option value=" + obj.id + ">" + obj.description + "</option>";
-
+   
                 });
 				div_data += "<option value='0'>New Item</option>";
                 $('#item').append(div_data);
                 $('#proposed_item').append(div_data);
             }
         });
-
+		
 		 var item = $("#item option:selected").text();
 		var item_description = $(this).text();
         var item_cat = $("#item_cat option:selected").text();
-
+		
 		if(item!=''){
-
-
+			
+			
 			$("#item_details").show();
 			$("#item_details_d").show();
-
+		
 		}else{
 			$("#item_details").hide();
 			$("#item_details_d").hide();
-
-		}
-
+		
+		} 
+		
     });
-
-
+   
+   
    $(document).on('change', '#item', function (e) {
-
+        
         var item = $("#item option:selected").text();
 		var sub_item_cat = $("#sub_item_cat option:selected").text();
         var item_cat = $("#item_cat option:selected").text();
-
+		
 		if(item_cat=='New Category' || sub_item_cat=='New Wattage' || item=='New Item'){
 			$("#item_details").show();
 			$("#item_details_d").show();
-
+		
 		}else{
 			$("#item_details").hide();
 			$("#item_details_d").hide();
-
+		
 		}
-
+   
     });
-
-
+	
+	
 	$(document).on('change', '#proposed_item', function (e) {
-
+        
         var proposed_item = $("#proposed_item option:selected").text();
 		if(proposed_item=='New Item'){
 			$("#propsed_item_details").show();
 		$("#item_details_du").show();
-
+		
 		}else{
 			$("#propsed_item_details").hide();
 		$("#item_details_du").hide();
-
+		
 		}
-
+   
     });
-
+   
    $( "#lead_add_form" ).submit(function( event ) {
 	   var item_requirnment_exist=0;
 	   $(".tablep tbody").find('input[name="record"]').each(function(){
@@ -1324,10 +1324,10 @@
 			return true;
 		}
 	});
-
+   
 	</script>
-
-
+		
+		
 
 
 <script src="<?php echo base_url(); ?>assets/plugins/tagsinput.js"></script>

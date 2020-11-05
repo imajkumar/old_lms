@@ -396,7 +396,7 @@ class Emails_model extends CRM_Model
 
 		$nsm_staff_email = $this->staff_model->get_nsm_email();
 		$this->email->bcc($nsm_staff_email);
-
+		
         $bcc = '';
         // Used for action hooks
         if (isset($template->bcc)) {
@@ -504,77 +504,76 @@ class Emails_model extends CRM_Model
     {
         return $this->rel_type;
     }
-
-
+	
+	
 	public function sent_smtp__email($to_email, $subject, $message,$cc='')
     {
-        $to_email="ajayit2020@gmail.com";
-        $cc="";
+        
         // Simulate fake template to be parsed
         $template           = new StdClass();
         $template->message  = get_option('email_header') . ' ' . $message . get_option('email_footer');
         $template->fromname = get_option('companyname');
         $template->subject  = $subject;
-
+        
         $template = parse_email_template($template);
-
-       do_action('before_send_test_smtp_email');
-
+        
+        do_action('before_send_test_smtp_email');
+        
         $this->email->initialize();
-
+        
         $this->email->set_newline("\r\n");
-
+        
         $this->email->from(get_option('smtp_email'), $template->fromname);
-
+        
         $this->email->to($to_email);
-
+		
         $systemBCC = get_option('bcc_emails');
-	    //ajy	$this->email->bcc($systemBCC);
-
+		$this->email->bcc($systemBCC);
+		
 		 if(isset($cc)){
 			$cc = array_filter(array_unique($cc));
 			$cc = implode(', ', $cc);
 			$ccmail = "'".$cc."'";
             $this->email->cc($cc);
-
+			
         }
-
+		
         $this->email->subject($template->subject);
         $this->email->message($template->message);
         $this->email->send(true);
-
-
+        
+        
     }
-
+    
     public function sent_smtp_bcc_email($subject, $message)
     {
-
+        
         // Simulate fake template to be parsed
         $template           = new StdClass();
         $template->message  = get_option('email_header') . ' ' . $message . get_option('email_footer');
         $template->fromname = get_option('companyname');
         $template->subject  = $subject;
-
+        
         $template = parse_email_template($template);
-
-        //do_action('before_send_test_smtp_email');
-
+        
+        do_action('before_send_test_smtp_email');
+        
         $this->email->initialize();
-
+        
         $this->email->set_newline("\r\n");
-
+        
         $this->email->from(get_option('smtp_email'), $template->fromname);
-
+        
         //$this->email->to($to_email);
-
+        
         $systemBCC = get_option('bcc_emails');
         $this->email->to($systemBCC);
-
+        
         $this->email->subject($template->subject);
         $this->email->message($template->message);
-        //$this->email->send(true);
-
-
+        $this->email->send(true);
+        
+        
     }
-
+    
 }

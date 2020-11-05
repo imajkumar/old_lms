@@ -44,42 +44,36 @@ class Client_groups_model extends CRM_Model
      */
     public function get_groups($id = '')
     {
-
-
-		/* if(get_staff_role() == 1)
+        
+		
+		/* if(get_staff_role() == 1) 
 		{
 			if (is_numeric($id)) {
 				$this->db->where('id', $id);
 				return $this->db->get('tblcustomersgroups')->row();
 			}
-
+			
 			//$this->db->where('addedby', get_staff_user_id());
-
+						
 			$this->db->order_by('name', 'ASC');
 			return $this->db->get('tblcustomersgroups')->result_array();
-
+			
 		}else{
 			if (is_numeric($id)) {
 				$this->db->where('id', $id);
 				return $this->db->get('tblcustomersgroups')->row();
-			}
+			}			
 			//$this->db->order_by('name', 'ASC');
 			return $this->db->get('tblcustomersgroups')->result_array();
-		}	 */
+		}	 */	
 
 			$this->db->order_by('tblcustomersgroups.name', 'ASC');
 			if (is_numeric($id)) {
 				$this->db->where('id', $id);
 				return $this->db->get('tblcustomersgroups')->row();
-			}
-
-
-		  return $this->db->get('tblcustomersgroups')->result_array();
-    //   $ajArr=$this->db->get('tblcustomersgroups');
-       // echo "<pre>";
-       // print_r($ajArr);
-       // die;
-
+			}	
+			return $this->db->get('tblcustomersgroups')->result_array();
+        
     }
 
     /**

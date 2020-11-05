@@ -1,4 +1,4 @@
-<?php init_head();?>
+<?php init_head(); ?>
 <div id="wrapper">
     <div class="content">
         <div class="row">
@@ -35,14 +35,14 @@
             <div class="panel_s">
                 <div class="panel-body">
                     <div class="_buttons">
-                        <?php
-
+                        <?php 
+						
 						if (has_permission('customers','','create')) { ?>
                         <a href="<?php echo admin_url('clients/client'); ?>" class="btn btn-default btn-icon pull-left display-block">
                             <?php echo _l('new_client'); ?></a>
-
+							
 							<?php
-								if(get_staff_role() == 0 )
+								if(get_staff_role() == 0 ) 
 								{
 							?>
                             <a href="<?php echo admin_url('clients/import'); ?>" class="btn btn-default btn-icon pull-left display-block">
@@ -50,7 +50,7 @@
                                 <?php } ?>
                                 <?php } ?>
 								<?php
-									if(is_admin() || get_staff_role() == 8 )
+									if(is_admin() || get_staff_role() == 8 ) 
 									{
 								?>
                                 <a href="<?php echo admin_url('clients/all_contacts'); ?>" class="btn btn-default btn-icon pull-left display-block">
@@ -188,8 +188,8 @@
                                 <?php if(has_permission('customers','','view') || have_assigned_customers()) {
                                     $where_summary = '';
                                     if(!has_permission('customers','','view')){
-
-										if(get_staff_role() > 1 )
+										
+										if(get_staff_role() > 1 ) 
 										{
 											$where_summary = ' AND userid IN (SELECT customer_id FROM tblcustomeradmins WHERE staff_id='.get_staff_user_id().')';
 										}else{
@@ -197,7 +197,7 @@
 										}
                                     }
                                     ?>
-
+                                    
                                     <div class="row mbot15 hide">
 									<hr class="hr-panel-heading" />
                                         <div class="col-md-12">
@@ -244,7 +244,7 @@
                                         </div>
                                         <?php } ?>
                                         <hr class="hr-panel-heading" />
-
+                                       
                                         <div class="modal fade bulk_actions" id="customers_bulk_action" tabindex="-1" role="dialog">
                                             <div class="modal-dialog" role="document">
                                              <div class="modal-content">
@@ -272,7 +272,7 @@
                                    </div><!-- /.modal-content -->
                                </div><!-- /.modal-dialog -->
                            </div><!-- /.modal -->
-						<!---     Filter started ------------------------------------------>
+						<!---     Filter started ------------------------------------------>						   
                         <div class="row">
 							<div class="col-md-2 <?php if(get_staff_role() == 1){ echo 'hide'; } ?>">
 								<div class="col-md-12 leads-filter-column">
@@ -285,11 +285,11 @@
 										{
 										?>
 											<option value="<?php echo $staffs['staffid']; ?>"> <?php echo $staffs['firstname'].' '.$staffs['lastname'].' - '.$staffs['emp_code'];?></option>
-									<?php
-										}
-
-									}
-
+									<?php 
+										} 
+										
+									} 
+										
 									?>
 								</select>
 								  </div>
@@ -299,28 +299,28 @@
 									<?php
 										$numrecord = $this->clients_model->count_active_client('1');
 										//print_r($numrecord);
-
+										
 									?>
-
+									
 									<input type="checkbox" id="activerec" name="active">
 									<label for="exclude_inactive"><?php echo _l('Active'); ?> <strong> (<?php echo $numrecord->num_of_record; ?>)</strong></label>
 								</div>
-
+								
 								<div class="checkbox col-md-2">
 								<br>
 								<?php
 										$numrecord = $this->clients_model->count_active_client('0');
-
+										
 									?>
 									<input type="checkbox" id="inactive" name="inactive">
 									<label for="exclude_inactive"><?php echo _l('Inactive'); ?> <strong> (<?php echo $numrecord->num_of_record; ?>)</strong></label>
 								</div>
-
+								
 								<div class="checkbox col-md-2">
 								<br>
 								<?php
 										$numrecord = $this->clients_model->count_client('1');
-
+										
 									?>
 									<input type="checkbox" id="approved" name="approved">
 									<label for="exclude_inactive"><?php echo _l('Approved'); ?> <strong> (<?php echo $numrecord->num_of_record; ?>)</strong></label>
@@ -329,7 +329,7 @@
 								<br>
 								<?php
 										$numrecord = $this->clients_model->count_client('0');
-
+										
 									?>
 									<input type="checkbox" checked id="unapproved" name="unapproved">
 									<label for="exclude_inactive"><?php echo _l('Unapproved'); ?> <strong> (<?php echo $numrecord->num_of_record; ?>)</strong></label>
@@ -338,7 +338,7 @@
 								<br>
 								<?php
 										$numrecord = $this->clients_model->count_client('2');
-
+										
 									?>
 									<input type="checkbox" id="resubmit" name="resubmit">
 									<label for="exclude_inactive"><?php echo _l('Resubmitted'); ?> <strong> (<?php echo $numrecord->num_of_record; ?>)</strong></label>
@@ -347,14 +347,14 @@
 								<br>
 								<?php
 										$numrecord = $this->clients_model->count_client('3');
-
+										
 									?>
 									<input type="checkbox" id="reject" name="reject">
 									<label for="exclude_inactive"><?php echo _l('Rejected'); ?> <strong> (<?php echo $numrecord->num_of_record; ?>)</strong></label>
 								</div>
-
+								
 							</div>
-
+							
 							  <div class="col-md-2" id="report-time">
 								<select class="selectpicker" id="months-report" name="months-report" data-width="100%" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
 								   <option value=""><?php echo _l('report_sales_months_all_time'); ?></option>
@@ -390,27 +390,27 @@
 								   </div>
 								</div>
 							 </div>
-
+                  	 
 						</div>
-
-
-
+							
+							
+							
                            <div class="clearfix mtop20"></div>
                            <?php
                            $table_data = array();
                            $_table_data = array(
                            /*  '<span class="hide"> - </span><div class="checkbox mass_select_all_wrap"><input type="checkbox" id="mass_select_all" data-to-table="clients"><label></label></div>', */
                              _l('id'),
-                            _l('customer_groups'),
+                            _l('customer_groups'), 
                             _l('Customer'),
                             _l('Cust No.'),
                             _l('contact_primary'),
                             _l('Mobile'),
                             _l('company_primary_email'),
                             _l('customer_active'),
-                            _l('Created By'),
-                           _l('Date Created'),
-                            _l('App. Status'),
+                            _l('Created By'),							
+                           _l('Date Created'),							
+                            _l('App. Status'),							
                             );
 
                            foreach($_table_data as $_t){
@@ -456,7 +456,7 @@
         var headers_clients = $('.table-clients').find('th');
         var not_sortable_clients = (headers_clients.length - 1);
         var tAPI = initDataTable('.table-clients', admin_url+'clients/table', [not_sortable_clients,0], [not_sortable_clients,0], CustomersServerParams,<?php echo do_action('customers_table_default_order',json_encode(array(1,'DESC'))); ?>);
-
+        
 		$('#activerec').on('change',function(){
 			console.log('clicked active');
             tAPI.ajax.reload();
@@ -472,11 +472,11 @@
 		$('input[name="unapproved"]').on('change',function(){
 			tAPI.ajax.reload();
         });
-
+		
 		$('input[name="reject"]').on('change',function(){
             tAPI.ajax.reload();
         });
-
+		
 		$('input[name="resubmit"]').on('change',function(){
             tAPI.ajax.reload();
         });
@@ -489,12 +489,12 @@
 		$('#report-to').focusout(function(){
 			tAPI.ajax.reload();
 		});
-
+       
 		$('#report-from').focusout(function(){
 			tAPI.ajax.reload();
 		});
-
-
+		
+		
     });
     function customers_bulk_action(event) {
         var r = confirm(appLang.confirm_action_prompt);

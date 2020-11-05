@@ -101,11 +101,11 @@
                      <?php $value = (isset($member) ? $member->emp_code : ''); ?>
                      <?php $attrs = (isset($member) ? array() : array('autofocus'=>true, 'required'=>true)); ?>
                      <?php echo render_input('emp_code','Employee Code',$value,'text',$attrs); ?>
-
+                     
 					 <?php $value = (isset($member) ? $member->firstname : ''); ?>
                      <?php $attrs = (isset($member) ? array() : array('autofocus'=>true)); ?>
                      <?php echo render_input('firstname','staff_add_edit_firstname',$value,'text',$attrs); ?>
-
+					 
                      <?php $value = (isset($member) ? $member->lastname : ''); ?>
                      <?php echo render_input('lastname','staff_add_edit_lastname',$value); ?>
                      <?php $value = (isset($member) ? $member->email : ''); ?>
@@ -156,15 +156,15 @@
                      <?php //echo render_textarea('email_signature','settings_email_signature',$value); ?>
                      <div class="form-group select-placeholder hidden">
                         <label for="direction"><?php echo _l('document_direction'); ?></label>
-
-
+						
+						
                         <select class="selectpicker" data-none-selected-text="<?php echo _l('system_default_string'); ?>" data-width="100%" name="direction" id="direction">
                            <option value="" <?php if(isset($member) && empty($member->direction)){echo 'selected';} ?>></option>
-
+                           
                         </select>
                      </div>
-
-
+					 
+					 
                      <div class="form-group">
                         <?php if(count($departments) > 0){ ?>
                         <label for="departments"><?php echo _l('staff_add_edit_departments'); ?></label>
@@ -188,23 +188,23 @@
                      </div>
 					 <div class="form-group select-placeholder">
                         <label for="direction"><?php echo _l('Region'); ?></label>
-							<?php
+							<?php 
 								$explode_id = array_map('intval', explode(',', $member_list['region']));
 							 ?>
-							<select required name="region[]" multiple id="region" class="form-control selectpicker" data-none-selected-text="<?php echo _l('system_default_string'); ?>" data-width="100%">
+							<select required name="region[]" multiple id="region" class="form-control selectpicker" data-none-selected-text="<?php echo _l('system_default_string'); ?>" data-width="100%">    
 								<option value="">Select Region</option>
-								<?php foreach($region_list as $region_data){ ?>
+								<?php foreach($region_list as $region_data){ ?>                                              
 									<?php $selected = in_array($region_data['id'],$explode_id) ? " selected " : null; ?>
-										<option value="<?php echo $region_data['id']; ?>" <?php echo $selected; ?> ><?php echo $region_data['region']; ?></option>
+										<option value="<?php echo $region_data['id']; ?>" <?php echo $selected; ?> ><?php echo $region_data['region']; ?></option>                              
 								<?php } ?>
-							</select>
-
-
+							</select>  
+						
+						
                      </div>
-
+										
 					 <div class="form-group">
                         <label for="State"><small class="req text-danger">* </small><?php echo 'State'; ?></label>
-
+					
                        <select  id="state_id" required name="state[]" multiple>
                            <option value=""><?php echo 'select'; ?></option>
                         </select>
@@ -212,14 +212,14 @@
                      </div>
 					 <div class="form-group">
                         <label for="Reporting"><small class="req text-danger">* </small><?php echo 'Reporting Manager'; ?></label>
-
+                       
                            <select name="reporting_manager" data-live-search="true" id="staffreporting_manager" class="form-control selectpicker" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
                            <option value=""><?php echo _l('system_default_string'); ?></option>
-                           <?php
-
+                           <?php 
+						  
 						   foreach($staffs as $staff){
-
-
+							   
+                              
                               ?>
                            <option value="<?php echo $staff['staffid']; ?>" <?php if (set_value('staff',$staff['staffid']) == $member_list['reporting_manager']) {
                                             echo "selected =selected";
@@ -229,22 +229,22 @@
                         </select>
                          <input type="text" class="hide" name="reporting_to" value="<?php  echo $member->reporting_to; ?>" id="reporting_to"/>
                      </div>
-
+					 
 					 <div class="form-group select-placeholder">
                         <label for="direction"><?php echo _l('Depot'); ?></label>
-							<?php
+							<?php 
 								$explode_id = array_map('intval', explode(',', $member_list['depot_code']));
 							 ?>
-							<select required name="depot_code[]" multiple id="depot_code" class="form-control selectpicker" data-none-selected-text="<?php echo _l('system_default_string'); ?>" data-width="100%">
+							<select required name="depot_code[]" multiple id="depot_code" class="form-control selectpicker" data-none-selected-text="<?php echo _l('system_default_string'); ?>" data-width="100%">    
 								<option value="">Select Depot</option>
-								<?php foreach($depot_code_list as $depot_code_data){ ?>
+								<?php foreach($depot_code_list as $depot_code_data){ ?>                                      
 									<?php $selected = in_array($depot_code_data['id'],$explode_id) ? " selected " : null; ?>
-										<option value="<?php echo $depot_code_data['id']; ?>" <?php echo $selected; ?> ><?php echo $depot_code_data['depcode']; ?></option>
+										<option value="<?php echo $depot_code_data['id']; ?>" <?php echo $selected; ?> ><?php echo $depot_code_data['depcode']; ?></option>                              
 								<?php } ?>
-							</select>
+							</select>  
                      </div>
-
-
+					 
+					 
                      <?php $rel_id = (isset($member) ? $member->staffid : false); ?>
                      <?php echo render_custom_fields('staff',$rel_id); ?>
                      <?php if (is_admin()){ ?>
@@ -470,17 +470,17 @@
                </div>
 			   <button type="submit" class="btn btn-default pull-right" style="margin: 19px 0px 0px 0px;"><?php echo _l('submit'); ?></button>
             </div>
-
+			 
          </div>
-
-
-
+	
+        
+    
       </div>
-
+      
       <?php echo form_close(); ?>
       <?php if(isset($member)){ ?>
       <div class="col-md-7 small-table-right-col">
-
+	  
 		 <div class="panel_s hidden">
             <div class="panel-body">
                <h4 class="no-margin">
@@ -499,7 +499,7 @@
                   ),'staffleads'); ?>
             </div>
          </div>
-
+      
          <div class="panel_s">
             <div class="panel-body">
                <h4 class="no-margin">
@@ -663,8 +663,8 @@
                   ),'staff-projects'); ?>
             </div>
          </div>
-
-
+		 
+	  
 	  </div>
       <?php } ?>
    </div>
@@ -752,10 +752,10 @@
    $(document).on('change', '#region', function (e) {
         $('#state_id').html("");
         var region = $(this).val();
-
+ 
    var base_url = '<?php echo base_url() ?>';
         var div_data = '<option value=""><?php echo 'select'; ?></option>';
-
+   
         $.ajax({
             type: "GET",
             url: base_url + "admin/region/getBystate",
@@ -765,39 +765,39 @@
                 $.each(data, function (i, obj)
                 {
                     div_data += "<option value=" + obj.state_id + ">" + obj.state_name + "</option>";
-
+   
                 });
                 $('#state_id').append(div_data);
             }
         });
     });
-
+	
 	$(document).on('change', '#staffreporting_manager', function (e) {
-
+        
         var staffreporting_manager = $(this).val();
-
+ 
 		var base_url = '<?php echo base_url() ?>';
         var div_data = '<option value=""><?php echo 'select'; ?></option>';
-
+   
         $.ajax({
             type: "GET",
             url: base_url + "admin/region/getstaffid",
             data: {'staffreporting_manager': staffreporting_manager},
             dataType: "text",
             success: function (data) {
-
+				
                 $('#reporting_to').val(data);
             }
         });
     });
-
+	
 	 $( document ).ready(function() {
         $('#state_id').html("");
         var region = $('#region').val();
-
+   
 		var base_url = '<?php echo base_url() ?>';
         var div_data = '<option value=""><?php echo 'select'; ?></option>';
-
+   
         $.ajax({
             type: "GET",
             url: base_url + "admin/region/getBystate",
@@ -805,7 +805,7 @@
             dataType: "json",
             success: function (data) {
                 $.each(data, function (i, obj)
-                {
+                {   
                     div_data += "<option selected value=" + obj.state_id + ">" + obj.state_name + "</option>";
                 });
                 $('#state_id').append(div_data);

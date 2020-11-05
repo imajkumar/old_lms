@@ -61,15 +61,15 @@ class Reports extends Admin_controller
     {
         $this->load->model('leads_model');
         $data['statuses']   = $this->leads_model->get_status();
-
+        
         $this->load->view('admin/reports/lead_stage', $data);
     }
 	public function stage_report()
-    {
+    { 
         $this->load->model('leads_model');
         $data['statuses']   = $this->leads_model->get_status();
-
-        if(get_staff_role() == 1 || get_staff_role() == 3 || get_staff_role() == 5 || get_staff_role() == 2){
+        
+        if(get_staff_role() == 1 || get_staff_role() == 3 || get_staff_role() == 5 || get_staff_role() == 2){ 
 			$this->load->view('admin/reports/stage_report_rsm_asm_se', $data);
 		}else{
 			$this->load->view('admin/reports/stage_report', $data);
@@ -77,23 +77,23 @@ class Reports extends Admin_controller
     }
 	public function lead_stage_summary()
     {
-      $this->load->model('leads_model');
-          $data['statuses']   = $this->leads_model->get_status();
-
-          $this->load->view('admin/reports/lead_stage_summary', $data);
+        $this->load->model('leads_model');
+        $data['statuses']   = $this->leads_model->get_status();
+        
+        $this->load->view('admin/reports/lead_stage_summary', $data);
     }
 	public function win_loss_zone_report()
     {
         $this->load->model('leads_model');
         $data['statuses']   = $this->leads_model->get_status();
-
+        
         $this->load->view('admin/reports/win_loss_zone_report', $data);
     }
-
+	
 	public function pipeline_report()
     {
         $type = 'leads';
-
+       
 		if(is_admin() || get_staff_role() >= 8 ){
 			$this->load->view('admin/reports/pipeline-report-nsm', $data);
 		}else if(get_staff_role() == 6){
@@ -110,7 +110,7 @@ class Reports extends Admin_controller
     {
         $type = 'leads';
         if ($this->input->post()) {
-
+            
 			$data = $this->reports_model->get_categories($this->input->post('nsm'));
 
         }else{
@@ -131,7 +131,7 @@ class Reports extends Admin_controller
 			$this->load->view('admin/reports/winloss-report-3', $data);
 		}
     }
-
+	
     /* Sales reportts */
     public function sales()
     {
@@ -167,8 +167,8 @@ class Reports extends Admin_controller
         $data['title']                 = _l('sales_reports');
         $this->load->view('admin/reports/sales', $data);
     }
-
-
+	
+	
 	/* Custom reportts */
     public function custom()
     {
@@ -192,8 +192,8 @@ class Reports extends Admin_controller
         $data['estimates_sale_agents'] = $this->estimates_model->get_sale_agents();
 
         $data['invoices_sale_agents']  = $this->invoices_model->get_sale_agents();
-        $data['pipeline']  = $this->leads_model->get();
-
+        $data['pipeline']  = $this->leads_model->get(); 
+		
         $data['proposals_sale_agents']  = $this->proposals_model->get_sale_agents();
         $data['proposals_statuses'] = $this->proposals_model->get_statuses();
 
@@ -201,13 +201,13 @@ class Reports extends Admin_controller
         $data['estimate_taxes'] = $this->distinct_taxes('estimate');
         $data['proposal_taxes'] = $this->distinct_taxes('proposal');
         $data['credit_note_taxes'] = $this->distinct_taxes('credit_note');
-
+      
         $data['title']                 = _l('Custom Report');
         $this->load->view('admin/reports/custom-report', $data);
     }
-
-
-
+	
+	
+	
 
 	/* Customer report */
     public function get_opportunity_sum($staff_id=''){
@@ -1192,7 +1192,7 @@ class Reports extends Admin_controller
         }
     }
 
-
+  
 
     public function expenses($type = 'simple_report')
     {

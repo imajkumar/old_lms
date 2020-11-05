@@ -17,7 +17,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 
-define('APP_BASE_URL','https://halolms.sahajapps.com/');
+define('APP_BASE_URL','https://hlms.halonix.co.in/');
 
 /*
 |--------------------------------------------------------------------------
@@ -49,7 +49,7 @@ define('APP_DB_PASSWORD','sahaj');
 /* The name of the database you want to connect to */
 //define('APP_DB_NAME','halonix_test');
 define('APP_DB_NAME','live_nityo_halonix');
-
+//define('APP_MEMORY_LIMIT','64M');
 
 /**
  *

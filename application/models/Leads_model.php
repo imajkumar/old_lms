@@ -12,11 +12,11 @@ class Leads_model extends CRM_Model
      * @param  string $id Optional - leadid
      * @return mixed
      */
-
-
-
+	 
+	 
+	 
 	 public function update_lead_requirment_status($id,$status,$reason){
-
+	
 		$data = array(
 			'status'=>$status,
 			'reason'=>$reason,
@@ -24,7 +24,7 @@ class Leads_model extends CRM_Model
 	  $this->db->where('id', $id);
 	  $this->db->update('tbllead_requirment_detail',$data);
 	}
-
+	 
 	  public function list_leads_data_region($id = null) {
         $this->db->select()->from('tbllead_requirment_detail');
         if ($id != null) {
@@ -38,8 +38,8 @@ class Leads_model extends CRM_Model
         } else {
             return $query->result_array();
         }
-    }
-
+    } 
+	 
 	 function update_user_comment($status,$u_id)
 {
 if($status == 1)
@@ -66,57 +66,57 @@ mysql_query($query);
         } else {
             return $query->result_array();
         }
-    }
+    } 
 
 	 public function lead_carry_won_data_show($frommonth = '', $fromyear = '',$tomonth = '', $toyear = '',$staff_id='') {
-
+        
 		$this->db->select('*')->from('tbl_carry_leadwon_report');
-
+		
 		$report_from = $fromyear.'-'.$frommonth.'-01';
 		$report_to = $toyear.'-'.$tomonth.'-31';
-
-
+		
+		
         if ($staff_id !='') {
 			$arruser = 'staff_id = "'.$staff_id.'" AND (created_date BETWEEN "' . $report_from . '" AND "' . $report_to . '" )';
-
+		
             $this->db->where($arruser);
         }else{
 			$arruser = 'created_date BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59"';
             $this->db->where($arruser);
 		}
-
+     
         $this->db->order_by('id');
 		$query = $this->db->get();
         return $query->result_array();
     }
-
+	
     public function lead_won_carry($id = null) {
-
-
+	   
+	   
 	   if (get_staff_role() == 1) {
 				$query = $this->db->query("SELECT tbl_carry_leadwon.id,tbl_carry_leadwon.lead_id,tbl_carry_leadwon.staff_id,tbl_carry_leadwon.repoting_to,tbl_carry_leadwon.close_won,tbl_carry_leadwon.last_executed,tbl_carry_leadwon.state,tbl_carry_leadwon.executed,tbl_carry_leadwon.carry_forward,tbl_carry_leadwon.status,tbl_carry_leadwon.month,tbl_carry_leadwon.year,tbl_carry_leadwon.customer_name,tbl_carry_leadwon.created,tbl_carry_leadwon.last_changed,tbl_carry_leadwon.customer_group  FROM tbl_carry_leadwon WHERE staff_id ='" . get_staff_user_id() . "'");
 			}
      else{
-
+			
 			 if(get_staff_role() == 0){
 	$query = $this->db->query('SELECT * FROM tbl_carry_leadwon');
 		}
-			else if(get_staff_role() == 7 || get_staff_role() == 4)
+			else if(get_staff_role() == 7 || get_staff_role() == 4) 
 			{
 				$query = $this->db->query("SELECT * FROM tbl_carry_leadwon");
-
+				
 			}
-			else if(get_staff_role() != 4 || get_staff_role() != 7)
+			else if(get_staff_role() != 4 || get_staff_role() != 7) 
 			{
 				$query = $this->db->query('SELECT tbl_carry_leadwon.id,tbl_carry_leadwon.lead_id,tbl_carry_leadwon.staff_id,tbl_carry_leadwon.repoting_to,tbl_carry_leadwon.close_won,tbl_carry_leadwon.last_executed,tbl_carry_leadwon.state,tbl_carry_leadwon.executed,tbl_carry_leadwon.carry_forward,tbl_carry_leadwon.status,tbl_carry_leadwon.month,tbl_carry_leadwon.year,tbl_carry_leadwon.customer_name,tbl_carry_leadwon.created,tbl_carry_leadwon.last_changed,tbl_carry_leadwon.customer_group FROM tbl_carry_leadwon WHERE repoting_to LIKE "%'.get_staff_user_id().'%" AND id = "'.$id.'"');
-
+			
 			}
-		}
-
-
+		} 
+		
+		
             return $query->result_array();
-
-    }
+        
+    } 
 	public function get_result_carry_leadwon($id){
 		  $this->db->select()->from('tbl_carry_leadwon_report');
         if ($id != null) {
@@ -130,16 +130,16 @@ mysql_query($query);
         } else {
             return $query->result_array();
         }
-
-
-
-
-
-
+		
+		
+		
+		
+		
+		
 	}
 	public function lead_won($id = null) {
         $this->db->select()->from('tbl_carry_leadwon_report');
-
+        
         if ($id != null) {
            $this->db->where('staff_id', get_staff_user_id());
         } else {
@@ -151,20 +151,20 @@ mysql_query($query);
         } else {
             return $query->result_array();
         }
-    }
-
+    } 
+	
 	 public function getlist_leads_data_ghui($id = null) {
        $this->db->select('*,tblleads.name as lead_name, tblleads.customer_name,tblleatblleadsds.customer_type,tblleads.customer_group,tblleads.city as city_name,tblleads.lead_contact , tblleads.id,tblleads.assigned,tblleadsstatus.name as status_name,tblleadssources.name as source_name,tbl_state.state as state_name,tblregion.region as region_name,tblclients.company as company_name,tblclients.userid,tblclients.company as company_name,tbl_city.city,tblcontacts.firstname,tblstaff.staffid,tblcustomersgroups.name as group_name,tblcustomer_type.name as customer_name');
         $this->db->join('tblleadsstatus', 'tblleadsstatus.id=tblleads.status', 'left');
-        $this->db->join('tblleadssources', 'tblleadssources.id=tblleads.source', 'left');
+        $this->db->join('tblleadssources', 'tblleadssources.id=tblleads.source', 'left'); 
 		$this->db->join('tblclients', 'tblclients.userid=tblleads.customer_name', 'left');
-		$this->db->join('tbl_state', 'tbl_state.id=tblleads.state', 'left');
-		$this->db->join('tbl_city', 'tbl_city.id=tblleads.city', 'left');
-		$this->db->join('tblregion', 'tblregion.id=tblleads.region', 'left');
-		$this->db->join('tblcustomersgroups', 'tblcustomersgroups.id=tblleads.customer_group', 'left');
-		$this->db->join('tblcustomer_type', 'tblcustomer_type.code=tblleads.customer_type', 'left');
+		$this->db->join('tbl_state', 'tbl_state.id=tblleads.state', 'left'); 
+		$this->db->join('tbl_city', 'tbl_city.id=tblleads.city', 'left'); 
+		$this->db->join('tblregion', 'tblregion.id=tblleads.region', 'left'); 
+		$this->db->join('tblcustomersgroups', 'tblcustomersgroups.id=tblleads.customer_group', 'left'); 
+		$this->db->join('tblcustomer_type', 'tblcustomer_type.code=tblleads.customer_type', 'left'); 
 		$this->db->join('tblcontacts', 'tblcontacts.userid=tblleads.lead_contact', 'left');
-		$this->db->join('tblstaff', 'tblstaff.staffid=tblleads.assigned', 'left');
+		$this->db->join('tblstaff', 'tblstaff.staffid=tblleads.assigned', 'left'); 
         if ($id != null) {
             $this->db->where('assigned', $id);
         } else {
@@ -176,9 +176,9 @@ mysql_query($query);
         } else {
             return $query->result_array();
         }
-    }
-
-
+    } 
+	
+	
 	public function list_clients_data_detail($id = null) {
         $this->db->select()->from('tblclients');
         if ($id != null) {
@@ -192,7 +192,7 @@ mysql_query($query);
         } else {
             return $query->result_array();
         }
-    }
+    } 
 
 	public function list_leads_data_city($id = null) {
         $this->db->select()->from('tbl_city');
@@ -207,11 +207,11 @@ mysql_query($query);
         } else {
             return $query->result_array();
         }
-    }
-
+    }  
+	
 	public function customer_type_value($id = null) {
 
-
+		
         $this->db->select()->from('customer_type_value');
         if ($id != null) {
             $this->db->where('id', $id);
@@ -245,74 +245,74 @@ mysql_query($query);
         $this->db->where('id', $id);
         $this->db->update('document_required', $data);
         return true;
-    }
+    } 
 	public function document_required_status_active($id)
     {
 		$data = array('status' => '1');
         $this->db->where('id', $id);
         $this->db->update('document_required', $data);
         return true;
-    }
-
-
+    } 
+	
+	
 	public function customer_type_value_byname($customer_name='')
     {
 		$sql .= "SELECT customer_type FROM tblclients WHERE userid='".$customer_name."'";
         return $this->db->query($sql)->row()->customer_type;
-
+  
     }
 	public function customer_group_byname($customer_group='')
     {
 		$sql .= "SELECT name FROM tblcustomersgroups WHERE id='".$customer_group."'";
         return $this->db->query($sql)->row()->name;
-
+  
     }
 	public function get_customer_name($customer_name='')
     {
 		$sql .= "SELECT company FROM tblclients WHERE userid='".$customer_name."'";
         return $this->db->query($sql)->row()->company;
-
+  
     }
-
+	
 	public function get_status_per($id='')
     {
 		$sql = "SELECT weighted FROM tblleadsstatus WHERE name='".$id."'";
         return $this->db->query($sql)->row()->weighted;
-
+  
     }
 	public function get_region_name($state_id='')
     {
 		$sql = "SELECT region FROM tblregion_state WHERE state_id='".$state_id."'";
         $region = $this->db->query($sql)->row()->region;
-
+		
 		$sql = "SELECT region FROM tblregion WHERE id='".$region."'";
         return $this->db->query($sql)->row()->region;
 	}
-
+	
 	public function get_product_description($lead_id='')
     {
 		/* $sql = "SELECT id FROM tbllead_requirment WHERE lead_id='".$lead_id."'";
         return $id = $this->db->query($sql)->row()->id; */
-
+		
 		$sql = "SELECT DISTINCT tblitems_groups.name as cat_name FROM tbllead_requirment_detail LEFT JOIN tblitems_groups ON tblitems_groups.id = tbllead_requirment_detail.category_id WHERE tbllead_requirment_detail.lead_requirment_id='".$lead_id."'";
-
-        return $this->db->query($sql)->result_array();
-
-
+		
+        return $this->db->query($sql)->result_array();  
+		
+		
 		/* $this->db->select('tblitems_groups.name as cat_name,tbllead_requirment.lead_id,tbllead_requirment_detail.category_id,tblitems_groups.id as group_id');
         $this->db->join('tblitems_groups', 'tblitems_groups.id=tbllead_requirment_detail.category_id', 'left');
-        $this->db->join('tbllead_requirment', 'tbllead_requirment.id=tbllead_requirment_detail.lead_requirment_id', 'left');
+        $this->db->join('tbllead_requirment', 'tbllead_requirment.id=tbllead_requirment_detail.lead_requirment_id', 'left'); 
 		 $this->db->where('tbllead_requirment.lead_id', $lead_id);
-
+		
         $query = $this->db->get();
-
-
+       
+		
 		return $query->result_array(); */
-
+		
     }
-
-
-
+	
+	
+	
 	 public function list_customer_type($id = null) {
         $this->db->select()->from('tblcustomer_type');
         if ($id != null) {
@@ -327,23 +327,23 @@ mysql_query($query);
             return $query->result_array();
         }
     }
-
-	 public function lookup($keyword){
+	 
+	 public function lookup($keyword){ 
         $this->db->select('company')->from('tblleads');
 		$this->db->distinct();
-        $this->db->like('company',$keyword,'after');
-
-        $query = $this->db->get();
-        return $query->result();
+        $this->db->like('company',$keyword,'after'); 
+     
+        $query = $this->db->get();     
+        return $query->result(); 
     }
-
+	 
     public function get_lead($id = '', $where = array())
     {
         $this->db->select('tblleads.company as company,tblleads.name, tblleads.id');
         $this->db->distinct();
 		$ignore = array(0, 1);
 		$this->db->where_not_in('status', $ignore);
-
+        
         return $this->db->get('tblleads')->result_array();
     }
 
@@ -352,12 +352,12 @@ mysql_query($query);
         $this->db->select('*,tblleads.name as lead_name, tblleads.id,tblleadsstatus.name as status_name,tblleadssources.name as source_name,tbl_state.state as state_name,tblleads.customer_name,tbl_city.city as city_name,tbl_country.country as country_name,tblregion.region as region_name,tblcustomersgroups.name as group_name,');
         $this->db->join('tblleadsstatus', 'tblleadsstatus.id=tblleads.status', 'left');
         $this->db->join('tblleadssources', 'tblleadssources.id=tblleads.source', 'left');
-		$this->db->join('tbl_state', 'tbl_state.id=tblleads.state', 'left');
-		$this->db->join('tbl_city', 'tbl_city.id=tblleads.city', 'left');
+		$this->db->join('tbl_state', 'tbl_state.id=tblleads.state', 'left'); 
+		$this->db->join('tbl_city', 'tbl_city.id=tblleads.city', 'left'); 
 		$this->db->join('tblcustomersgroups', 'tblcustomersgroups.id=tblleads.customer_name', 'left');
-		$this->db->join('tbl_country', 'tbl_country.id=tblleads.country', 'left');
-		$this->db->join('tblregion', 'tblregion.id=tblleads.region', 'left');
-
+		$this->db->join('tbl_country', 'tbl_country.id=tblleads.country', 'left'); 
+		$this->db->join('tblregion', 'tblregion.id=tblleads.region', 'left'); 
+	
 
         $this->db->where($where);
         if (is_numeric($id)) {
@@ -378,31 +378,31 @@ mysql_query($query);
         return $this->db->get('tblleads')->result_array();
     }
 	public function contact_details(){
-
+		
 		$this->db->select('tblstaff.staffid,tblstaff.firstname,staff.lastname,tblleads.name as lead_name, tblleads.customer_name,tblleads.customer_type,tblleads.customer_group,tblleads.city as city_name,tblleads.lead_contact , tblleads.id,tblleads.assigned,tblleadsstatus.name as status_name,tblleadssources.name as source_name,tbl_state.state as state_name,tblregion.region as region_name,tblclients.company as company_name,tblclients.userid,tblclients.company as company_name,tbl_city.city,tblcontacts.firstname,tblcustomersgroups.name as group_name,tblcustomer_type.name as customer_name')->from('tblstaff');
             $this->db->join('tblstaff', 'tblleads.assigned = tblstaff.staffid');
 
             $query = $this->db->get();
             return $query->result_array();
-
-
-
+		
+		
+		
 	}
-
+	
 	public function get_company_detail($id = '', $where = array())
     {
         $this->db->select('*,tblleads.name as lead_name,tblleads.status as lead_status, tblleads.customer_name as customerid,tblleads.customer_type,tblleads.customer_group,tblleads.city as city_name,tblleads.lead_contact , tblleads.id,tblleads.assigned,tblleadsstatus.name as status_name,tblleadssources.name as source_name,tbl_state.state as state_name,tblregion.region as region_name,tblclients.company as company_name,tblclients.userid,tblclients.company as company_name,tbl_city.city,tblcontacts.firstname,tblstaff.staffid,tblcustomersgroups.name as group_name,tblcustomer_type.name as customer_name');
         $this->db->join('tblleadsstatus', 'tblleadsstatus.id=tblleads.status', 'left');
-        $this->db->join('tblleadssources', 'tblleadssources.id=tblleads.source', 'left');
+        $this->db->join('tblleadssources', 'tblleadssources.id=tblleads.source', 'left'); 
 		$this->db->join('tblclients', 'tblclients.userid=tblleads.customer_name', 'left');
-		$this->db->join('tbl_state', 'tbl_state.id=tblleads.state', 'left');
-		$this->db->join('tbl_city', 'tbl_city.id=tblleads.city', 'left');
-		$this->db->join('tblregion', 'tblregion.id=tblleads.region', 'left');
-		$this->db->join('tblcustomersgroups', 'tblcustomersgroups.id=tblleads.customer_group', 'left');
-		$this->db->join('tblcustomer_type', 'tblcustomer_type.code=tblleads.customer_type', 'left');
+		$this->db->join('tbl_state', 'tbl_state.id=tblleads.state', 'left'); 
+		$this->db->join('tbl_city', 'tbl_city.id=tblleads.city', 'left'); 
+		$this->db->join('tblregion', 'tblregion.id=tblleads.region', 'left'); 
+		$this->db->join('tblcustomersgroups', 'tblcustomersgroups.id=tblleads.customer_group', 'left'); 
+		$this->db->join('tblcustomer_type', 'tblcustomer_type.code=tblleads.customer_type', 'left'); 
 		$this->db->join('tblcontacts', 'tblcontacts.userid=tblleads.lead_contact', 'left');
-		$this->db->join('tblstaff', 'tblstaff.staffid=tblleads.assigned', 'left');
-
+		$this->db->join('tblstaff', 'tblstaff.staffid=tblleads.assigned', 'left'); 
+	
 
         $this->db->where($where);
         if (is_numeric($id)) {
@@ -424,12 +424,12 @@ mysql_query($query);
     }
 	public function getlist_leads_data($id = '')
     {
-
+		
         $this->db->select(
 		'tblcustomersgroups.name as group_name,
 		tblleads.name as lead_name,
 		tblleads.city as city_name,
-		tblleads.lead_contact ,
+		tblleads.lead_contact , 
 		tblleads.id,
 		tblleads.dateadded,
 		tblleads.opportunity,
@@ -440,25 +440,25 @@ mysql_query($query);
 		tblclients.userid,tblclients.company as company_name,
 		tblcustomer_type.name as customer_name');
         $this->db->join('tblclients', 'tblclients.userid=tblleads.customer_name', 'left');
-		$this->db->join('tbl_state', 'tbl_state.id=tblleads.state', 'left');
-		$this->db->join('tbl_city', 'tbl_city.id=tblleads.city', 'left');
-		$this->db->join('tblcustomersgroups', 'tblcustomersgroups.id=tblleads.customer_group', 'left');
-		$this->db->join('tblcustomer_type', 'tblcustomer_type.code=tblleads.customer_type', 'left');
-
+		$this->db->join('tbl_state', 'tbl_state.id=tblleads.state', 'left'); 
+		$this->db->join('tbl_city', 'tbl_city.id=tblleads.city', 'left'); 
+		$this->db->join('tblcustomersgroups', 'tblcustomersgroups.id=tblleads.customer_group', 'left'); 
+		$this->db->join('tblcustomer_type', 'tblcustomer_type.code=tblleads.customer_type', 'left'); 
+		
 		$this->db->where('tblleads.assigned', $id);
 		return $this->db->get('tblleads')->result_array();
-
-
+           
+        
     }
-
-
-
+	
+	
+	
 public function get_tbl_city($id=null)
     {
         $this->db->select('tbl_city.id as city_id,tbl_city.city,tbl_country.country as country_name, tbl_country.id,tbl_state.id,tbl_state.state as state_name');
 		$this->db->join('tbl_country', 'tbl_country.id=tbl_city.country_id', 'left');
-
-		$this->db->join('tbl_state', 'tbl_state.id=tbl_city.state_id', 'left');
+    
+		$this->db->join('tbl_state', 'tbl_state.id=tbl_city.state_id', 'left'); 
 
         if (is_numeric($id)) {
             $this->db->where('tbl_city.id', $id);
@@ -469,12 +469,12 @@ public function get_tbl_city($id=null)
                         'id' => $lead->from_form_id,
                     ));
                 }
-
+               
             }
 
             return $lead;
         }
-//echo "<pre>";print_r($this->db->get('tbl_city')->result_array());exit('neeraj');
+
         return $this->db->get('tbl_city')->result_array();
     }
 
@@ -580,7 +580,7 @@ public function get_tbl_city($id=null)
 
         $data['email'] = trim($data['email']);
         $data['state'] = $this->get_staff_state_byid(get_staff_user_id());
-
+		
         $this->db->insert('tblleads', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
@@ -1067,16 +1067,16 @@ public function get_tbl_city($id=null)
         $this->db->where('id', $id);
         $this->db->update('tblleadssources', $data);
         return true;
-    }
+    } 
 	public function source_status_active($id)
     {
 		$data = array('status' => '1');
         $this->db->where('id', $id);
         $this->db->update('tblleadssources', $data);
         return true;
-    }
-
-
+    } 
+	
+	
 	public function get_contact_type($id = false)
     {
         if (is_numeric($id)) {
@@ -1101,7 +1101,7 @@ public function get_tbl_city($id=null)
         }
 
         return $insert_id;
-    }
+    }  
 
 	public function add_region($data)
     {
@@ -1196,10 +1196,11 @@ public function get_tbl_city($id=null)
         $this->db->where($where);
         if (is_numeric($id)) {
             $this->db->where('tblleadsstatus.id', $id);
-
+            
             return $this->db->get('tblleadsstatus')->row();
         }
         $this->db->order_by('tblleadsstatus.id', 'asc');
+        
         return $this->db->get('tblleadsstatus')->result_array();
     }
 	public function get_depo_master($id = '', $where = array())
@@ -1226,7 +1227,7 @@ public function get_tbl_city($id=null)
 
         return $this->db->get('tblleadsstatus')->result_array();
     }
-
+	
 	 public function get_staff($id = '', $where = array())
     {
         $this->db->where($where);
@@ -1239,15 +1240,15 @@ public function get_tbl_city($id=null)
 
         return $this->db->get('tblleadsstatus')->result_array();
     }
+	
+	
+	
+	
+	
+	
+	
 
-
-
-
-
-
-
-
-
+	
 	 public function get_customer_type($id = '', $where = array())
     {
         $this->db->where($where);
@@ -1272,9 +1273,9 @@ public function get_tbl_city($id=null)
 
         return $this->db->get('segment')->result_array();
     }
-
-
-
+	
+	
+	
 	public function get_loss_status($id = '', $where = array())
     {
         $this->db->where($where);
@@ -1283,10 +1284,10 @@ public function get_tbl_city($id=null)
 
             return $this->db->get('status_loss')->row();
         }
-
+      
         return $this->db->get('status_loss')->result_array();
     }
-
+	
     /**
      * Add new lead status
      * @param array $data lead status data
@@ -1330,11 +1331,11 @@ public function get_tbl_city($id=null)
         }
 
         return false;
-    }
-
+    } 
+	
 	public function add_segment($data)
     {
-
+      
         $this->db->insert('segment', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
@@ -1345,10 +1346,10 @@ public function get_tbl_city($id=null)
 
         return false;
     }
-
+	
 	public function add_depo_master($data)
     {
-
+      
         $this->db->insert('depo_master', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
@@ -1375,7 +1376,7 @@ public function get_tbl_city($id=null)
 
 	public function add_loss_status($data)
     {
-
+      
         $this->db->insert('status_loss', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
@@ -1386,11 +1387,11 @@ public function get_tbl_city($id=null)
 
         return false;
     }
-
+	
 	 public function city_add($data){
     $this->db->insert('tbl_city',$data);
 }
-
+	
    public function update_status($data, $id)
     {
         $this->db->where('id', $id);
@@ -1402,8 +1403,8 @@ public function get_tbl_city($id=null)
         }
 
         return false;
-    }
-
+    } 
+	
 	public function update_customer($data, $id)
     {
         $this->db->where('id', $id);
@@ -1416,7 +1417,7 @@ public function get_tbl_city($id=null)
 
         return false;
     }
-
+	
 	public function update_segment($data, $id)
     {
         $this->db->where('id', $id);
@@ -1440,7 +1441,7 @@ public function get_tbl_city($id=null)
 
         return false;
     }
-
+	
 	public function update_document_required($data, $id)
     {
         $this->db->where('id', $id);
@@ -1466,7 +1467,7 @@ public function get_tbl_city($id=null)
 
         return false;
     }
-
+	
 	public function update_city($data, $id)
     {
         $this->db->where('id', $id);
@@ -1507,61 +1508,61 @@ public function get_tbl_city($id=null)
         }
 
         return false;
-    }
-
+    } 
+	
 	public function customer_status_inactive($id)
     {
 		$data = array('status' => '0');
         $this->db->where('id', $id);
         $this->db->update('tblcustomer_type', $data);
         return true;
-    }
+    } 
 	public function customer_status_active($id)
     {
 		$data = array('status' => '1');
         $this->db->where('id', $id);
         $this->db->update('tblcustomer_type', $data);
         return true;
-    }
+    } 
 	public function segment_status_inactive($id)
     {
 		$data = array('status' => '0');
         $this->db->where('id', $id);
         $this->db->update('segment', $data);
         return true;
-    }
+    } 
 	public function segment_status_active($id)
     {
 		$data = array('status' => '1');
         $this->db->where('id', $id);
         $this->db->update('segment', $data);
         return true;
-    }
-
-
+    } 
+	
+	
 	public function delete_customer($id)
-    {
+    {        
 		$this->db->where('id', $id);
 		$this->db->delete('tblcustomer_type');
 
     }
-
+	
 	public function delete_segment($id)
     {
-
+        
 	$this->db->where('id', $id);
 	$this->db->delete('segment');
 
     }
-
+	
 	public function delete_depo_master($id)
     {
-
+        
 $this->db->where('id', $id);
 $this->db->delete('depo_master');
 
     }
-
+	
 	 public function get_lead_no_status($status, $staff_id = '', $report_months = '',$from_date='',$to_date='')
     {
         if ($staff_id != '' && $report_months != '') {
@@ -1570,12 +1571,12 @@ $this->db->delete('depo_master');
             if ($role == 1) {
                 if ($report_months == 'this_month') {
                     $month = date('Y-m');
-
+                    
                     $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1) AND tblleads.dateadded LIKE ("' . $month . '%")');
-
+                    
                 } else if ($report_months == 'last_month') {
                     $month = date('Y-m', strtotime(date('Y-m') . " -1 month"));
-
+                    
                     $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
                 } else if ($report_months == 'this_year') {
                     $year  = date('Y');
@@ -1601,47 +1602,47 @@ $this->db->delete('depo_master');
                     $query       = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ') AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
                 }
             } else if ($role == 7 || $role == 4) {
-
+                
                 if ($report_months == 'this_month') {
                     $month = date('Y-m');
                     $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . $staff_state_id . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
-
+                    
                 } else if ($report_months == 'last_month') {
                     $month = date('Y-m', strtotime(date('Y-m') . " -1 month"));
                     $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . $staff_state_id . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
-
+                    
                 } else if ($report_months == 'this_year') {
                     $year  = date('Y');
                     $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . $staff_state_id . ') AND tblleads.dateadded LIKE ("' . $year . '%")');
-
+                    
                 } else if ($report_months == 'last_year') {
                     $year  = date('Y', strtotime(date('Y') . " -1 year"));
                     $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . $staff_state_id . ') AND tblleads.dateadded LIKE ("' . $year . '%")');
-
+                    
                 } else if ($report_months == 'report_sales_months_three_months') {
                     $report_from = date('Y-m-01', strtotime("-2 MONTH"));
                     $report_to   = date('Y-m-d');
                     $query       = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . $staff_state_id . ') AND (tblleads.dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 } else if ($report_months == 'report_sales_months_six_months') {
                     $report_from = date('Y-m-01', strtotime("-5 MONTH"));
                     $report_to   = date('Y-m-d');
                     $query       = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . $staff_state_id . ') AND (tblleads.dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 } else if ($report_months == 'report_sales_months_twelve_months') {
                     $report_from = date('Y-m-01', strtotime("-11 MONTH"));
                     $report_to   = date('Y-m-d');
                     $query       = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . $staff_state_id . ') AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 }else if($report_months =='custom') {
 					$report_from = $from_date;
 					$report_to= $to_date;
                     $query       = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . $staff_state_id . ') AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 }
-
+                
             } else if ($role != 0 || $role != 4 || $role != 7) {
-
+                
                 if ($report_months == 'this_month') {
                     $month = date('Y-m');
                     $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.$staff_id.',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.$staff_id.',%" )  AND tblleads.dateadded LIKE ("' . $month . '%")');
@@ -1672,11 +1673,11 @@ $this->db->delete('depo_master');
                     $query       = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.$staff_id.',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.$staff_id.',%" ) AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
                 }
             }
-
+            
             if ($role != 1) {
-
+                
                 if ($staff_id != '') {
-
+                    
                     if ($report_months == 'this_month') {
                         $month  = date('Y-m');
                         $query1 = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
@@ -1707,7 +1708,7 @@ $this->db->delete('depo_master');
                         $query1      = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ')  AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
                     }
                 } else {
-
+                    
                     if ($report_months == 'this_month') {
                         $month  = date('Y-m');
                         $query1 = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
@@ -1745,33 +1746,33 @@ $this->db->delete('depo_master');
             $role           = $this->get_staff_role_id($staff_id);
             if ($role == 1) {
                 $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ')');
-
+                
             } else if ($role == 7 || $role == 4) {
                 $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . $staff_state_id . ')');
-
+                
             } else if ($role != 0 || $role != 4 || $role != 7) {
                 $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.$staff_id.',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.$staff_id.',%" )');
-
+                
             }
-
+            
             if ($role != 1) {
-
+                
                 if ($staff_id != '') {
                     $query1 = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ')');
-
+                    
                 } else {
                     $query1 = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ')');
-
+                    
                 }
                 $total_own = $query1->num_rows();
             }
         } else if ($staff_id == '' && $report_months != '') {
-
+            
             if (get_staff_role() == 1) {
                 if ($report_months == 'this_month') {
                     $month = date('Y-m');
                     $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
-
+                    
                 } else if ($report_months == 'last_month') {
                     $month = date('Y-m', strtotime(date('Y-m') . " -1 month"));
                     $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
@@ -1799,47 +1800,47 @@ $this->db->delete('depo_master');
                     $query       = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ') AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
                 }
             } else if (get_staff_role() == 7 || get_staff_role() == 4) {
-
+                
                 if ($report_months == 'this_month') {
                     $month = date('Y-m');
                     $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
-
+                    
                 } else if ($report_months == 'last_month') {
                     $month = date('Y-m', strtotime(date('Y-m') . " -1 month"));
                     $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
-
+                    
                 } else if ($report_months == 'this_year') {
                     $year  = date('Y');
                     $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND tblleads.dateadded LIKE ("' . $year . '%")');
-
+                    
                 } else if ($report_months == 'last_year') {
                     $year  = date('Y', strtotime(date('Y') . " -1 year"));
                     $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND tblleads.dateadded LIKE ("' . $year . '%")');
-
+                    
                 } else if ($report_months == 'report_sales_months_three_months') {
                     $report_from = date('Y-m-01', strtotime("-2 MONTH"));
                     $report_to   = date('Y-m-d');
                     $query       = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND (tblleads.dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 } else if ($report_months == 'report_sales_months_six_months') {
                     $report_from = date('Y-m-01', strtotime("-5 MONTH"));
                     $report_to   = date('Y-m-d');
                     $query       = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND (tblleads.dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 } else if ($report_months == 'report_sales_months_twelve_months') {
                     $report_from = date('Y-m-01', strtotime("-11 MONTH"));
                     $report_to   = date('Y-m-d');
                     $query       = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 } else if($report_months =='custom') {
 					$report_from = $from_date;
 					$report_to= $to_date;
                     $query       = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 }
-
+                
             } else if (get_staff_role() != 0 || get_staff_role() != 4 || get_staff_role() != 7) {
-
+                
                 if ($report_months == 'this_month') {
                     $month = date('Y-m');
                     $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.$staff_id.',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.$staff_id.',%" ) AND tblleads.dateadded LIKE ("' . $month . '%")');
@@ -1870,11 +1871,11 @@ $this->db->delete('depo_master');
                     $query       = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.$staff_id.',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.$staff_id.',%" ) AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
                 }
             }
-
+            
             if (get_staff_role() != 1) {
-
+                
                 if ($staff_id != '') {
-
+                    
                     if ($report_months == 'this_month') {
                         $month  = date('Y-m');
                         $query1 = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
@@ -1905,7 +1906,7 @@ $this->db->delete('depo_master');
                         $query1      = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ')  AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
                     }
                 } else {
-
+                    
                     if ($report_months == 'this_month') {
                         $month  = date('Y-m');
                         $query1 = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
@@ -1946,9 +1947,9 @@ $this->db->delete('depo_master');
             } else if (get_staff_role() != 0 || get_staff_role() != 4 || get_staff_role() != 7) {
                 $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"  AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%" ) OR tblleads.addedfrom IN(' . get_staff_user_id() . ')');
             }
-
+            
             if (get_staff_role() != 1) {
-
+                
                 if ($staff_id != '') {
                     $query1 = $this->db->query('SELECT id FROM tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ')');
                 } else {
@@ -1957,15 +1958,15 @@ $this->db->delete('depo_master');
                 $total_own = $query1->num_rows();
             }
         }
-
-
+        
+        
         $total_staff = $query->num_rows();
         ;
-
+        
         return $total_staff + $total_own;
-
+        
     }
-
+    
 	public function get_staff_role_id($staff_id){
 		$this->db->where('staffid', $staff_id);
         return $this->db->get('tblstaff')->row()->role;
@@ -1979,11 +1980,11 @@ $this->db->delete('depo_master');
 		if (get_staff_role() == 1) {
 			$query = $this->db->query('SELECT id FROM tblleads where customer_type="'.$cust.'" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ')');
 		}
-		else if(get_staff_role() == 7 || get_staff_role() == 4)
+		else if(get_staff_role() == 7 || get_staff_role() == 4) 
 		{
 			$query = $this->db->query('SELECT id FROM tblleads where customer_type="'.$cust.'" AND tblleads.state IN('. get_staff_state_id() .')');
 		}
-		else if(get_staff_role() != 0 ||  get_staff_role() != 4 || get_staff_role() != 7)
+		else if(get_staff_role() != 0 ||  get_staff_role() != 4 || get_staff_role() != 7) 
 		{
 			$query = $this->db->query('SELECT id FROM tblleads where customer_type="'.$cust.'" AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%" ) ');
 		}
@@ -1999,12 +2000,12 @@ $this->db->delete('depo_master');
             if ($role == 1) {
                 if ($report_months == 'this_month') {
                     $month = date('Y-m');
-
+                    
                     $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
-
+                    
                 } else if ($report_months == 'last_month') {
                     $month = date('Y-m', strtotime(date('Y-m') . " -1 month"));
-
+                    
                     $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
                 } else if ($report_months == 'this_year') {
                     $year  = date('Y');
@@ -2030,47 +2031,47 @@ $this->db->delete('depo_master');
                     $query       = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1) AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
                 }
             } else if ($role == 7 || $role == 4) {
-
+                
                 if ($report_months == 'this_month') {
                     $month = date('Y-m');
                     $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . $staff_state_id . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
-
+                    
                 } else if ($report_months == 'last_month') {
                     $month = date('Y-m', strtotime(date('Y-m') . " -1 month"));
                     $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . $staff_state_id . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
-
+                    
                 } else if ($report_months == 'this_year') {
                     $year  = date('Y');
                     $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . $staff_state_id . ') AND tblleads.dateadded LIKE ("' . $year . '%")');
-
+                    
                 } else if ($report_months == 'last_year') {
                     $year  = date('Y', strtotime(date('Y') . " -1 year"));
                     $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . $staff_state_id . ') AND tblleads.dateadded LIKE ("' . $year . '%")');
-
+                    
                 } else if ($report_months == 'report_sales_months_three_months') {
                     $report_from = date('Y-m-01', strtotime("-2 MONTH"));
                     $report_to   = date('Y-m-d');
                     $query       = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . $staff_state_id . ') AND (tblleads.dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 } else if ($report_months == 'report_sales_months_six_months') {
                     $report_from = date('Y-m-01', strtotime("-5 MONTH"));
                     $report_to   = date('Y-m-d');
                     $query       = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . $staff_state_id . ') AND (tblleads.dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 } else if ($report_months == 'report_sales_months_twelve_months') {
                     $report_from = date('Y-m-01', strtotime("-11 MONTH"));
                     $report_to   = date('Y-m-d');
                     $query       = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . $staff_state_id . ') AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 }else if($report_months =='custom') {
 					$report_from = $from_date;
 					$report_to= $to_date;
                     $query       = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . $staff_state_id . ') AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 }
-
+                
             } else if ($role != 0 || $role != 4 || $role != 7) {
-
+                
                 if ($report_months == 'this_month') {
                     $month = date('Y-m');
                     $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.$staff_id.',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.$staff_id.',%" ) AND tblleads.dateadded LIKE ("' . $month . '%")');
@@ -2101,11 +2102,11 @@ $this->db->delete('depo_master');
                     $query       = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.$staff_id.',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.$staff_id.',%" ) AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
                 }
             }
-
+            
             if ($role != 1) {
-
+                
                 if ($staff_id != '') {
-
+                    
                     if ($report_months == 'this_month') {
                         $month  = date('Y-m');
                         $query1 = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1) AND tblleads.dateadded LIKE ("' . $month . '%")');
@@ -2136,7 +2137,7 @@ $this->db->delete('depo_master');
                         $query1      = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1)  AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
                     }
                 } else {
-
+                    
                     if ($report_months == 'this_month') {
                         $month  = date('Y-m');
                         $query1 = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ' OR is_public = 1) AND tblleads.dateadded LIKE ("' . $month . '%")');
@@ -2174,33 +2175,33 @@ $this->db->delete('depo_master');
             $role           = $this->get_staff_role_id($staff_id);
             if ($role == 1) {
                 $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1)');
-
+                
             } else if ($role == 7 || $role == 4) {
                 $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . $staff_state_id . ')');
-
+                
             } else if ($role != 0 || $role != 4 || $role != 7) {
                 $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.$staff_id.',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.$staff_id.',%" )');
-
+                
             }
-
+            
             if ($role != 1) {
-
+                
                 if ($staff_id != '') {
                     $query1 = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1)');
-
+                    
                 } else {
                     $query1 = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ' OR is_public = 1)');
-
+                    
                 }
                 $total_own = $query1->num_rows();
             }
         } else if ($staff_id == '' && $report_months != '') {
-
+            
             if (get_staff_role() == 1) {
                 if ($report_months == 'this_month') {
                     $month = date('Y-m');
                     $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ' OR is_public = 1) AND tblleads.dateadded LIKE ("' . $month . '%")');
-
+                    
                 } else if ($report_months == 'last_month') {
                     $month = date('Y-m', strtotime(date('Y-m') . " -1 month"));
                     $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ' OR is_public = 1) AND tblleads.dateadded LIKE ("' . $month . '%")');
@@ -2228,47 +2229,47 @@ $this->db->delete('depo_master');
                     $query       = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ' OR is_public = 1) AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
                 }
             } else if (get_staff_role() == 7 || get_staff_role() == 4) {
-
+                
                 if ($report_months == 'this_month') {
                     $month = date('Y-m');
                     $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
-
+                    
                 } else if ($report_months == 'last_month') {
                     $month = date('Y-m', strtotime(date('Y-m') . " -1 month"));
                     $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND tblleads.dateadded LIKE ("' . $month . '%")');
-
+                    
                 } else if ($report_months == 'this_year') {
                     $year  = date('Y');
                     $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND tblleads.dateadded LIKE ("' . $year . '%")');
-
+                    
                 } else if ($report_months == 'last_year') {
                     $year  = date('Y', strtotime(date('Y') . " -1 year"));
                     $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND tblleads.dateadded LIKE ("' . $year . '%")');
-
+                    
                 } else if ($report_months == 'report_sales_months_three_months') {
                     $report_from = date('Y-m-01', strtotime("-2 MONTH"));
                     $report_to   = date('Y-m-d');
                     $query       = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND (tblleads.dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 } else if ($report_months == 'report_sales_months_six_months') {
                     $report_from = date('Y-m-01', strtotime("-5 MONTH"));
                     $report_to   = date('Y-m-d');
                     $query       = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND (tblleads.dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 } else if ($report_months == 'report_sales_months_twelve_months') {
                     $report_from = date('Y-m-01', strtotime("-11 MONTH"));
                     $report_to   = date('Y-m-d');
                     $query       = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 } else if($report_months =='custom') {
 					$report_from = $from_date;
 					$report_to= $to_date;
                     $query       = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND tblleads.state IN(' . get_staff_state_id() . ') AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
-
+                    
                 }
-
+                
             } else if (get_staff_role() != 0 || get_staff_role() != 4 || get_staff_role() != 7) {
-
+                
                 if ($report_months == 'this_month') {
                     $month = date('Y-m');
                     $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.$staff_id.',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.$staff_id.',%" ) AND tblleads.dateadded LIKE ("' . $month . '%")');
@@ -2299,11 +2300,11 @@ $this->db->delete('depo_master');
                     $query       = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.$staff_id.',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.$staff_id.',%" ) AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
                 }
             }
-
+            
             if (get_staff_role() != 1) {
-
+                
                 if ($staff_id != '') {
-
+                    
                     if ($report_months == 'this_month') {
                         $month  = date('Y-m');
                         $query1 = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ' OR is_public = 1) AND tblleads.dateadded LIKE ("' . $month . '%")');
@@ -2334,7 +2335,7 @@ $this->db->delete('depo_master');
                         $query1      = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ' OR is_public = 1)  AND (dateadded BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" )');
                     }
                 } else {
-
+                    
                     if ($report_months == 'this_month') {
                         $month  = date('Y-m');
                         $query1 = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ' OR is_public = 1) AND tblleads.dateadded LIKE ("' . $month . '%")');
@@ -2375,9 +2376,9 @@ $this->db->delete('depo_master');
             } else if (get_staff_role() != 0 || get_staff_role() != 4 || get_staff_role() != 7) {
                 $query = $this->db->query('SELECT id FROM tblleads where customer_type="' . $cust . '"  AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%" )  OR tblleads.addedfrom IN(' . get_staff_user_id() . ')');
             }
-
+            
             if (get_staff_role() != 1) {
-
+                
                 if ($staff_id != '') {
                     $query1 = $this->db->query('SELECT id FROM tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1)');
                 } else {
@@ -2386,37 +2387,37 @@ $this->db->delete('depo_master');
                 $total_own = $query1->num_rows();
             }
         }
-
-
+        
+        
         $total_staff = $query->num_rows();
-
-
+      
+        
         return $total_staff + $total_own;
-
+        
     }
-
+    
 	public function delete_loss_status($id)
     {
-
+        
 		$this->db->where('id', $id);
 		$this->db->delete('status_loss');
 
     }
-
+	
 	public function loss_status_inactive($id)
     {
 		$data = array('status' => '0');
         $this->db->where('id', $id);
         $this->db->update('status_loss', $data);
         return true;
-    }
+    } 
 	public function loss_status_active($id)
     {
 		$data = array('status' => '1');
         $this->db->where('id', $id);
         $this->db->update('status_loss', $data);
         return true;
-    }
+    } 
 
     /**
      * Update canban lead status when drag and drop
@@ -2492,7 +2493,7 @@ $this->db->delete('depo_master');
      * @param  mixed $id lead id
      * @return array
      */
-
+	 
 	 public function get_country()
 	{
 	  $query = $this->db->query("SELECT * from 	tbl_country order by added_at desc");
@@ -2508,131 +2509,131 @@ $this->db->delete('depo_master');
 		$query = $this->db->query("SELECT * from tbl_state order by state asc");
   	  return $query->result();
 	}
-
-
+	
+	
 	public function get_lead_type()
 	{
 	  $query = $this->db->query("SELECT * from tbl_lead_type");
   	  return $query->result();
 	}
-
+	
 	 public function getcountryBystate($country_id) {
         $this->db->select()->from('tbl_state');
 		$this->db->where('country_id', $country_id);
         $query = $this->db->get();
 		return $query->result_array();
-
-    }
+       
+    } 
 	public function getdynsm_id($nsm_id) {
-
+		
         $query = $this->db->query('SELECT staffid,emp_code,firstname,lastname,reporting_manager,reporting_to FROM tblstaff where reporting_manager IN ("'. $nsm_id .'") AND role=6 ORDER BY staffid ASC');
 		return $result = $query->result_array();
-
-    }
-
+       
+    } 
+	
 	public function getrsm_id($dynsm_id='') {
 		$dynsm_id = rtrim($dynsm_id,',');
 
         $query = $this->db->query('SELECT staffid,emp_code,firstname,lastname,reporting_manager,reporting_to FROM tblstaff where reporting_manager IN ('.$dynsm_id.') AND role=2');
-		return $result = $query->result_array();
-
+		return $result = $query->result_array(); 
+		
 		/* $explode = explode(',',$dynsm_id);
 		$ids  = array_unique($explode);
-
+		
 		foreach($ids as $single){
-
+			
 			$query = $this->db->query('SELECT staffid,emp_code,firstname,lastname,reporting_manager,reporting_to FROM tblstaff where reporting_to LIKE ("%,'.$single.'%") AND role=2');
 			return $query->result_array();
-		}
+		} 
 		 */
-
-    }
-
+       
+    } 
+	
 	public function getzsm_id($rsm_id='') {
 		/* $explode = explode(',',$rsm_id);
 		$ids  = array_unique($explode);
-
+		
 		foreach($ids as $single){
-
+			
 			$query = $this->db->query('SELECT staffid,emp_code,firstname,lastname,reporting_manager,reporting_to FROM tblstaff where reporting_to LIKE ("%,'.$single.'%") AND role=5');
 			return $query->result_array();
 		} */
-
+		
 		$rsm_id = rtrim($rsm_id,',');
-
+		 
 		$query = $this->db->query('SELECT staffid,emp_code,firstname,lastname,reporting_manager,reporting_to FROM tblstaff where reporting_manager IN ('.$rsm_id.') AND role=5');
-		return $result = $query->result_array();
-
-
-    }
-
+		return $result = $query->result_array(); 
+		
+       
+    } 
+	
 	public function getasm_id($zsm_id='') {
-
+		
 	   /*  $explode = explode(',',$rsm_id);
 		$ids  = array_unique($explode);
-
+		
 		foreach($ids as $single){
-
+			
 			$query = $this->db->query('SELECT staffid,emp_code,firstname,lastname,reporting_manager,reporting_to FROM tblstaff where reporting_to LIKE ("%,'.$single.'%") AND role=3');
 			return $query->result_array();
 		}  */
-
+		
 		$zsm_id = rtrim($zsm_id,',');
       $query = $this->db->query('SELECT staffid,emp_code,firstname,lastname,reporting_manager,reporting_to FROM tblstaff where reporting_manager IN ('.$zsm_id.') AND role=3');
 		return $result = $query->result_array();
-
-    }
-
+       
+    } 
+	
 	public function getse_id($asm_id='') {
 		/* $explode = explode(',',$asm_id);
 		$ids  = array_unique($explode);
-
+		
 		foreach($ids as $single){
-
+			
 			$query = $this->db->query('SELECT staffid,emp_code,firstname,lastname,reporting_manager,reporting_to FROM tblstaff where reporting_to LIKE ("%,'.$single.'%") AND role=1');
 			return $query->result_array();
 		}  */
 		$asm_id = rtrim($asm_id,',');
        $query = $this->db->query('SELECT staffid,emp_code,firstname,lastname,reporting_manager,reporting_to FROM tblstaff where reporting_manager IN ('.$asm_id.') AND role=1');
-		return $result = $query->result_array();
-
-    }
-
-
-
+		return $result = $query->result_array(); 
+       
+    } 
+	
+	
+	
 	public function getinvoiceBysubcategory($group_id) {
         $this->db->select()->from('tblitems_sub_groups');
 		$this->db->where('group_id', $group_id);
         $query = $this->db->get();
 		return $query->result_array();
-
+       
     }
 	  public function getstateBycity($state_id) {
         $this->db->select()->from('tbl_city');
 		$this->db->where('state_id', $state_id);
         $query = $this->db->get();
 		return $query->result_array();
-
+       
     }
-
-
+	 
+	 
 	public function getEmailID($field,$table,$column,$keyword) {
        $this->db->select($field);
 		$this->db->from($table);
 		$this->db->like($column, $keyword);
 		return $this->db->get()->result_array();
-
+       
     }
-
+	 
 	 public function getEmailIDReportingTo($field,$table,$column,$keyword) {
        $this->db->select($field);
-	   $this->db->from($table);
+	   $this->db->from($table);	   
 	   $this->db->where('active', '1');
 	   $this->db->where_in($column, $keyword);
 	   return $this->db->get()->result_array();
     }
-
-
+	
+	 
     public function get_lead_activity_log($id)
     {
         $sorting = do_action('lead_activity_log_default_sort', 'desc');
@@ -2662,7 +2663,7 @@ public function getcontanct_details($staff_id) {
 		$this->db->where('staffid', $staff_id);
         $query = $this->db->get();
 		return $query->result_array();
-
+       
     }
     /**
      * Add lead activity from staff
@@ -2965,12 +2966,12 @@ public function getcontanct_details($staff_id) {
 	  $query = $this->db->query("SELECT * from lead_source");
   	  return $query->result();
 	}
-
-
+	
+	
 	public function add_lead(){
 $data = array(
 		'lead_title' => $this->input->post('lead_name'),
-
+		
 		'lead_description' => $this->input->post('lead_description'),
 		'lead_type' => $this->input->post('lead_type'),
 		'lead_owner' => $this->input->post('lead_owner'),
@@ -2999,8 +3000,8 @@ $addaddress=array(	'address_1' => $this->input->post('address_1'),
 		'lead_id'=>$insert_id,
 		'date' => date('Y-m-d H:i:s'),
 		'city' => $this->input->post('city_id'),
-
-
+		
+		
 		);
 
 
@@ -3008,46 +3009,46 @@ $this->db->insert('tbl_lead_contact', $adddata);
 
 $this->db->insert('tbl_lead_address', $addaddress);
 
-
+		
 	}
-
+	
 		public function get_leade_detail()
 	{
 	  $query = $this->db->query("SELECT * from lead_detail");
   	  return $query->result();
 	}
-
-
+	
+	
 		public function get_status_lead_byfg()
 	{
 	  $query = $this->db->query("SELECT * from tbl_status");
   	  return $query->result();
 	}
-
+	
 	public function result_getall(){
 
     $this->db->select('lead_detail.id as leadid,lead_detail.lead_title as lead_title,lead_detail.date as lead_date,lead_detail.lead_status as lead_status,lead_detail.lead_type as lead_type,lead_detail.lead_owner as lead_owner,tbl_lead_contact.first_name,tbl_lead_contact.last_name,tbl_lead_contact.phone,	tbl_lead_contact.mobile,tbl_lead_contact.email,tbl_lead_address.address_1,tbl_lead_address.address_2,tbl_lead_address.zipcode,tbl_lead_address.country,tbl_lead_address.state,tbl_lead_address.city');
     $this->db->from('lead_detail');
-    $this->db->join('tbl_lead_contact', ' tbl_lead_contact.lead_id=lead_detail.id');
-    $this->db->join('tbl_lead_address', ' tbl_lead_address.lead_id=lead_detail.id');
+    $this->db->join('tbl_lead_contact', ' tbl_lead_contact.lead_id=lead_detail.id'); 
+    $this->db->join('tbl_lead_address', ' tbl_lead_address.lead_id=lead_detail.id'); 
 	$this->db->where('tbl_lead_contact.is_primary','1');
 	$this->db->where('tbl_lead_address.is_primary','1');
     $query = $this->db->get();
-
+	
     return $query->result();
 
     }
 		public function tbl_lead_address(){
 	$this->db->select('tbl_lead_address.*, b.country,c.state');
 	$this->db->from('tbl_lead_address');
-
+	
 	$this->db->join('tbl_country b', 'b.id=tbl_lead_address.country');
 $this->db->join('tbl_state c', 'c.id=tbl_lead_address.state');
 
 
 $tbl_list = $this->db->get();
 return 	$tbl_list->result_array();
-
+	
 }
 
 
@@ -3070,20 +3071,20 @@ public function get_status_byid($id)
 		return $reault_array[0]['type'];
 	}
 	public function read_user_info($id) {
-
+	
 		$condition = "user_id =" . "'" . $id . "'";
 		$this->db->select('*');
 		$this->db->from('tblemployees');
 		$this->db->where($condition);
 		$this->db->limit(1);
 		$query = $this->db->get();
-
+		
 		if ($query->num_rows() > 0) {
 			return $query->result();
 		} else {
 			return null;
 		}
-
+		
 	}
 		public function get_lead_source_byid($id)
 	{
@@ -3093,37 +3094,37 @@ public function get_status_byid($id)
 		$reault_array = $this->db->get()->result_array();
 		return $reault_array[0]['name'];
 	}
-
+	
 	  public function update_leads($id,$data) {
-
+        
             $this->db->where('id', $id);
             $this->db->update('tblleads', $data);
-
+       
     }
-
+	
 	  public function update_customer_value($id,$data) {
-
+        
             $this->db->where('id', $id);
             $this->db->update('customer_type_value', $data);
-
+       
     }
-
+	
 	public function update_leads_lead_requirment($id,$data) {
-
+        
             $this->db->where('id', $id);
             $this->db->update('tbllead_requirment', $data);
-
+       
     }
-
-
-
+	
+	
+	
 	public function get_item($id='')
     {
         $this->db->where('id', $id);
 
         return $this->db->get('tblitems')->row()->description;
     }
-
+	
 	public function get_item_state($id='')
     {
         $this->db->where('id', $id);
@@ -3136,8 +3137,8 @@ public function get_status_byid($id)
 
         return $this->db->get('tblitems_sub_groups')->row()->name;
     }
-
-
+	
+	
 	public function get_group($id='')
     {
         $this->db->where('id', $id);
@@ -3155,8 +3156,8 @@ public function get_status_byid($id)
         $this->db->where('id', $id);
 
         $name = $this->db->get('status_loss')->row()->name;
-
-
+       
+		
 		return $name;
     }
 	public function get_status_won_loss($id='')
@@ -3164,18 +3165,18 @@ public function get_status_byid($id)
         $this->db->where('id', $id);
 
         $name = $this->db->get('status_loss')->row()->name;
-
-
+       
+		
 		return $name;
     }
-
+	
 	public function get_emp_name($id='')
     {
         $this->db->where('staffid', $id);
         $firstname = $this->db->get('tblstaff')->row()->firstname;
 		$this->db->where('staffid', $id);
         $lastname = $this->db->get('tblstaff')->row()->lastname;
-
+		
 		return $firstname.' '.$lastname;
     }
 	public function get_emp_email($id='')
@@ -3184,102 +3185,102 @@ public function get_status_byid($id)
         $email = $this->db->get('tblstaff')->row()->email;
 		return $email;
     }
-
+	
 	public function get_tblclients($id='')
     {
         $this->db->where('userid', $id);
 
         return $this->db->get('tblclients')->row()->company;
-
+		
     }
-
+	
 	public function get_lead_description($id='')
     {
         $this->db->where('id', $id);
 
         return $this->db->get('tblleads')->row()->company;
-
+		
     }
 	public function get_lead_customer($id = '')
     {
         $this->db->where('id', $id);
-
+        
         return $this->db->get('tblleads')->row()->customer_name;
-
+        
     }
 	public function get_reporting_manager($id='')
     {
         $this->db->where('staffid', $id);
 
         return $this->db->get('tblstaff')->row()->reporting_manager;
-
+		
     }
 	public function get_reporting_to($id='')
     {
         $this->db->where('staffid', $id);
 
         return $this->db->get('tblstaff')->row()->reporting_to;
-
+		
     }
 	public function get_city_name($id='')
     {
         $this->db->where('id', $id);
 
         return $this->db->get('tbl_city')->row()->city;
-
+		
     }
 	public function get_state_name($id='')
     {
         $this->db->where('id', $id);
 
         return $this->db->get('tbl_state')->row()->state;
-
+		
     }
-
+	
 	public function get_dateadded($id='')
     {
         $this->db->where('id', $id);
 
         return $this->db->get('tblleads')->row()->dateadded;
-
+		
     }
 	public function get_financialdate($id='')
     {
         $this->db->where('id', $id);
 
         return $this->db->get('tblleads')->row()->accepacted_date;
-
+		
     }
 	public function lead_requirment_category($id='')
     {
         $this->db->where('id', $id);
 
         return $this->db->get('tblitems_groups')->row()->name;
-
-    }
+		
+    }	
 	public function lead_requirment_wattage($id='')
     {
         $this->db->where('id', $id);
 
         return $this->db->get('tblitems_sub_groups')->row()->name;
-
+		
     }
 	public function lead_requirment_items($id='')
     {
         $this->db->where('id', $id);
 
         return $this->db->get('tblitems')->row()->description;
-
+		
     }
-
+	
 	public function get_opportunity_sum($staffid='')
     {
         $query = $this->db->query('SELECT SUM(opportunity) as total_opportunity FROM tblleads where ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.$staffid.',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.$staffid.',%" )');
-
+		
 		return $query->total_opportunity;
 
     }
-
+	
 	public function no_of_leads_bymonth($month,$staffid)
 	{
 		$query = $this->db->query("SELECT id FROM tblleads where assigned='".$staffid."' AND dateadded LIKE '".$month."%'");
@@ -3291,17 +3292,17 @@ public function get_status_byid($id)
 		$query = $this->db->query("SELECT id FROM tblleads where assigned='".$staffid."' AND dateadded LIKE '".$date."%'");
 		return $query->num_rows();
 	}
-
-
+    
+    
     public function value_of_leads_bymonth($month,$staffid)
 	{
 		$whereArray = array(
                 "assigned" => $staffid,
                 "dateadded LIKE" => $month.'%',
         );
-
+		
 		$this->db->select_sum('opportunity');
-		$result = $this->db->get_where('tblleads',$whereArray)->row();
+		$result = $this->db->get_where('tblleads',$whereArray)->row();  
 		if($result->opportunity=='')
 			$opportunity = 0;
 		else
@@ -3314,9 +3315,9 @@ public function get_status_byid($id)
                 "assigned" => $staffid,
                 "dateadded LIKE" => $date.'%',
         );
-
+		
 		$this->db->select_sum('opportunity');
-		$result = $this->db->get_where('tblleads',$whereArray)->row();
+		$result = $this->db->get_where('tblleads',$whereArray)->row();  
 		if($result->opportunity=='')
 			$opportunity = 0;
 		else
@@ -3324,7 +3325,7 @@ public function get_status_byid($id)
 		return $opportunity;
 
 	}
-
+	
 	public function no_of_leads_by_stage_month($month,$status)
 	{
 		$query = $this->db->query("SELECT id FROM tblleads where status='".$status."' AND dateassigned LIKE '".$month."%'");
@@ -3336,17 +3337,17 @@ public function get_status_byid($id)
 		$query = $this->db->query("SELECT id FROM tblleads where status='".$status."' AND dateassigned LIKE '".$date."%'");
 		return $query->num_rows();
 	}
-
-
+    
+    
     public function value_of_leads_by_stage_month($month,$status)
 	{
 		$whereArray = array(
                 "status" => $status,
                 "dateassigned LIKE" => $month.'%',
         );
-
+		
 		$this->db->select_sum('opportunity');
-		$result = $this->db->get_where('tblleads',$whereArray)->row();
+		$result = $this->db->get_where('tblleads',$whereArray)->row();  
 		if($result->opportunity=='')
 			$opportunity = 0;
 		else
@@ -3359,9 +3360,9 @@ public function get_status_byid($id)
                 "status" => $status,
                 "dateassigned LIKE" => $date.'%',
         );
-
+		
 		$this->db->select_sum('opportunity');
-		$result = $this->db->get_where('tblleads',$whereArray)->row();
+		$result = $this->db->get_where('tblleads',$whereArray)->row();  
 		if($result->opportunity=='')
 			$opportunity = 0;
 		else
@@ -3369,9 +3370,9 @@ public function get_status_byid($id)
 		return $opportunity;
 
 	}
-
-
-
+    
+     
+   
     public function getleadchangerequest()
     {
 		if (get_staff_role() == 1) {
@@ -3381,7 +3382,7 @@ public function get_status_byid($id)
     }
     public function getleadchangerequest_pending()
     {
-
+		
 		if (get_staff_role() == 1) {
 			$where = "addedby='".get_staff_user_id()."' AND (status='Pending' OR status='Approved')";
 			$this->db->where($where);
@@ -3393,11 +3394,11 @@ public function get_status_byid($id)
 			$this->db->where($where);
 		}
 		$this->db->order_by("id", "DESC");
-
+				
         return $this->db->get('tblleadchangerequest')->result_array();
     }
 	public function getleadchangerequest_completed()
-    {
+    {		
 		if (get_staff_role() == 1) {
 			$arraycond = array('addedby' => get_staff_user_id(),'status' => 'Updated');
 			$this->db->where($arraycond);
@@ -3409,11 +3410,11 @@ public function get_status_byid($id)
 			$this->db->where($arraycond);
 		}
 		$this->db->order_by("id", "DESC");
-
+				
         return $this->db->get('tblleadchangerequest')->result_array();
     }
 	public function getleadchangerequest_rejected()
-    {
+    {		
 		if (get_staff_role() == 1) {
 			$arraycond = array('addedby' => get_staff_user_id(),'status' => 'Rejected');
 			$this->db->where($arraycond);
@@ -3422,28 +3423,28 @@ public function get_status_byid($id)
 			$this->db->where($arraycond);
 		}
 		$this->db->order_by("id", "DESC");
-
+				
         return $this->db->get('tblleadchangerequest')->result_array();
     }
-
+	
     public function list_leads_data_staff($id = null)
     {
 		$this->db->order_by("id", "DESC");
-
+		
         $this->db->select()->from('tblleads');
 		$this->db->where('assigned', get_staff_user_id());
         $query = $this->db->get();
-
+        
         return $query->result_array();
-
+        
     }
 
 	//---------------------------- Stage Report ---------------------//
-
+	
 	/* public function no_of_leads_by_stage_month_staff($month,$status,$staff_id='',$zone_name='')
 	{
 		$total_own =0;
-
+		
 		if ($staff_id != '') {
             $staff_state_id = $this->get_staff_state_byid($staff_id);
             $role           = $this->get_staff_role_id($staff_id);
@@ -3453,7 +3454,7 @@ public function get_status_byid($id)
 				}else{
 					$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND  (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1)');
 				}
-
+                
             } else if ($role == 7 || $role == 4) {
 				if($zone_name != '--Select--'){
 					$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND  tblleads.state IN(' . $staff_state_id . ') AND region="'.$zone_name.'"');
@@ -3467,9 +3468,9 @@ public function get_status_byid($id)
 					$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND tblleads.reportingto LIKE "%' . $staff_id . '%"');
                 }
             }
-
+            
             if ($role != 1) {
-
+                
 				if ($staff_id != '') {
 						if($zone_name != '--Select--'){
 							$query1 = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1) AND region="'.$zone_name.'"');
@@ -3487,30 +3488,30 @@ public function get_status_byid($id)
             }
         }
 		else if($staff_id == '' && $zone_name != '--Select--'){
-
+			
 			$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND region="'.$zone_name.'"');
 		} else {
-			if (get_staff_role() == 1) {
+			if (get_staff_role() == 1) {				
 				$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ' OR is_public = 1)');
 			} else if (get_staff_role() == 7 || get_staff_role() == 4) {
 				$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND tblleads.state IN(' . get_staff_state_id() . ')');
 			} else if (get_staff_role() != 0 || get_staff_role() != 4 || get_staff_role() != 7) {
 				$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND tblleads.reportingto LIKE "%' . get_staff_user_id() . '%"  OR tblleads.addedfrom IN(' . get_staff_user_id() . ')');
 			}
-
+			
 			if (get_staff_role() != 1) {
 				if ($staff_id != '') {
                     $query1 = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1)');
                 } else {
                     $query1 = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ' OR is_public = 1)');
                 }
-
-
+				
+				
 				$total_own = $query1->num_rows();
 			}
 		}
 		 $total_rec =  $query->num_rows();
-
+		 
 		 return $total_own + $total_rec;
 
 	}
@@ -3531,7 +3532,7 @@ public function get_status_byid($id)
 				}else{
 					$query = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND  tblleads.state IN(' . $staff_state_id . ')');
 				}
-
+                
             } else if ($role != 0 || $role != 4 || $role != 7) {
 				if($zone_name != '--Select--'){
 					$query = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND tblleads.reportingto LIKE "%' . $staff_id . '%" AND region="'.$zone_name.'" ');
@@ -3540,7 +3541,7 @@ public function get_status_byid($id)
                 }
             }
             if ($role != 1) {
-
+                
                 if ($staff_id != '') {
 					if($zone_name != '--Select--'){
 						$query1 = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1)  AND region="'.$zone_name.'"');
@@ -3558,7 +3559,7 @@ public function get_status_byid($id)
             }
 			$total_rec =  $query->num_rows();
         }else if($staff_id == '' && $zone_name != '--Select--'){
-
+			
 			$query = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND region="'.$zone_name.'"');
 		}else {
 			if (get_staff_role() == 1) {
@@ -3568,28 +3569,28 @@ public function get_status_byid($id)
 			} else if (get_staff_role() != 0 || get_staff_role() != 4 || get_staff_role() != 7) {
 				$query = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND tblleads.reportingto LIKE "%' . get_staff_user_id() . '%"  OR tblleads.addedfrom IN(' . get_staff_user_id() . ')');
 			}
-
+			
 			if (get_staff_role() != 1) {
 				if ($staff_id != '') {
                     $query1 = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1)');
                 } else {
                     $query1 = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ' OR is_public = 1)');
                 }
-
-
+				
+				
 				$total_own = $query1->num_rows();
 			}
 		}
 		 $total_rec =  $query->num_rows();
-
+		 
 		 return $total_own + $total_rec;
 	}
-
+	
 	public function value_of_leads_by_stage_month_staff($month,$status,$staff_id='',$zone_name='')
 	{
 		$sql = "";
 		$sql .= "SELECT SUM(opportunity) as total FROM tblleads WHERE status='".$status."' AND dateassigned LIKE '".$month."%'";
-		if($staff_id != '')
+		if($staff_id != '') 
 		{
 			$staff_state_id = $this->get_staff_state_byid($staff_id);
 			$role = $this->get_staff_role_id($staff_id);
@@ -3600,7 +3601,7 @@ public function get_status_byid($id)
 					$sql .=  ' AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1)';
 				}
 			}
-			else if($role == 7 || $role == 4)
+			else if($role == 7 || $role == 4) 
 			{
 				if ($zone_name != '--Select--') {
                     $sql .=  ' AND tblleads.state IN('. $staff_state_id .') AND region="'.$zone_name.'"';
@@ -3608,7 +3609,7 @@ public function get_status_byid($id)
 					$sql .= ' AND tblleads.state IN('. $staff_state_id .')';
 				}
 			}
-			else if($role != 0 ||  $role != 4 || $role != 7)
+			else if($role != 0 ||  $role != 4 || $role != 7) 
 			{
 				if ($zone_name != '--Select--') {
                     $sql .=  ' AND tblleads.reportingto LIKE "%'.$staff_id.'%" AND region="'.$zone_name.'"';
@@ -3619,8 +3620,8 @@ public function get_status_byid($id)
 			if ($role != 1) {
 				$sql1 ='';
 				$sql1 .= 'SELECT SUM(opportunity) as total FROM tblleads WHERE status="'.$status.'" AND dateassigned LIKE "'.$month.'%"';
-
-				if($staff_id != '')
+				
+				if($staff_id != '') 
 				{
 					if ($zone_name != '--Select--') {
 						$sql1 .=  ' AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1) AND region="'.$zone_name.'"';
@@ -3647,41 +3648,41 @@ public function get_status_byid($id)
 			if (get_staff_role() == 1) {
 				$sql .=  ' AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ' OR is_public = 1)';
 			}
-			else if(get_staff_role() == 7 || get_staff_role() == 4)
+			else if(get_staff_role() == 7 || get_staff_role() == 4) 
 			{
 				$sql .= ' AND tblleads.state IN('. get_staff_state_id() .')';
 			}
-			else if(get_staff_role() != 0 ||  get_staff_role() != 4 || get_staff_role() != 7)
+			else if(get_staff_role() != 0 ||  get_staff_role() != 4 || get_staff_role() != 7) 
 			{
-
+				
 				$sql .=  ' AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%" ) ';
 			}
 			if (get_staff_role() != 1) {
 				$sql1 ='';
 				$sql1 .= 'SELECT SUM(opportunity) as total FROM tblleads WHERE status="'.$status.'" AND dateassigned LIKE "'.$month.'%"';
-
-				if($staff_id != '')
+				
+				if($staff_id != '') 
 				{
 					$sql1 .=  ' AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1)';
-
+					
 				}
 				else{
 					$sql1 .=  ' AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ' OR is_public = 1)';
-
+					
 				}
-
+							
 				$total_own = $this->db->query($sql1)->row()->total;
 			}
 			$total_staff = $this->db->query($sql)->row()->total;
-		}
+		}	
 		return $total_staff + $total_own;
-
+	
 	}
 	public function total_value_of_leads_by_stage_month_staff($month,$staff_id='',$zone_name='')
 	{
 		$sql = "";
 		$sql .= "SELECT SUM(opportunity) as total FROM tblleads WHERE dateassigned LIKE '".$month."%'";
-		if($staff_id != '')
+		if($staff_id != '') 
 		{
 			$staff_state_id = $this->get_staff_state_byid($staff_id);
 			$role = $this->get_staff_role_id($staff_id);
@@ -3691,9 +3692,9 @@ public function get_status_byid($id)
                 } else {
 					$sql .=  ' AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1)';
 				}
-
+				
 			}
-			else if($role == 7 || $role == 4)
+			else if($role == 7 || $role == 4) 
 			{
 				if ($zone_name != '--Select--') {
 					$sql .=  ' AND tblleads.state IN('. $staff_state_id .') AND region="'.$zone_name.'"';
@@ -3701,7 +3702,7 @@ public function get_status_byid($id)
 					$sql .= ' AND tblleads.state IN('. $staff_state_id .')';
 				}
 			}
-			else if($role != 0 ||  $role != 4 || $role != 7)
+			else if($role != 0 ||  $role != 4 || $role != 7) 
 			{
 				if ($zone_name != '--Select--') {
 					$sql .=  ' AND tblleads.reportingto LIKE "%'.$staff_id.'%" AND region="'.$zone_name.'"';
@@ -3709,12 +3710,12 @@ public function get_status_byid($id)
 					$sql .=  ' AND tblleads.reportingto LIKE "%'.$staff_id.'%"';
 				}
 			}
-
+			
 			if ($role != 1) {
 				$sql1 ='';
 				$sql1 .= 'SELECT SUM(opportunity) as total FROM tblleads WHERE dateassigned LIKE "'.$month.'%"';
-
-				if($staff_id != '')
+				
+				if($staff_id != '') 
 				{
 					if ($zone_name != '--Select--') {
 						$sql1 .=  ' AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1) AND region="'.$zone_name.'"';
@@ -3739,49 +3740,49 @@ public function get_status_byid($id)
 			if (get_staff_role() == 1) {
 				$sql .=  ' AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ' OR is_public = 1)';
 			}
-			else if(get_staff_role() == 7 || get_staff_role() == 4)
+			else if(get_staff_role() == 7 || get_staff_role() == 4) 
 			{
 				$sql .= ' AND tblleads.state IN('. get_staff_state_id() .')';
 			}
-			else if(get_staff_role() != 0 ||  get_staff_role() != 4 || get_staff_role() != 7)
+			else if(get_staff_role() != 0 ||  get_staff_role() != 4 || get_staff_role() != 7) 
 			{
-
+				
 				$sql .=  ' AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%" ) ';
 			}
-
+			
 			if (get_staff_role() != 1) {
 				$sql1 ='';
 				$sql1 .= 'SELECT SUM(opportunity) as total FROM tblleads WHERE dateassigned LIKE "'.$month.'%"';
-
-				if($staff_id != '')
+				
+				if($staff_id != '') 
 				{
 					$sql1 .=  ' AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ' OR is_public = 1)';
-
+					
 				}
 				else{
 					$sql1 .=  ' AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ' OR is_public = 1)';
-
+					
 				}
-
+							
 				$total_own = $this->db->query($sql1)->row()->total;
 			}
 			$total_staff = $this->db->query($sql)->row()->total;
-		}
+		}	
 		return $total_staff + $total_own;
-
+	
 	}
 	 */
-
+	
 	public function no_of_leads_by_stage_month_staff($month,$status,$staff_id='',$zone_name='')
 	{
 		$total_own =0;
 		$total_rec =0;
-
+		
 		if ($staff_id != '') {
             $staff_state_id = $this->get_staff_state_byid($staff_id);
             $role           = $this->get_staff_role_id($staff_id);
             if ($role == 1) {
-
+				
 				$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ')');
 				$total_rec =  $query->num_rows();
 			}
@@ -3789,26 +3790,26 @@ public function get_status_byid($id)
 				if($zone_name != '--Select--'){
 					$where = "region LIKE '%".$zone_name."' AND ( CONCAT(',', reporting_to, ',')  LIKE '%, ".$staff_id.",%'  OR CONCAT(',', reporting_to, ',')  LIKE '%,".$staff_id.",%' ) AND is_not_staff = 0";
 					$this->db->select('staffid');
-					$this->db->where($where);
+					$this->db->where($where);		
 					$userarray = $this->db->get('tblstaff')->result_array();
-					foreach($userarray as $row)
+					foreach($userarray as $row)  
 					{
-						$ids[] = $row['staffid'];
-					}
+						$ids[] = $row['staffid']; 
+					} 
 					$assigned = implode(", ", $ids);
-
-					if($assigned !=''){
+					
+					if($assigned !=''){	
 						$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND assigned IN('.$assigned.')');
 						$total_rec =  $query->num_rows();
-					}
-
+					}	
+				
 				}else{
 					$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND ( CONCAT(",", reportingto, ",")  LIKE "%, '.$staff_id.',%" OR CONCAT(",", reportingto, ",")  LIKE "%,'.$staff_id.',%")');
 					$total_rec =  $query->num_rows();
                 }
-            }
+            }            
             if ($role != 1) {
-
+                
 				if ($staff_id != '') {
 					if($zone_name != '--Select--'){
 						$this->db->where('id', $zone_name);
@@ -3821,7 +3822,7 @@ public function get_status_byid($id)
 					if($zone_name != '--Select--'){
 						$this->db->where('id', $zone_name);
 						$zone_name = $this->db->get('tblregion')->row()->region;
-
+						
 						$query1 = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ')  AND region="'.$zone_name.'"');
 					}else{
 						$query1 = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ')');
@@ -3831,31 +3832,28 @@ public function get_status_byid($id)
             }
         }
 		else if($staff_id == '' && $zone_name != '--Select--'){
-
+			
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND assigned IN ('.$assigned.')');
 			$total_rec =  $query->num_rows();
-		}
+		} 
 		else {
-			if (get_staff_role() > 8 || is_admin()) {
+			if (get_staff_role() > 8 || is_admin()) {				
 				$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%"');
-
-				 $total_rec =  $query->num_rows();
-
-
-			}else if (get_staff_role() == 1) {
+				$total_rec =  $query->num_rows();
+			}else if (get_staff_role() == 1) {				
 				$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ')');
 				$total_rec =  $query->num_rows();
-			}
+			} 
 			else if (get_staff_role() < 9 || get_staff_role() != 0 ||  get_staff_role() != 4 || get_staff_role() != 7) {
 				$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND ( CONCAT(",", reportingto, ",")  LIKE "%, '.get_staff_user_id().',%" OR CONCAT(",", reportingto, ",")  LIKE "%,'.get_staff_user_id().',%") OR tblleads.addedfrom IN(' . get_staff_user_id() . ')');
 				$total_rec =  $query->num_rows();
@@ -3863,20 +3861,20 @@ public function get_status_byid($id)
 			else if (get_staff_role() == 7 || get_staff_role() == 4) {
 				$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" tblleads.state IN(' . get_staff_state_id() . ')');
 				$total_rec =  $query->num_rows();
-			}
+			} 
 			if (get_staff_role() != 1) {
 				if ($staff_id != '') {
                     $query1 = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ')');
                 } else {
                     $query1 = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ')');
                 }
-
-
+				
+				
 				$total_own = $query1->num_rows();
 			}
 		}
-
-
+		
+		
 		 return $total_own + $total_rec;
 
 	}
@@ -3895,30 +3893,30 @@ public function get_status_byid($id)
 				if($zone_name != '--Select--'){
 					$where = "region LIKE '%".$zone_name."' AND ( CONCAT(',', reporting_to, ',')  LIKE '%, ".$staff_id.",%'  OR CONCAT(',', reporting_to, ',')  LIKE '%,".$staff_id.",%' ) AND is_not_staff = 0";
 					$this->db->select('staffid');
-					$this->db->where($where);
+					$this->db->where($where);		
 					$userarray = $this->db->get('tblstaff')->result_array();
-					foreach($userarray as $row)
+					foreach($userarray as $row)  
 					{
-						$ids[] = $row['staffid'];
-					}
+						$ids[] = $row['staffid']; 
+					} 
 					$assigned = implode(", ", $ids);
-					if($assigned !=''){
+					if($assigned !=''){						
 						$query = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND tblleads.assigned IN(' . $assigned . ')');
 						$total_rec =  $query->num_rows();
 					}
-
+					
 				}else{
 					$query = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND ( CONCAT(",", reportingto, ",")  LIKE "%, '.$staff_id.',%" OR CONCAT(",", reportingto, ",")  LIKE "%,'.$staff_id.',%")');
 					$total_rec =  $query->num_rows();
                 }
             }
             if ($role != 1) {
-
+                
                 if ($staff_id != '') {
 					if($zone_name != '--Select--'){
 						$this->db->where('id', $zone_name);
 						$zone_name = $this->db->get('tblregion')->row()->region;
-
+						
 						$query1 = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ')  AND region="'.$zone_name.'"');
 					}else{
 						$query1 = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ')');
@@ -3927,7 +3925,7 @@ public function get_status_byid($id)
 					if($zone_name != '--Select--'){
 						$this->db->where('id', $zone_name);
 						$zone_name = $this->db->get('tblregion')->row()->region;
-
+						
 						$query1 = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ')  AND region="'.$zone_name.'" ');
 					}else{
 						$query1 = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ')');
@@ -3935,24 +3933,24 @@ public function get_status_byid($id)
                 }
                 $total_own = $query1->num_rows();
             }
-
+			
         }
 		else if($staff_id == '' && $zone_name != '--Select--'){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$query = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND assigned IN('.$assigned.')');
 			$total_rec =  $query->num_rows();
 		}
 		else {
-
+			
 			if (get_staff_role() > 8 || is_admin()) {
 				$query = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" ');
 			}
@@ -3963,30 +3961,30 @@ public function get_status_byid($id)
 			} else if (get_staff_role() < 9 || get_staff_role() != 0 || get_staff_role() != 4 || get_staff_role() != 7) {
 				$query = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND (CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%"  OR tblleads.assigned ='. get_staff_user_id() .')  OR tblleads.addedfrom IN(' . get_staff_user_id() . ')');
 			}
-
+			
 			if (get_staff_role() != 1) {
 				if ($staff_id != '') {
                     $query1 = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ')');
                 } else {
                     $query1 = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ')');
                 }
-
-
+				
+				
 				$total_own = $query1->num_rows();
 			}
 			$total_rec =  $query->num_rows();
 		}
-
-
+		 
+		
 		 return $total_own + $total_rec;
 	}
-
+	
 	public function value_of_leads_by_stage_month_staff($month,$status,$staff_id='',$zone_name='')
 	{
 		$total_staff = 0;
 		$total_own=0;
-
-		if($staff_id != '')
+		
+		if($staff_id != '') 
 		{
 			$staff_state_id = $this->get_staff_state_byid($staff_id);
 			$role = $this->get_staff_role_id($staff_id);
@@ -3994,7 +3992,7 @@ public function get_status_byid($id)
 				$sql = "SELECT SUM(opportunity) as total FROM tblleads WHERE status='".$status."' AND dateassigned LIKE '".$month."%' AND tblleads.assigned ='". $staff_id . "'";
 				$total_staff = $this->db->query($sql)->row()->total;
 			}
-			else if($role != 1)
+			else if($role != 1) 
 			{
 				if ($zone_name != '--Select--') {
 					if(is_array ($zone_name)){
@@ -4004,28 +4002,28 @@ public function get_status_byid($id)
 						$where = "region IN(".$zone_name.") AND ( CONCAT(',', reporting_to, ',')  LIKE '%, ".$staff_id.",%'  OR CONCAT(',', reporting_to, ',')  LIKE '%,".$staff_id.",%' ) AND is_not_staff = 0";
 					}
 					$this->db->select('staffid');
-					$this->db->where($where);
+					$this->db->where($where);		
 					$userarray = $this->db->get('tblstaff')->result_array();
-					foreach($userarray as $row)
+					foreach($userarray as $row)  
 					{
-						$ids[] = $row['staffid'];
-					}
+						$ids[] = $row['staffid']; 
+					} 
 					$assigned = implode(", ", $ids);
 					if($assigned !=''){
 						$sql =  "SELECT SUM(opportunity) as total FROM tblleads WHERE status='".$status."' AND dateassigned LIKE '".$month."%' AND tblleads.assigned IN(" . $assigned . ")";
 						$total_staff = $this->db->query($sql)->row()->total;
 					}
                 } else {
-
+					
 					$sql =  "SELECT SUM(opportunity) as total FROM tblleads WHERE status='".$status."' AND dateassigned LIKE '".$month."%' AND ( CONCAT(',', reportingto, ',')  LIKE '%, ".$staff_id.",%'  OR CONCAT(',', reportingto, ',')  LIKE '%,".$staff_id.",%' )";
 					$total_staff = $this->db->query($sql)->row()->total;
 				}
-
-
+				
+				
 			}
 			if ($role != 1) {
-
-				if($staff_id != '')
+				
+				if($staff_id != '') 
 				{
 					$sql1 =  'SELECT SUM(opportunity) as total FROM tblleads WHERE status="'.$status.'" AND dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id .')';
 				}
@@ -4034,18 +4032,18 @@ public function get_status_byid($id)
 				}
 				$total_own = $this->db->query($sql1)->row()->total;
 			}
-
+			
 		}
 		else if($staff_id == '' && $zone_name != '--Select--'){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$sql =  "SELECT SUM(opportunity) as total FROM tblleads WHERE status='".$status."' AND dateassigned LIKE '".$month."%' AND assigned IN(".$assigned.")";
 			$total_staff = $this->db->query($sql)->row()->total;
@@ -4059,41 +4057,41 @@ public function get_status_byid($id)
 				$sql =  'SELECT SUM(opportunity) as total FROM tblleads WHERE status="'.$status.'" AND dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ')';
 				$total_staff = $this->db->query($sql)->row()->total;
 			}
-			else if(get_staff_role() == 7 || get_staff_role() == 4)
+			else if(get_staff_role() == 7 || get_staff_role() == 4) 
 			{
 				$sql .= 'SELECT SUM(opportunity) as total FROM tblleads WHERE status="'.$status.'" AND dateassigned LIKE "'.$month.'%" AND tblleads.state IN('. get_staff_state_id() .')';
 				$total_staff = $this->db->query($sql)->row()->total;
-			}else if(get_staff_role() < 9 || get_staff_role() != 0 || get_staff_role() != 4 || get_staff_role() != 7)
+			}else if(get_staff_role() < 9 || get_staff_role() != 0 || get_staff_role() != 4 || get_staff_role() != 7) 
 			{
-
+				
 				$sql =  'SELECT SUM(opportunity) as total FROM tblleads WHERE status="'.$status.'" AND dateassigned LIKE "'.$month.'%"  AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%" ) ';
 				$total_staff = $this->db->query($sql)->row()->total;
 			}
-
+			
 			if (get_staff_role() != 1) {
 				$sql1 = 'SELECT SUM(opportunity) as total FROM tblleads WHERE status="'.$status.'" AND dateassigned LIKE "'.$month.'%"';
-
-				if($staff_id != '')
+				
+				if($staff_id != '') 
 				{
 					$sql1 .=  ' AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ')';
 				}
 				else{
 					$sql1 .=  ' AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ')';
-				}
+				}		
 				$total_own = $this->db->query($sql1)->row()->total;
 			}
-
-		}
-
+			
+		}	
+		 
 		return $total_staff + $total_own;
-
+	
 	}
-
+	
 	public function total_value_of_leads_by_stage_month_staff($month,$staff_id='',$zone_name='')
 	{
-		$total_staff = 0;
+		$total_staff = 0; 
 		$total_own=0;
-		if($staff_id != '')
+		if($staff_id != '') 
 		{
 			$staff_state_id = $this->get_staff_state_byid($staff_id);
 			$role = $this->get_staff_role_id($staff_id);
@@ -4101,17 +4099,17 @@ public function get_status_byid($id)
 				$sql = 'SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE dateassigned LIKE "'.$month.'%" AND tblleads.assigned ='.$staff_id.'';
 				$total_staff = $this->db->query($sql)->row()->total;
 			}
-			else if($role != 1)
+			else if($role != 1) 
 			{
 				if ($zone_name != '--Select--') {
 					$where = "region LIKE '%".$zone_name."' AND ( CONCAT(',', reporting_to, ',')  LIKE '%, ".$staff_id.",%'  OR CONCAT(',', reporting_to, ',')  LIKE '%,".$staff_id.",%' )";
 					$this->db->select('staffid');
-					$this->db->where($where);
+					$this->db->where($where);		
 					$userarray = $this->db->get('tblstaff')->result_array();
-					foreach($userarray as $row)
+					foreach($userarray as $row)  
 					{
-						$ids[] = $row['staffid'];
-					}
+						$ids[] = $row['staffid']; 
+					} 
 					$assigned = implode(", ", $ids);
 					if($assigned !=''){
 						$sql = 'SELECT SUM(opportunity) as total FROM tblleads WHERE dateassigned LIKE "'.$month.'%" AND tblleads.assigned IN(' . $assigned . ')';
@@ -4121,10 +4119,10 @@ public function get_status_byid($id)
 					 $sql =  'SELECT SUM(opportunity) as total FROM tblleads WHERE dateassigned LIKE "'.$month.'%" AND ( CONCAT(",", reportingto, ",")  LIKE "%, '.$staff_id.',%" OR CONCAT(",", reportingto, ",")  LIKE "%,'.$staff_id.',%")';
 					$total_staff = $this->db->query($sql)->row()->total;
 				}
-
+				
 			}
 			if ($role != 1) {
-				if($staff_id != '')
+				if($staff_id != '') 
 				{
 					$sql1 =  'SELECT SUM(opportunity) as total FROM tblleads WHERE dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ')';
 				}
@@ -4133,23 +4131,23 @@ public function get_status_byid($id)
 				}
 				$total_own = $this->db->query($sql1)->row()->total;
 			}
-
+			
 		}
 		else if($staff_id == '' && $zone_name != '--Select--'){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-			foreach($userarray as $row)
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$sql =  'SELECT SUM(opportunity) as total FROM tblleads WHERE dateassigned LIKE "'.$month.'%" AND assigned IN('.$assigned.')';
 			$total_staff = $this->db->query($sql)->row()->total;
 		}
 		else{
-
+			
 			if (get_staff_role() > 8 || is_admin()) {
 				$sql =  'SELECT SUM(opportunity) as total FROM tblleads WHERE dateassigned LIKE "'.$month.'%"';
 				$total_staff = $this->db->query($sql)->row()->total;
@@ -4157,23 +4155,23 @@ public function get_status_byid($id)
 			else if (get_staff_role() == 1) {
 				$sql =  'SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE dateassigned LIKE "'.$month.'%" AND tblleads.assigned ='. get_staff_user_id() . '';
 				$totalstaff = $this->db->query($sql)->row()->total;
-
+				
 			}
-			else if(get_staff_role() == 7 || get_staff_role() == 4)
+			else if(get_staff_role() == 7 || get_staff_role() == 4) 
 			{
 				$sql = 'SELECT SUM(opportunity) as total FROM tblleads WHERE dateassigned LIKE "'.$month.'%"  AND tblleads.state IN('. get_staff_state_id() .')';
 				$total_staff = $this->db->query($sql)->row()->total;
 			}
-			else if(get_staff_role() < 9 || get_staff_role() != 0 || get_staff_role() != 4 || get_staff_role() != 7)
+			else if(get_staff_role() < 9 || get_staff_role() != 0 || get_staff_role() != 4 || get_staff_role() != 7) 
 			{
-
+				
 				$sql =  'SELECT SUM(opportunity) as total FROM tblleads WHERE dateassigned LIKE "'.$month.'%"  AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%" ) ';
 				$total_staff = $this->db->query($sql)->row()->total;
 			}
-
+			
 			if (get_staff_role() != 1 || get_staff_role() != 0 || get_staff_role() < 9) {
-
-				if($staff_id != '')
+				
+				if($staff_id != '') 
 				{
 					$sql1 = 'SELECT SUM(opportunity) as total FROM tblleads WHERE dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . $staff_id . ' OR tblleads.addedfrom = ' . $staff_id . ')';
 					$total_own = $this->db->query($sql1)->row()->total;
@@ -4182,122 +4180,88 @@ public function get_status_byid($id)
 					$sql1 =  'SELECT SUM(opportunity) as total FROM tblleads WHERE dateassigned LIKE "'.$month.'%" AND (tblleads.assigned =' . get_staff_user_id() . ' OR tblleads.addedfrom = ' . get_staff_user_id() . ')';
 					$total_own = $this->db->query($sql1)->row()->total;
 				}
-				$total_staff = $this->db->query($sql)->row()->total;
-
+				$total_staff = $this->db->query($sql)->row()->total;			
+				
 			}
-
-		}
+			
+		}	
 		if (get_staff_role() == 1) {
 			return $total_staff;
 		}else{
 			return $total_staff + $total_own;
-
+			
 		}
 	}
-
+	
 	//------------------------------ MTD / YTD / ITD Report -------------------------//
-//np
-// public function mtd_no_of_leads_by_stage_month_staff_np($month,$status='',$zone_name='')
-// {
-//   //echo 'dfdd';
-//   $total_own =0;
-//   $total_rec =0;
-// //echo $zone_name;
-//
-//    if($zone_name != '' && $status == ''){
-//     $where = "region LIKE '%".$zone_name."'";
-//     $this->db->select('staffid');
-//     $this->db->where($where);
-//     $userarray = $this->db->get('tblstaff')->result_array();
-//
-//     foreach($userarray as $row)
-//     {
-//       $ids[] = $row['staffid'];
-//     }
-//     $assigned = implode(", ", $ids);
-//     $query = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND assigned IN ('.$assigned.')');
-//     $total_rec =  $query->num_rows();
-//
-//     // $query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%"');
-//     //
-//     //  $total_rec =  $query->num_rows();
-//
-//   }
-
-
-
-//    return $total_rec;
-//
-// }
-//np
+	
 	public function mtd_no_of_leads_by_stage_month_staff($month,$status='',$zone_name='')
 	{
-    //echo $status;
 		$total_own =0;
 		$total_rec =0;
-
+		
 		if($zone_name != '' && $status != ''){
-
+			
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND assigned IN ('.$assigned.')');
 			$total_rec =  $query->num_rows();
-
-		}
+		} 
 		else if($zone_name != '' && $status == ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$query = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND assigned IN ('.$assigned.')');
 			$total_rec =  $query->num_rows();
-
+			
 		}else if($status != '') {
-
+				
 			$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%"');
 			$total_rec =  $query->num_rows();
-
+		
 		}
 		else {
-      $query = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%"');
+				
+			$query = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%"');
 			$total_rec =  $query->num_rows();
-
+		
 		}
-
-
+		
+		
 		 return $total_rec;
 
 	}
-
+	
 	public function mtd_value_of_leads_by_stage_month_staff($month,$status='',$zone_name='')
 	{
 		$total_staff = 0;
 		$total_own=0;
-
+		
 		if($zone_name != '' && $status != ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE status='".$status."' AND dateassigned LIKE '".$month."%' AND assigned IN(".$assigned.")";
 			$total_staff = $this->db->query($sql)->row()->total;
@@ -4305,106 +4269,106 @@ public function get_status_byid($id)
 		else if($zone_name != '' && $status == ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE dateassigned LIKE '".$month."%' AND assigned IN(".$assigned.")";
 			$total_staff = $this->db->query($sql)->row()->total;
 		}
 		elseif($status != ''){
-
+			
 			$sql =  'SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE status="'.$status.'" AND dateassigned LIKE "'.$month.'%"';
 			$total_staff = $this->db->query($sql)->row()->total;
-
+			
 		}else{
-
+			
 			$sql =  'SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE dateassigned LIKE "'.$month.'%"';
 			$total_staff = $this->db->query($sql)->row()->total;
-
-		}
-
+			
+		}	
+		 
 		return $total_staff;
-
+	
 	}
-
+	
 	public function itd_no_of_leads_by_stage_month_staff($status='',$zone_name='')
 	{
 		$total_own =0;
 		$total_rec =0;
-
+		
 		if($zone_name != '' && $status != ''){
-
+			
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND assigned IN ('.$assigned.')');
 			$total_rec =  $query->num_rows();
-		}
+		} 
 		else if($zone_name != '' && $status == ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$query = $this->db->query('SELECT id FROM tblleads where assigned IN ('.$assigned.')');
 			$total_rec =  $query->num_rows();
-
+			
 		}else if($status != '') {
-
+				
 			$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"');
 			$total_rec =  $query->num_rows();
-
+		
 		}
 		else {
 			if(get_staff_role()==2 || get_staff_role()==3 || get_staff_role()==5 || get_staff_role()==6 || get_staff_role()==8){
 				$query = $this->db->query('SELECT id FROM tblleads where ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%" )');
-
+				
 			}else{
 				$query = $this->db->query('SELECT id FROM tblleads');
-
-			}
-
+				
+			}	
+			
 			$total_rec =  $query->num_rows();
-
+		
 		}
-
-
+		
+		
 		 return $total_rec;
 
 	}
-
+	
 	public function itd_value_of_leads_by_stage_month_staff($status='',$zone_name='')
 	{
 		$total_staff = 0;
 		$total_own=0;
-
+		
 		if($zone_name != '' && $status != ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE status='".$status."' AND assigned IN(".$assigned.")";
 			$total_staff = $this->db->query($sql)->row()->total;
@@ -4412,111 +4376,111 @@ public function get_status_byid($id)
 		else if($zone_name != '' && $status == ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE assigned IN(".$assigned.")";
 			$total_staff = $this->db->query($sql)->row()->total;
 		}
 		elseif($status != ''){
-
+			
 			$sql =  'SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE status="'.$status.'"';
 			$total_staff = $this->db->query($sql)->row()->total;
-
+			
 		}else{
 			if(get_staff_role()==2 || get_staff_role()==3 || get_staff_role()==5 || get_staff_role()==6 || get_staff_role()==8){
 				$sql =  'SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads where ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%" )';
-
+				
 			}else{
 				$sql =  'SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads';
 			}
-
-
+			
+			
 			$total_staff = $this->db->query($sql)->row()->total;
-
-		}
-
+			
+		}	
+		 
 		return $total_staff;
-
+	
 	}
-
+	
 	public function ytd_no_of_leads_by_stage_month_staff($fromyearmonth, $toyearmonth, $status='',$zone_name='')
 	{
 		$total_own =0;
 		$total_rec =0;
-
+		
 		if($zone_name != '' && $status != ''){
-
+			
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND assigned IN ('.$assigned.') AND (dateassigned BETWEEN "' . $fromyearmonth . '-01 00:00:00" AND "' . $toyearmonth . '-30 23:59:59" )');
 			$total_rec =  $query->num_rows();
-		}
+		} 
 		else if($zone_name != '' && $status == ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$query = $this->db->query('SELECT id FROM tblleads where assigned IN ('.$assigned.') AND (dateassigned BETWEEN "' . $fromyearmonth . '-01 00:00:00" AND "' . $toyearmonth . '-30 23:59:59" )');
 			$total_rec =  $query->num_rows();
-
+			
 		}
 		else if($status != '') {
-
+				
 			$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (dateassigned BETWEEN "' . $fromyearmonth . '-01 00:00:00" AND "' . $toyearmonth . '-30 23:59:59" )');
 			$total_rec =  $query->num_rows();
-
+		
 		}
 		else {
-			if(get_staff_role()==2 || get_staff_role()==3 || get_staff_role()==5 || get_staff_role()==6 || get_staff_role()==8){
+			if(get_staff_role()==2 || get_staff_role()==3 || get_staff_role()==5 || get_staff_role()==6 || get_staff_role()==8){	
 			$query = $this->db->query('SELECT id FROM tblleads where (dateassigned BETWEEN "' . $fromyearmonth . '-01 00:00:00" AND "' . $toyearmonth . '-30 23:59:59" ) AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%" )');
 			}else{
 			$query = $this->db->query('SELECT id FROM tblleads where (dateassigned BETWEEN "' . $fromyearmonth . '-01 00:00:00" AND "' . $toyearmonth . '-30 23:59:59" )');
-
+				
 			}
 			$total_rec =  $query->num_rows();
-
+		
 		}
-
-
+		
+		
 		 return $total_rec;
 
 	}
-
+	
 	public function ytd_value_of_leads_by_stage_month_staff($fromyearmonth, $toyearmonth,$status='',$zone_name='')
 	{
 		$total_staff = 0;
 		$total_own=0;
-
+		
 		if($zone_name != '' && $status != ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE status='".$status."' AND assigned IN(".$assigned.") AND (dateassigned BETWEEN '" . $fromyearmonth . "-01 00:00:00' AND '" . $toyearmonth . "-30 23:59:59')";
 			$total_staff = $this->db->query($sql)->row()->total;
@@ -4524,107 +4488,107 @@ public function get_status_byid($id)
 		else if($zone_name != '' && $status == ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE assigned IN(".$assigned.")  AND (dateassigned BETWEEN '" . $fromyearmonth . "-01 00:00:00' AND '" . $toyearmonth . "-30 23:59:59')";
 			$total_staff = $this->db->query($sql)->row()->total;
 		}
 		elseif($status != ''){
-
+			
 			$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE status='".$status."'  AND (dateassigned BETWEEN '" . $fromyearmonth . "-01 00:00:00' AND '" . $toyearmonth . "-30 23:59:59')";
 			$total_staff = $this->db->query($sql)->row()->total;
-
+			
 		}else{
-			if(get_staff_role()==2 || get_staff_role()==3 || get_staff_role()==5 || get_staff_role()==6 || get_staff_role()==8){
+			if(get_staff_role()==2 || get_staff_role()==3 || get_staff_role()==5 || get_staff_role()==6 || get_staff_role()==8){	
 				$sql =  'SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads where (dateassigned BETWEEN "' . $fromyearmonth . '-01 00:00:00" AND "' . $toyearmonth . '-30 23:59:59") AND ( CONCAT(",", tblleads.reportingto, ",")  LIKE "%, '.get_staff_user_id().',%"  OR CONCAT(",", tblleads.reportingto, ",")  LIKE "%,'.get_staff_user_id().',%" )';
 			}else{
 				$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads where (dateassigned BETWEEN '" . $fromyearmonth . "-01 00:00:00' AND '" . $toyearmonth . "-30 23:59:59') ";
 			}
-
+			
 			$total_staff = $this->db->query($sql)->row()->total;
-
-		}
-
+			
+		}	
+		 
 		return $total_staff;
-
+	
 	}
-
-
+	
+	
 	//------------------------------ MTD / YTD / ITD Report -------------------------//
-
+	
 	/* public function mtd_no_of_leads_by_stage_month_staff($month,$status='',$zone_name='')
 	{
 		$total_own =0;
 		$total_rec =0;
-
+		
 		if($zone_name != '' && $status != ''){
-
+			
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%" AND assigned IN ('.$assigned.')');
 			$total_rec =  $query->num_rows();
-		}
+		} 
 		else if($zone_name != '' && $status == ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$query = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%" AND assigned IN ('.$assigned.')');
 			$total_rec =  $query->num_rows();
-
+			
 		}else if($status != '') {
-
+				
 			$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND dateassigned LIKE "'.$month.'%"');
 			$total_rec =  $query->num_rows();
-
+		
 		}
 		else {
-
+				
 			$query = $this->db->query('SELECT id FROM tblleads where dateassigned LIKE "'.$month.'%"');
 			$total_rec =  $query->num_rows();
-
+		
 		}
-
-
+		
+		
 		 return $total_rec;
 
 	}
-
+	
 	public function mtd_value_of_leads_by_stage_month_staff($month,$status='',$zone_name='')
 	{
 		$total_staff = 0;
 		$total_own=0;
-
+		
 		if($zone_name != '' && $status != ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE status='".$status."' AND dateassigned LIKE '".$month."%' AND assigned IN(".$assigned.")";
 			$total_staff = $this->db->query($sql)->row()->total;
@@ -4632,100 +4596,100 @@ public function get_status_byid($id)
 		else if($zone_name != '' && $status == ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE dateassigned LIKE '".$month."%' AND assigned IN(".$assigned.")";
 			$total_staff = $this->db->query($sql)->row()->total;
 		}
 		elseif($status != ''){
-
+			
 			$sql =  'SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE status="'.$status.'" AND dateassigned LIKE "'.$month.'%"';
 			$total_staff = $this->db->query($sql)->row()->total;
-
+			
 		}else{
-
+			
 			$sql =  'SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE dateassigned LIKE "'.$month.'%"';
 			$total_staff = $this->db->query($sql)->row()->total;
-
-		}
-
+			
+		}	
+		 
 		return $total_staff;
-
+	
 	}
-
+	
 	public function itd_no_of_leads_by_stage_month_staff($status='',$zone_name='')
 	{
 		$total_own =0;
 		$total_rec =0;
-
+		
 		if($zone_name != '' && $status != ''){
-
+			
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND assigned IN ('.$assigned.')');
 			$total_rec =  $query->num_rows();
-		}
+		} 
 		else if($zone_name != '' && $status == ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$query = $this->db->query('SELECT id FROM tblleads where assigned IN ('.$assigned.')');
 			$total_rec =  $query->num_rows();
-
+			
 		}else if($status != '') {
-
+				
 			$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '"');
 			$total_rec =  $query->num_rows();
-
+		
 		}
 		else {
-
+				
 			$query = $this->db->query('SELECT id FROM tblleads');
 			$total_rec =  $query->num_rows();
-
+		
 		}
-
-
+		
+		
 		 return $total_rec;
 
 	}
-
+	
 	public function itd_value_of_leads_by_stage_month_staff($status='',$zone_name='')
 	{
 		$total_staff = 0;
 		$total_own=0;
-
+		
 		if($zone_name != '' && $status != ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE status='".$status."' AND assigned IN(".$assigned.")";
 			$total_staff = $this->db->query($sql)->row()->total;
@@ -4733,100 +4697,100 @@ public function get_status_byid($id)
 		else if($zone_name != '' && $status == ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE assigned IN(".$assigned.")";
 			$total_staff = $this->db->query($sql)->row()->total;
 		}
 		elseif($status != ''){
-
+			
 			$sql =  'SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE status="'.$status.'"';
 			$total_staff = $this->db->query($sql)->row()->total;
-
+			
 		}else{
-
+			
 			$sql =  'SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads';
 			$total_staff = $this->db->query($sql)->row()->total;
-
-		}
-
+			
+		}	
+		 
 		return $total_staff;
-
+	
 	}
-
+	
 	public function ytd_no_of_leads_by_stage_month_staff($fromyearmonth, $toyearmonth, $status='',$zone_name='')
 	{
 		$total_own =0;
 		$total_rec =0;
-
+		
 		if($zone_name != '' && $status != ''){
-
+			
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND assigned IN ('.$assigned.') AND (dateassigned BETWEEN "' . $fromyearmonth . '-01 00:00:00" AND "' . $toyearmonth . '-30 23:59:59" )');
 			$total_rec =  $query->num_rows();
-		}
+		} 
 		else if($zone_name != '' && $status == ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$query = $this->db->query('SELECT id FROM tblleads where assigned IN ('.$assigned.') AND (dateassigned BETWEEN "' . $fromyearmonth . '-01 00:00:00" AND "' . $toyearmonth . '-30 23:59:59" )');
 			$total_rec =  $query->num_rows();
-
+			
 		}else if($status != '') {
-
+				
 			$query = $this->db->query('SELECT id FROM tblleads where status="' . $status . '" AND (dateassigned BETWEEN "' . $fromyearmonth . '-01 00:00:00" AND "' . $toyearmonth . '-30 23:59:59" )');
 			$total_rec =  $query->num_rows();
-
+		
 		}
 		else {
-
+				
 			$query = $this->db->query('SELECT id FROM tblleads where (dateassigned BETWEEN "' . $fromyearmonth . '-01 00:00:00" AND "' . $toyearmonth . '-30 23:59:59" )');
 			$total_rec =  $query->num_rows();
-
+		
 		}
-
-
+		
+		
 		 return $total_rec;
 
 	}
-
+	
 	public function ytd_value_of_leads_by_stage_month_staff($fromyearmonth, $toyearmonth,$status='',$zone_name='')
 	{
 		$total_staff = 0;
 		$total_own=0;
-
+		
 		if($zone_name != '' && $status != ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE status='".$status."' AND assigned IN(".$assigned.") AND (dateassigned BETWEEN '" . $fromyearmonth . "-01 00:00:00' AND '" . $toyearmonth . "-30 23:59:59')";
 			$total_staff = $this->db->query($sql)->row()->total;
@@ -4834,139 +4798,139 @@ public function get_status_byid($id)
 		else if($zone_name != '' && $status == ''){
 			$where = "region LIKE '%".$zone_name."'";
 			$this->db->select('staffid');
-			$this->db->where($where);
+			$this->db->where($where);		
 			$userarray = $this->db->get('tblstaff')->result_array();
-
-			foreach($userarray as $row)
+			
+			foreach($userarray as $row)  
 			{
-				$ids[] = $row['staffid'];
-			}
+				$ids[] = $row['staffid']; 
+			} 
 			$assigned = implode(", ", $ids);
 			$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE assigned IN(".$assigned.")  AND (dateassigned BETWEEN '" . $fromyearmonth . "-01 00:00:00' AND '" . $toyearmonth . "-30 23:59:59')";
 			$total_staff = $this->db->query($sql)->row()->total;
 		}
 		elseif($status != ''){
-
+			
 			$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads WHERE status='".$status."'  AND (dateassigned BETWEEN '" . $fromyearmonth . "-01 00:00:00' AND '" . $toyearmonth . "-30 23:59:59')";
 			$total_staff = $this->db->query($sql)->row()->total;
-
+			
 		}else{
-
+			
 			$sql =  "SELECT COALESCE(SUM(opportunity),0) as total FROM tblleads where (dateassigned BETWEEN '" . $fromyearmonth . "-01 00:00:00' AND '" . $toyearmonth . "-30 23:59:59') ";
 			$total_staff = $this->db->query($sql)->row()->total;
-
-		}
-
+			
+		}	
+		 
 		return $total_staff;
-
+	
 	}
-
+	
 	 */
 	//------------------------ Win / loss ---------------------//
-
-
+	
+	
 	public function winloss_month_zone($report_months='',$from_date='',$to_date='',$zone_name='',$winloss='',$topRecord='',$staff_id='')
 	{
 		if($staff_id ==''){
 			if(get_staff_role()==2 || get_staff_role()==3 || get_staff_role()==5 || get_staff_role()==6){
-
+				
 				 $where_region = "((CONCAT(',', reporting_to, ',')  LIKE '%, ".get_staff_user_id().",%'  OR CONCAT(',', reporting_to, ',')  LIKE '%,".get_staff_user_id().",%') OR staffid=".get_staff_user_id().") AND is_not_staff = 0";
 				$this->db->select('staffid');
-				$this->db->where($where_region);
+				$this->db->where($where_region);		
 				$userarray = $this->db->get('tblstaff')->result_array();
-				foreach($userarray as $row)
+				foreach($userarray as $row)  
 				{
-					$ids[] = $row['staffid'];
+					$ids[] = $row['staffid']; 
 				}
-
+				
 			}else{
 				$where_region = "region IN(".$zone_name.")";
 				$this->db->select('staffid');
-				$this->db->where($where_region);
+				$this->db->where($where_region);		
 				$userarray = $this->db->get('tblstaff')->result_array();
-				foreach($userarray as $row)
+				foreach($userarray as $row)  
 				{
-					$ids[] = $row['staffid'];
+					$ids[] = $row['staffid']; 
 				}
 			}
-			$assigned = implode(", ", $ids);
+			$assigned = implode(", ", $ids);	
 		}else{
 		   $assigned = $staff_id;
 		}
-
-
+		 
+		
 		if($winloss == '7,6'){
-
+			
 			$where_win = '';
 			$where_loss = '';
-
+			
 				if ($report_months == 'this_month') {
-                    $month = date('Y-m');
+                    $month = date('Y-m');					
 					$where_win = 'dateassigned LIKE ("' . $month . '%") AND status IN(7) AND assigned IN('.$assigned.')';
 					$where_loss = 'dateassigned LIKE ("' . $month . '%") AND status IN(6) AND assigned IN('.$assigned.')';
-
+					
                 } else if ($report_months == 'last_month') {
                     $month = date('Y-m', strtotime(date('Y-m') . " -1 month"));
                     $where_win = 'dateassigned LIKE ("' . $month . '%") AND status IN(7) AND assigned IN('.$assigned.')';
 					$where_loss = 'dateassigned LIKE ("' . $month . '%") AND status IN(6) AND assigned IN('.$assigned.')';
-
+					
                 } else if ($report_months == 'this_year') {
                     $year  = date('Y');
                     $where_win = 'dateassigned LIKE ("' . $year . '%") AND status IN(7) AND assigned IN('.$assigned.')';
 					$where_loss = 'dateassigned LIKE ("' . $year . '%") AND status IN(6) AND assigned IN('.$assigned.')';
-
+					
                 } else if ($report_months == 'last_year') {
                     $year  = date('Y', strtotime(date('Y') . " -1 year"));
                     $where_win = 'dateassigned LIKE ("' . $year . '%") AND status IN(7) AND assigned IN('.$assigned.')';
 					$where_loss = 'dateassigned LIKE ("' . $year . '%") AND status IN(6) AND assigned IN('.$assigned.')';
-
+					
                 } else if ($report_months == 'report_sales_months_three_months') {
                     $report_from = date('Y-m-01', strtotime(" -3 MONTH"));
                     $report_to   = date('Y-m-t',strtotime(" -1 MONTH"));
                     $where_win = '(dateassigned BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" ) AND status IN(7) AND assigned IN('.$assigned.')';
                     $where_loss = '(dateassigned BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" ) AND status IN(6) AND assigned IN('.$assigned.')';
-
+				
                 } else if ($report_months == 'report_sales_months_six_months') {
                     $report_from = date('Y-m-01', strtotime(" -6 MONTH"));
                     $report_to   = date('Y-m-t',strtotime(" -1 MONTH"));
                     $where_win = '(dateassigned BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" ) AND status IN(7) AND assigned IN('.$assigned.')';
                     $where_loss = '(dateassigned BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" ) AND status IN(6) AND assigned IN('.$assigned.')';
-
+				
                 } else if ($report_months == 'report_sales_months_twelve_months') {
                     $report_from = date('Y-m-01', strtotime(" -12 MONTH"));
                     $report_to   = date('Y-m-t',strtotime(" -1 MONTH"));
                     $where_win = '(dateassigned BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" ) AND status IN(7) AND assigned IN('.$assigned.')';
                     $where_loss = '(dateassigned BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" ) AND status IN(6) AND assigned IN('.$assigned.')';
-
+				
                 }else if($report_months =='custom') {
 					$report_from = $from_date;
 					$report_to= $to_date;
 					$where_win = '(dateassigned BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" ) AND status IN(7) AND assigned IN('.$assigned.')';
                     $where_loss = '(dateassigned BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" ) AND status IN(6) AND assigned IN('.$assigned.')';
-
+				
                 }else if($report_months =='report_sales_months_all_time') {
-
+					
 					$where_win = 'status IN(7) AND assigned IN('.$assigned.')';
                     $where_loss = 'status IN(6) AND assigned IN('.$assigned.')';
-
+				
                 }else{
 					$report_from = date('Y-m-01', strtotime(" -3 MONTH"));
                     $report_to   = date('Y-m-t',strtotime(" -1 MONTH"));
 					$where_win = '(dateassigned BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" ) AND status IN(7) AND assigned IN('.$assigned.')';
                     $where_loss = '(dateassigned BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" ) AND status IN(6) AND assigned IN('.$assigned.')';
-
+				
 				}
-
-
+				
+			    						
 				 $this->db->select('id,dateassigned,customer_name,assigned,opportunity,project_total_amount,competition,competition1,competition2,competition3,competition4,status,lost_status,status_lost,status_closed_won');
 				$this->db->from("tblleads");
 				$this->db->where($where_win);
 				$this->db->order_by("opportunity",'DESC');
 				if($topRecord !='All')
 					$this->db->limit($topRecord);
-				$lead_details_win = $this->db->get()->result_array();
-
-
+				$lead_details_win = $this->db->get()->result_array(); 
+				
+				
 				$this->db->select('id,dateassigned,customer_name,assigned,opportunity,project_total_amount,competition,competition1,competition2,competition3,competition4,status,lost_status,status_lost,status_closed_won');
 				$this->db->from("tblleads");
 				$this->db->where($where_loss);
@@ -4975,83 +4939,83 @@ public function get_status_byid($id)
 					$this->db->limit($topRecord);
 				}
 				$lead_details_loss = $this->db->get()->result_array();
-
+				
 				$lead_details = array_merge($lead_details_loss,$lead_details_win);
-
+				
 					//$where = 'dateassigned LIKE "%'.$month.'%" AND  status IN('.$winloss.') AND assigned IN('.$assigned.')';
 		}
 		else{
 			   if ($report_months == 'this_month') {
                     $month = date('Y-m');
-
+					
 					$where = 'dateassigned LIKE ("' . $month . '%") AND status IN('.$winloss.') AND assigned IN('.$assigned.')';
-
+					
                 } else if ($report_months == 'last_month') {
                     $month = date('Y-m', strtotime(date('Y-m') . " -1 month"));
                     $where = 'dateassigned LIKE ("' . $month . '%") AND status IN('.$winloss.') AND assigned IN('.$assigned.')';
-
+					
                 } else if ($report_months == 'this_year') {
                     $year  = date('Y');
                     $where = 'dateassigned LIKE ("' . $year . '%") AND status IN('.$winloss.') AND assigned IN('.$assigned.')';
-
+					
                 } else if ($report_months == 'last_year') {
                     $year  = date('Y', strtotime(date('Y') . " -1 year"));
                     $where = 'dateassigned LIKE ("' . $year . '%") AND status IN('.$winloss.') AND assigned IN('.$assigned.')';
-
+					
                 } else if ($report_months == 'report_sales_months_three_months') {
                     $report_from = date('Y-m-01', strtotime(" -3 MONTH"));
                     $report_to   = date('Y-m-t',strtotime(" -1 MONTH"));
                     $where = '(dateassigned BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" ) AND status IN('.$winloss.') AND assigned IN('.$assigned.')';
-
+                  
                 } else if ($report_months == 'report_sales_months_six_months') {
                     $report_from = date('Y-m-01', strtotime(" -6 MONTH"));
                     $report_to   = date('Y-m-t',strtotime(" -1 MONTH"));
                     $where = '(dateassigned BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" ) AND status IN('.$winloss.') AND assigned IN('.$assigned.')';
-
+                    
                 } else if ($report_months == 'report_sales_months_twelve_months') {
                     $report_from = date('Y-m-01', strtotime(" -12 MONTH"));
                     $report_to   = date('Y-m-t',strtotime(" -1 MONTH"));
                     $where = '(dateassigned BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" ) AND status IN('.$winloss.') AND assigned IN('.$assigned.')';
-
+                   
                 }else if($report_months =='custom') {
 					$report_from = $from_date;
 					$report_to= $to_date;
 					$where = '(dateassigned BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" ) AND status IN('.$winloss.') AND assigned IN('.$assigned.')';
-
+                   
                 }else if($report_months =='report_sales_months_all_time') {
-
+					
 					$where = 'status IN('.$winloss.') AND assigned IN('.$assigned.')';
                 }else{
 					$report_from = date('Y-m-01', strtotime(" -3 MONTH"));
                     $report_to   = date('Y-m-t',strtotime(" -1 MONTH"));
 					$where = '(dateassigned BETWEEN "' . $report_from . ' 00:00:00" AND "' . $report_to . ' 23:59:59" ) AND status IN('.$winloss.') AND assigned IN('.$assigned.')';
-
+                  
 				}
-
+				 
 				//echo $where;
-
+				
 				$this->db->select('id,dateassigned, customer_name,assigned,opportunity,project_total_amount,competition,competition1,competition2,competition3,competition4,status,lost_status,status_lost,status_closed_won');
 				$this->db->where($where);
-				$lead_details = $this->db->order_by('opportunity' , 'desc')->limit($topRecord)->get('tblleads')->result_array();
-
+				$lead_details = $this->db->order_by('opportunity' , 'desc')->limit($topRecord)->get('tblleads')->result_array(); 
+				
 		}
-
+		
 		 return $lead_details;
 
 	}
-
+	
 	public function lead_source_byname($id='')
     {
 		$sql .= "SELECT name FROM tblleadssources WHERE id='".$id."'";
         return $this->db->query($sql)->row()->name;
-
+  
     }
-
+	
 	public function lead_status_byname($id='')
     {
 		$sql .= "SELECT name FROM tblleadsstatus WHERE id='".$id."'";
         return $this->db->query($sql)->row()->name;
-
+  
     }
-
+	
 }
